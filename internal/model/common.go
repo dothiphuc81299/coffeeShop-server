@@ -48,3 +48,8 @@ func (q *CommonQuery) AssignActive(cond *bson.M) {
 		}
 	}
 }
+
+// ResponseAdminData ...
+type ResponseAdminData struct {
+	Data interface{} `json:"data"`
+}
