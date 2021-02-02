@@ -18,7 +18,7 @@ func (d *DrinkAdminHandler) Create(c echo.Context) error {
 		drinkBody = c.Get("drinkBody").(model.DrinkBody)
 	)
 
-	data, err := d.DrinkAdminService.Create(customCtx.GetRequestCtx, drinkBody)
+	data, err := d.DrinkAdminService.Create(customCtx.GetRequestCtx(), drinkBody)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}

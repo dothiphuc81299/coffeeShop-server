@@ -22,14 +22,14 @@ type DrinkAdminService interface {
 	Create(ctx context.Context, body DrinkBody) (primitive.ObjectID, error)
 	ListAll(ctx context.Context, q CommonQuery) ([]DrinkAdminResponse, int64)
 	Update(ctx context.Context, Drink DrinkRaw, body DrinkBody) error
-	ChangeStatus(ctx context.Context, Drink DrinkRaw) error
+	//ChangeStatus(ctx context.Context, Drink DrinkRaw) error
 	FindByID(ctx context.Context, id AppID) (Drink DrinkRaw, err error)
 }
 
 // DrinkRaw ...
 type DrinkRaw struct {
 	ID           AppID   `bson:"_id"`
-	Name         string  `bson:"_id"`
+	Name         string  `bson:"name"`
 	CategoryID   AppID   `bson:"categoryID"`
 	Price        float64 `bson:"price"`
 	SearchString string  `bson:"searchString"`

@@ -41,5 +41,12 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 	panic("implement it")
 }
 
+// Update ....
+func (d *DrinkAdminService) Update(ctx context.Context, Drink model.DrinkRaw, body model.DrinkBody) error {
+	panic("implement it")
+}
 
-func (d *DrinkAdminService) Update(ctx context.Context)
+// FindByID ...
+func (d *DrinkAdminService) FindByID(ctx context.Context, id model.AppID) (drink model.DrinkRaw, err error) {
+	panic("implement it ")
+}

@@ -13,5 +13,6 @@ func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 		DrinkAdminService: cs.Drink,
 	}
 
-	e.POST("", h.Create, validation.DrinkBodyValidation)
+	g := e.Group("/drink")
+	g.POST("", h.Create, validation.DrinkBodyValidation)
 }
