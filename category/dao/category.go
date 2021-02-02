@@ -9,30 +9,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const drinkCol = "drinks"
+const categorycol = "categories"
 
-// DrinkDAO ....
-type DrinkDAO struct {
+// CategoryDAO ....
+type CategoryDAO struct {
 	DB  *mongo.Database
 	Col *mongo.Collection
 }
 
-// NewDrinkDAO ...
-func NewDrinkDAO(db *mongo.Database) model.DrinkDAO {
-	return &DrinkDAO{
+// NewCategoryDAO ...
+func NewCategoryDAO(db *mongo.Database) model.CategoryDAO {
+	return &CategoryDAO{
 		DB:  db,
-		Col: db.Collection(drinkCol),
+		Col: db.Collection(categorycol),
 	}
 }
 
 // InsertOne ...
-func (d *DrinkDAO) InsertOne(ctx context.Context, u model.DrinkRaw) error {
+func (d *CategoryDAO) InsertOne(ctx context.Context, u model.CategoryRaw) error {
 	_, err := d.Col.InsertOne(ctx, u)
 	return err
 }
 
 // FindByCondition ...
-func (w *DrinkDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DrinkRaw, err error) {
+func (w *CategoryDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.CategoryRaw, err error) {
 	cursor, err := w.Col.Find(ctx, cond, opts...)
 	if err != nil {
 		return nil, err
@@ -45,19 +45,19 @@ func (w *DrinkDAO) FindByCondition(ctx context.Context, cond interface{}, opts .
 }
 
 // CountByCondition ...
-func (w *DrinkDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
+func (w *CategoryDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
 	total, _ := w.Col.CountDocuments(ctx, cond)
 	return total
 }
 
 // UpdateByID ...
-func (w *DrinkDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *CategoryDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
 
 // FindOneByCondition ...
-func (w *DrinkDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.DrinkRaw, err error) {
+func (w *CategoryDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.CategoryRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }

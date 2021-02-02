@@ -49,6 +49,13 @@ func (q *CommonQuery) AssignActive(cond *bson.M) {
 	}
 }
 
+// ResponseAdminListData ...
+type ResponseAdminListData struct {
+	Data         interface{} `json:"data"`
+	Total        int64       `json:"total"`
+	LimitPerPage int64       `json:"limitPerPage"`
+}
+
 // ResponseAdminData ...
 type ResponseAdminData struct {
 	Data interface{} `json:"data"`

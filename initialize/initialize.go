@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	categoryDAO "github.com/dothiphuc81299/coffeeShop-server/category/dao"
+	categoryservice "github.com/dothiphuc81299/coffeeShop-server/category/service"
 	drinkDAO "github.com/dothiphuc81299/coffeeShop-server/drink/dao"
 	drinkservice "github.com/dothiphuc81299/coffeeShop-server/drink/service"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
@@ -16,7 +18,8 @@ import (
 // InitAdminServices ...
 func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 	return &model.AdminService{
-		Drink: drinkservice.NewDrinkAdminService(d),
+		Drink:    drinkservice.NewDrinkAdminService(d),
+		Category: categoryservice.NewCategoryAdminService(d),
 	}
 }
 
@@ -35,6 +38,7 @@ func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
 	db := client.Database(dbCfg.Name)
 
 	return db, &model.CommonDAO{
-		Drink: drinkDAO.NewDrinkDAO(db),
+		Drink:    drinkDAO.NewDrinkDAO(db),
+		Category: categoryDAO.NewCategoryDAO(db),
 	}
 }

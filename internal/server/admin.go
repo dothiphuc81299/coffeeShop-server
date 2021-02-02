@@ -6,6 +6,7 @@ import (
 	drinkroute "github.com/dothiphuc81299/coffeeShop-server/drink/route"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 
+	categoryroute "github.com/dothiphuc81299/coffeeShop-server/category/route"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -35,4 +36,5 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, d *model.Commo
 	// drink
 
 	drinkroute.InitDrinkAdmin(e, service, d)
+	categoryroute.InitCategoryAdmin(e, service, d)
 }

@@ -2,10 +2,12 @@ package model
 
 // CommonDAO ....
 type CommonDAO struct {
-	Drink DrinkDAO
+	Drink    DrinkDAO
+	Category CategoryDAO
 }
 
 // AdminService ....
 type AdminService struct {
-	Drink DrinkAdminService
+	Drink    DrinkAdminService
+	Category CategoryAdminService
 }

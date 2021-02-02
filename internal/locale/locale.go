@@ -91,4 +91,7 @@ func LoadProperties() {
 
 	//100-199
 	list = append(list, drinkLoadLocales()...)
+
+	// 200-299
+	list = append(list, categoryLoadLocales()...)
 }
