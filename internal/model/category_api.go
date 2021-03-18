@@ -38,3 +38,11 @@ func (c CategoryBody) NewCategoryRaw() CategoryRaw {
 		UpdatedAt:    now,
 	}
 }
+
+func CategoryGetAdminResponse(c CategoryRaw) CategoryAdminResponse {
+	return CategoryAdminResponse{
+		ID:        c.ID,
+		Name:      c.Name,
+		CreatedAt: c.CreatedAt,
+	}
+}

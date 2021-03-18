@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"sync"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -38,7 +39,31 @@ func (d *CategoryAdminService) checkNameExisted(ctx context.Context, name string
 
 // ListAll ...
 func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([]model.CategoryAdminResponse, int64) {
-	panic("implement it")
+	var (
+		wg    sync.WaitGroup
+		cond  bson.M
+		total int64
+		res   = make([]model.CategoryAdminResponse, 0)
+	)
+
+	q.AssignKeyword(&cond)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		total = d.CategoryDAO.CountByCondition(ctx, cond)
+	}()
+
+	go func() {
+		defer wg.Done()
+		categories, _ := d.CategoryDAO.FindByCondition(ctx, cond)
+		for _, value := range categories {
+			temp := model.CategoryGetAdminResponse(value)
+			res = append(res, temp)
+		}
+	}()
+
+	wg.Wait()
+	return res, total
 }
 
 // Update ....
@@ -50,11 +75,11 @@ func (d *CategoryAdminService) Update(ctx context.Context, category model.Catego
 	category.SearchString = doc.SearchString
 	category.UpdatedAt = doc.UpdatedAt
 
-	err := d.CategoryDAO.UpdateByID(ctx, category.ID, category)
+	err := d.CategoryDAO.UpdateByID(ctx, category.ID, bson.M{"$set": category})
 	return err
 }
 
 // FindByID ...
 func (d *CategoryAdminService) FindByID(ctx context.Context, id model.AppID) (Category model.CategoryRaw, err error) {
-	panic("implement it ")
+	return d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }

@@ -15,4 +15,10 @@ func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 
 	g := e.Group("/drink")
 	g.POST("", h.Create, validation.DrinkBodyValidation)
+
+	g.GET("", h.GetList)
+
+	g.PUT("/:drinkID", h.Update, validation.DrinkBodyValidation, h.DrinkGetByID)
+
+	g.PATCH("/:drinkID/status", h.ChangeStatus, h.DrinkGetByID)
 }

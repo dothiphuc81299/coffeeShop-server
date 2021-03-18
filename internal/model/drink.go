@@ -21,21 +21,20 @@ type DrinkDAO interface {
 type DrinkAdminService interface {
 	Create(ctx context.Context, body DrinkBody) (primitive.ObjectID, error)
 	ListAll(ctx context.Context, q CommonQuery) ([]DrinkAdminResponse, int64)
-	Update(ctx context.Context, Drink DrinkRaw, body DrinkBody) error
-	//ChangeStatus(ctx context.Context, Drink DrinkRaw) error
+	Update(ctx context.Context, Drink DrinkRaw, body DrinkBody) (DrinkAdminResponse, error)
+	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool ,error)
 	FindByID(ctx context.Context, id AppID) (Drink DrinkRaw, err error)
 }
 
 // DrinkRaw ...
 type DrinkRaw struct {
-	ID           AppID   `bson:"_id"`
-	Name         string  `bson:"name"`
-	CategoryID   AppID   `bson:"categoryID"`
-	Price        float64 `bson:"price"`
-	SearchString string  `bson:"searchString"`
-	FeedBack     AppID   `bson:"feedback"`
-	Quantity     int     `bson:"quantity"`
-	//	Photo        *FilePhoto `bson:"photo"`      // TODO
-	CreatedAt time.Time `bson:"createdAt"`
-	UpdatedAt time.Time `bson:"updatedAt"`
+	ID           AppID      `bson:"_id"`
+	Name         string     `bson:"name"`
+	Category     AppID      `bson:"category"`
+	Price        float64    `bson:"price"`
+	SearchString string     `bson:"searchString"`
+	Photo        *FilePhoto `bson:"photo,omitempty"`
+	CreatedAt    time.Time  `bson:"createdAt"`
+	UpdatedAt    time.Time  `bson:"updatedAt"`
+	Active       bool       `bson:"active"`
 }
