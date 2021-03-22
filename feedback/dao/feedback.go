@@ -9,30 +9,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const rolecol = "roles"
+const feedbackCol = "feedbacks"
 
-// RoleDAO ....
-type RoleDAO struct {
+// FeedbackDAO ....
+type FeedbackDAO struct {
 	DB  *mongo.Database
 	Col *mongo.Collection
 }
 
-// NewRoleDAO ...
-func NewRoleDAO(db *mongo.Database) model.RoleDAO {
-	return &RoleDAO{
+// NewFeedbackDAO ...
+func NewFeedbackDAO(db *mongo.Database) model.FeedbackDAO {
+	return &FeedbackDAO{
 		DB:  db,
-		Col: db.Collection(rolecol),
+		Col: db.Collection(feedbackCol),
 	}
 }
 
 // InsertOne ...
-func (d *RoleDAO) InsertOne(ctx context.Context, u model.RoleRaw) error {
+func (d *FeedbackDAO) InsertOne(ctx context.Context, u model.FeedbackRaw) error {
 	_, err := d.Col.InsertOne(ctx, u)
 	return err
 }
 
 // FindByCondition ...
-func (w *RoleDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.RoleRaw, err error) {
+func (w *FeedbackDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.FeedbackRaw, err error) {
 	cursor, err := w.Col.Find(ctx, cond, opts...)
 	if err != nil {
 		return nil, err
@@ -45,19 +45,19 @@ func (w *RoleDAO) FindByCondition(ctx context.Context, cond interface{}, opts ..
 }
 
 // CountByCondition ...
-func (w *RoleDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
+func (w *FeedbackDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
 	total, _ := w.Col.CountDocuments(ctx, cond)
 	return total
 }
 
 // UpdateByID ...
-func (w *RoleDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *FeedbackDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
 
 // FindOneByCondition ...
-func (w *RoleDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.RoleRaw, err error) {
+func (w *FeedbackDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.FeedbackRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }

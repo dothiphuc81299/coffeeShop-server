@@ -4,8 +4,11 @@ import (
 	drinkroute "github.com/dothiphuc81299/coffeeShop-server/drink/route"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 
+	accountroute "github.com/dothiphuc81299/coffeeShop-server/account/route"
 	categoryroute "github.com/dothiphuc81299/coffeeShop-server/category/route"
 	middleware "github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
+	roleroute "github.com/dothiphuc81299/coffeeShop-server/role/route"
+	userroute "github.com/dothiphuc81299/coffeeShop-server/user/route"
 	"github.com/labstack/echo/v4"
 )
 
@@ -36,4 +39,7 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, d *model.Commo
 
 	drinkroute.InitDrinkAdmin(e, service, d)
 	categoryroute.InitCategoryAdmin(e, service, d)
+	accountroute.InitAccountAdmin(e, service, d)
+	userroute.InitUserAdmin(e, service, d)
+	roleroute.InitRoleAdmin(e, service, d)
 }

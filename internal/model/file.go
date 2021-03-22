@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
+	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/go-ozzo/ozzo-validation/is"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -25,6 +26,18 @@ type FileSize struct {
 	Width  int    `json:"width" bson:"width"`
 	Height int    `json:"height" bson:"height"`
 	URL    string `json:"url" bson:"-"`
+}
+
+// ConvertToFilePhoto ...
+func (f *FilePhotoRequest) ConvertToFilePhoto() *FilePhoto {
+	if f == nil {
+		return nil
+	}
+	return &FilePhoto{
+		ID:         util.GetAppIDFromHex(f.ID),
+		Name:       f.Name,
+		Dimensions: f.Dimensions,
+	}
 }
 
 // FileDimensions ...

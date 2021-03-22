@@ -9,30 +9,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const rolecol = "roles"
+const usercol = "users"
 
-// RoleDAO ....
-type RoleDAO struct {
+// UserDAO ....
+type UserDAO struct {
 	DB  *mongo.Database
 	Col *mongo.Collection
 }
 
-// NewRoleDAO ...
-func NewRoleDAO(db *mongo.Database) model.RoleDAO {
-	return &RoleDAO{
+// NewUserDAO ...
+func NewUserDAO(db *mongo.Database) model.UserDAO {
+	return &UserDAO{
 		DB:  db,
-		Col: db.Collection(rolecol),
+		Col: db.Collection(usercol),
 	}
 }
 
 // InsertOne ...
-func (d *RoleDAO) InsertOne(ctx context.Context, u model.RoleRaw) error {
+func (d *UserDAO) InsertOne(ctx context.Context, u model.UserRaw) error {
 	_, err := d.Col.InsertOne(ctx, u)
 	return err
 }
 
 // FindByCondition ...
-func (w *RoleDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.RoleRaw, err error) {
+func (w *UserDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.UserRaw, err error) {
 	cursor, err := w.Col.Find(ctx, cond, opts...)
 	if err != nil {
 		return nil, err
@@ -45,19 +45,19 @@ func (w *RoleDAO) FindByCondition(ctx context.Context, cond interface{}, opts ..
 }
 
 // CountByCondition ...
-func (w *RoleDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
+func (w *UserDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
 	total, _ := w.Col.CountDocuments(ctx, cond)
 	return total
 }
 
 // UpdateByID ...
-func (w *RoleDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *UserDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
 
 // FindOneByCondition ...
-func (w *RoleDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.RoleRaw, err error) {
+func (w *UserDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.UserRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }

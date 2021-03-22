@@ -25,11 +25,26 @@ const (
 	CommonKeyContactAddressIsRequired = "contactAddressIsRequired"
 	CommonKeyReadFileFail             = "readFileFail"
 
-	CommonKeyPhoneIsRequired = "phoneIsRequired"
-	CommonKeyUIDIsRequired   = "uIDIsRequired"
-	CommonKeyPhoneNotMatch   = "phoneNotMatch"
-	CommonKeyPhoneNoExisted  = "phoneNoExisted"
-	CommonKeyUserUnActive    = "userUnActive"
+	CommonKeyPhoneIsRequired      = "phoneIsRequired"
+	CommonKeyUIDIsRequired        = "uIDIsRequired"
+	CommonKeyPhoneNotMatch        = "phoneNotMatch"
+	CommonKeyPhoneNoExisted       = "phoneNoExisted"
+	CommonKeyUserUnActive         = "userUnActive"
+	CommonKeyPermissionIsRequired = "permissionIsRequired"
+
+	CommonKeyUsernameIsRequired = "UsernameIsRequired"
+	CommonKeyPasswordRequired   = "PasswordRequired"
+	AuthKeyUserIsRequired       = "UserIsRequired"
+	AuthKeyUserInvalid          = "UserInvalid"
+	AuthKeyAccountUnActive      = "AccountUnActive"
+	AuthKeyUserUnActive         = "UserUnActive"
+	CommonKeyCanNotCreateUser   = "CanNotCreateUser"
+	UserKeyCanNotChangeStatus   = "UserCanNotChangeStatus"
+	FeedbackKeyNameIsRequired   = "FeedbackNameIsRequired"
+	FeedbackKeyRatingIsRequired = "FeedbackRatingIsRequired"
+	FeedbackKeyOrderIsRequired  = "FeedbackOrderIsRequired"
+	FeedbackKeyOrderInvalid     = "FeedbackOrderInvalid"
+	FeedbackKeyCanNotCreate     = "FeedbackCanNotCreate"
 )
 
 type (
@@ -51,11 +66,24 @@ type (
 		ContactAddressIsRequired string `properties:"contactAddressIsRequired"`
 		ReadFileFail             string `properties:"readFileFail"`
 
-		PhoneIsRequired string `properties:"phoneIsRequired"`
-		UIDIsRequired   string `properties:"uIDIsRequired"`
-		PhoneNotMatch   string `properties:"phoneNotMatch"`
-		PhoneNoExisted  string `properties:"phoneNoExisted"`
-		UserUnActive    string `properties:"userUnActive"`
+		PhoneIsRequired          string `properties:"phoneIsRequired"`
+		UIDIsRequired            string `properties:"uIDIsRequired"`
+		PhoneNotMatch            string `properties:"phoneNotMatch"`
+		PhoneNoExisted           string `properties:"phoneNoExisted"`
+		UserUnActive             string `properties:"userUnActive"`
+		UsernameIsRequired       string `properties:"usernameIsRequired"`
+		PasswordRequired         string `properties:"passwordRequired"`
+		PermissionIsRequired     string `properties:"permissionIsRequired"`
+		UserIsRequired           string `properties:"userIsRequired"`
+		UserInvalid              string `properties:"userInvalid"`
+		AccountUnActive          string `properties:"accountUnActive"`
+		CanNotCreateUser         string `properties:"canNotCreateUser"`
+		UserCanNotChangeStatus   string `properties:"userCanNotChangeStatus"`
+		FeedbackNameIsRequired   string `properties:"feedbackNameIsRequired"`
+		FeedbackRatingIsRequired string `properties:"feedbackRatingIsRequired"`
+		FeedbackOrderIsRequired  string `properties:"feedbackOrderIsRequired"`
+		FeedbackOrderInvalid     string `properties:"feedbackOrderInvalid"`
+		FeedbackCanNotCreate     string `properties:"feedbackCanNotCreate"`
 	}
 )
 
@@ -219,6 +247,110 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.UserUnActive,
 			},
 			Code: 30,
+		},
+		{
+			Key: CommonKeyUsernameIsRequired,
+			Message: &Message{
+
+				Vi: commonVi.UsernameIsRequired,
+			},
+			Code: 31,
+		},
+		{
+			Key: CommonKeyPasswordRequired,
+			Message: &Message{
+
+				Vi: commonVi.PasswordRequired,
+			},
+			Code: 32,
+		},
+		{
+			Key: CommonKeyPermissionIsRequired,
+			Message: &Message{
+
+				Vi: commonVi.PermissionIsRequired,
+			},
+			Code: 33,
+		},
+		{
+			Key: AuthKeyUserIsRequired,
+			Message: &Message{
+
+				Vi: commonVi.UserIsRequired,
+			},
+			Code: 34,
+		},
+		{
+			Key: AuthKeyUserInvalid,
+			Message: &Message{
+
+				Vi: commonVi.UserInvalid,
+			},
+			Code: 35,
+		},
+		{
+			Key: AuthKeyAccountUnActive,
+			Message: &Message{
+
+				Vi: commonVi.AccountUnActive,
+			},
+			Code: 36,
+		},
+		{
+			Key: CommonKeyCanNotCreateUser,
+			Message: &Message{
+
+				Vi: commonVi.CanNotCreateUser,
+			},
+			Code: 37,
+		},
+		{
+			Key: UserKeyCanNotChangeStatus,
+			Message: &Message{
+
+				Vi: commonVi.UserCanNotChangeStatus,
+			},
+			Code: 38,
+		},
+		{
+			Key: FeedbackKeyNameIsRequired,
+			Message: &Message{
+
+				Vi: commonVi.FeedbackNameIsRequired,
+			},
+			Code: 39,
+		},
+		{
+			Key: FeedbackKeyRatingIsRequired,
+			Message: &Message{
+
+				Vi: commonVi.FeedbackRatingIsRequired,
+			},
+			Code: 40,
+		},
+		{
+			Key: FeedbackKeyOrderIsRequired,
+			Message: &Message{
+
+				Vi: commonVi.FeedbackOrderIsRequired,
+			},
+			Code: 41,
+		},
+		{
+			Key: FeedbackKeyOrderInvalid,
+			Message: &Message{
+
+				Vi: commonVi.FeedbackOrderInvalid,
+			},
+			Code: 42,
+		},
+		{
+			Key: FeedbackKeyCanNotCreate,
+			Message: &Message{
+
+				Vi: commonVi.FeedbackCanNotCreate,
+			},
+			Code: 43,
 		},
 	}
 	return response
