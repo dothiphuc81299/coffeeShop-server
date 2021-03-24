@@ -18,10 +18,9 @@ type CategoryDAO interface {
 
 // CategoryAdminService ....
 type CategoryAdminService interface {
-	Create(ctx context.Context, body CategoryBody) (AppID, error)
+	Create(ctx context.Context, body CategoryBody) (CategoryAdminResponse, error)
 	ListAll(ctx context.Context, q CommonQuery) ([]CategoryAdminResponse, int64)
-	Update(ctx context.Context, c CategoryRaw, body CategoryBody) error
-	//ChangeStatus(ctx context.Context, Category CategoryRaw) error
+	Update(ctx context.Context, c CategoryRaw, body CategoryBody) (CategoryAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (Category CategoryRaw, err error)
 }
 

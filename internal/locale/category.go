@@ -9,11 +9,13 @@ import (
 // Keys ...
 const (
 	CategoryKeyNameIsRequired = "nameIsRequired"
+	CategoryKeyNameExisted    = "NameExisted"
 )
 
 type (
 	categoryLang struct {
 		NameIsRequired string `properties:"nameIsRequired"`
+		NameExisted    string `properties:"nameExisted"`
 	}
 )
 
@@ -38,6 +40,13 @@ func categoryLoadLocales() (response []Locale) {
 				Vi: categoryVi.NameIsRequired,
 			},
 			Code: 200,
+		},
+		{
+			Key: CategoryKeyNameExisted,
+			Message: &Message{
+				Vi: categoryVi.NameExisted,
+			},
+			Code: 201,
 		},
 	}
 	return response

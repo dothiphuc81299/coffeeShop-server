@@ -12,10 +12,10 @@ import (
 
 // DrinkBody ...
 type DrinkBody struct {
-	Name       string     `json:"name"`
-	CategoryID string     `json:"categoryID"`
-	Price      float64    `json:"price"`
-	Photo      *FilePhoto `json:"photo"`
+	Name     string     `json:"name"`
+	Category string     `json:"category"`
+	Price    float64    `json:"price"`
+	Photo    *FilePhoto `json:"photo"`
 }
 
 // DrinkAdminResponse ...
@@ -36,7 +36,7 @@ type CategoryInfo struct {
 func (d DrinkBody) Validate() error {
 	return validation.ValidateStruct(&d,
 		validation.Field(&d.Name, validation.Required.Error(locale.DrinkKeyNameIsRequired)),
-		validation.Field(&d.CategoryID, validation.Required.Error(locale.DrinkKeyCategoryIDIsRequired),
+		validation.Field(&d.Category, validation.Required.Error(locale.DrinkKeyCategoryIDIsRequired),
 			is.MongoID.Error(locale.DrinkKeyCategoryInvalid)),
 		validation.Field(&d.Price, validation.Required.Error(locale.DrinkKeyPriceIsRequired)),
 	)
@@ -44,7 +44,7 @@ func (d DrinkBody) Validate() error {
 
 // NewDrinkRaw ...
 func (d DrinkBody) NewDrinkRaw() DrinkRaw {
-	categoryID, _ := primitive.ObjectIDFromHex(d.CategoryID)
+	categoryID, _ := primitive.ObjectIDFromHex(d.Category)
 	now := time.Now()
 	return DrinkRaw{
 		ID:           NewAppID(),
@@ -58,7 +58,7 @@ func (d DrinkBody) NewDrinkRaw() DrinkRaw {
 	}
 }
 
-func DrinkGetAdminResponse(b DrinkRaw, c CategoryInfo) DrinkAdminResponse {
+func (b DrinkRaw) DrinkGetAdminResponse(c CategoryInfo) DrinkAdminResponse {
 	return DrinkAdminResponse{
 		ID:       b.ID,
 		Name:     b.Name,

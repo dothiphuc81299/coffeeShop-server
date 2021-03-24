@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/dothiphuc81299/coffeeShop-server/internal/format"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
@@ -58,14 +59,15 @@ type UserAdminResponse struct {
 func (u *UserBody) NewRaw() UserRaw {
 	now := time.Now()
 	return UserRaw{
-		ID:        NewAppID(),
-		Username:  u.Username,
-		Password:  u.Password,
-		Active:    false,
-		Phone:     u.Phone,
-		Avatar:    u.Avatar.ConvertToFilePhoto(),
-		CreatedAt: now,
-		UpdatedAt: now,
-		Address:   u.Address,
+		ID:           NewAppID(),
+		Username:     u.Username,
+		Password:     u.Password,
+		Active:       false,
+		Phone:        u.Phone,
+		Avatar:       u.Avatar.ConvertToFilePhoto(),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		Address:      u.Address,
+		SearchString: format.NonAccentVietnamese(u.Username),
 	}
 }

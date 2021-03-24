@@ -8,6 +8,7 @@ type CommonDAO struct {
 	User     UserDAO
 	Role     RoleDAO
 	Feedback FeedbackDAO
+	Order    OrderDAO
 }
 
 // AdminService ....
@@ -18,6 +19,7 @@ type AdminService struct {
 	User     UserAdminService
 	Role     RoleService
 	Feedback FeedbackAdminService
+	Order    OrderAdminService
 }
 
 // ResponseAppListData ...

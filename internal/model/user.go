@@ -30,16 +30,17 @@ type UserAdminService interface {
 
 // UserRaw ...
 type UserRaw struct {
-	ID        AppID      `bson:"_id"`
-	Username  string     `bson:"username"`
-	Password  string     `bson:"password"`
-	Phone     string     `bson:"phone"`
-	Active    bool       `bson:"active"`
-	Avatar    *FilePhoto `bson:"avatar"`
-	IsRoot    bool       `bson:"isRoot"`
-	CreatedAt time.Time  `bson:"createdAt"`
-	UpdatedAt time.Time  `bson:"updatedAt"`
-	Address   string     `bson:"address"`
+	ID           AppID      `bson:"_id"`
+	Username     string     `bson:"username"`
+	Password     string     `bson:"password"`
+	Phone        string     `bson:"phone"`
+	Active       bool       `bson:"active"`
+	Avatar       *FilePhoto `bson:"avatar"`
+	IsRoot       bool       `bson:"isRoot"`
+	CreatedAt    time.Time  `bson:"createdAt"`
+	UpdatedAt    time.Time  `bson:"updatedAt"`
+	Address      string     `bson:"address"`
+	SearchString string     `bson:"searchString"`
 }
 
 // GetAdminResponse ...

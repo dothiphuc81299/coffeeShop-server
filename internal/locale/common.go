@@ -32,19 +32,23 @@ const (
 	CommonKeyUserUnActive         = "userUnActive"
 	CommonKeyPermissionIsRequired = "permissionIsRequired"
 
-	CommonKeyUsernameIsRequired = "UsernameIsRequired"
-	CommonKeyPasswordRequired   = "PasswordRequired"
-	AuthKeyUserIsRequired       = "UserIsRequired"
-	AuthKeyUserInvalid          = "UserInvalid"
-	AuthKeyAccountUnActive      = "AccountUnActive"
-	AuthKeyUserUnActive         = "UserUnActive"
-	CommonKeyCanNotCreateUser   = "CanNotCreateUser"
-	UserKeyCanNotChangeStatus   = "UserCanNotChangeStatus"
-	FeedbackKeyNameIsRequired   = "FeedbackNameIsRequired"
-	FeedbackKeyRatingIsRequired = "FeedbackRatingIsRequired"
-	FeedbackKeyOrderIsRequired  = "FeedbackOrderIsRequired"
-	FeedbackKeyOrderInvalid     = "FeedbackOrderInvalid"
-	FeedbackKeyCanNotCreate     = "FeedbackCanNotCreate"
+	CommonKeyUsernameIsRequired    = "UsernameIsRequired"
+	CommonKeyPasswordRequired      = "PasswordRequired"
+	AuthKeyUserIsRequired          = "UserIsRequired"
+	AuthKeyUserInvalid             = "UserInvalid"
+	AuthKeyAccountUnActive         = "AccountUnActive"
+	AuthKeyUserUnActive            = "UserUnActive"
+	CommonKeyCanNotCreateUser      = "CanNotCreateUser"
+	UserKeyCanNotChangeStatus      = "UserCanNotChangeStatus"
+	FeedbackKeyNameIsRequired      = "FeedbackNameIsRequired"
+	FeedbackKeyRatingIsRequired    = "FeedbackRatingIsRequired"
+	FeedbackKeyOrderIsRequired     = "FeedbackOrderIsRequired"
+	FeedbackKeyOrderInvalid        = "FeedbackOrderInvalid"
+	FeedbackKeyCanNotCreate        = "FeedbackCanNotCreate"
+	OrderKeyDrinkCanNotFind        = "OrderDrinkCanNotFind"
+	OrderKeyCanNotCreateOrder      = "OrderCanNotCreateOrder"
+	OrderKeyCanNotFindUserByUserID = "OrderCanNotFindUserByUserID"
+	CategoryKeyCanNotUpdate        = "CategoryCanNotUpdate"
 )
 
 type (
@@ -66,24 +70,28 @@ type (
 		ContactAddressIsRequired string `properties:"contactAddressIsRequired"`
 		ReadFileFail             string `properties:"readFileFail"`
 
-		PhoneIsRequired          string `properties:"phoneIsRequired"`
-		UIDIsRequired            string `properties:"uIDIsRequired"`
-		PhoneNotMatch            string `properties:"phoneNotMatch"`
-		PhoneNoExisted           string `properties:"phoneNoExisted"`
-		UserUnActive             string `properties:"userUnActive"`
-		UsernameIsRequired       string `properties:"usernameIsRequired"`
-		PasswordRequired         string `properties:"passwordRequired"`
-		PermissionIsRequired     string `properties:"permissionIsRequired"`
-		UserIsRequired           string `properties:"userIsRequired"`
-		UserInvalid              string `properties:"userInvalid"`
-		AccountUnActive          string `properties:"accountUnActive"`
-		CanNotCreateUser         string `properties:"canNotCreateUser"`
-		UserCanNotChangeStatus   string `properties:"userCanNotChangeStatus"`
-		FeedbackNameIsRequired   string `properties:"feedbackNameIsRequired"`
-		FeedbackRatingIsRequired string `properties:"feedbackRatingIsRequired"`
-		FeedbackOrderIsRequired  string `properties:"feedbackOrderIsRequired"`
-		FeedbackOrderInvalid     string `properties:"feedbackOrderInvalid"`
-		FeedbackCanNotCreate     string `properties:"feedbackCanNotCreate"`
+		PhoneIsRequired             string `properties:"phoneIsRequired"`
+		UIDIsRequired               string `properties:"uIDIsRequired"`
+		PhoneNotMatch               string `properties:"phoneNotMatch"`
+		PhoneNoExisted              string `properties:"phoneNoExisted"`
+		UserUnActive                string `properties:"userUnActive"`
+		UsernameIsRequired          string `properties:"usernameIsRequired"`
+		PasswordRequired            string `properties:"passwordRequired"`
+		PermissionIsRequired        string `properties:"permissionIsRequired"`
+		UserIsRequired              string `properties:"userIsRequired"`
+		UserInvalid                 string `properties:"userInvalid"`
+		AccountUnActive             string `properties:"accountUnActive"`
+		CanNotCreateUser            string `properties:"canNotCreateUser"`
+		UserCanNotChangeStatus      string `properties:"userCanNotChangeStatus"`
+		FeedbackNameIsRequired      string `properties:"feedbackNameIsRequired"`
+		FeedbackRatingIsRequired    string `properties:"feedbackRatingIsRequired"`
+		FeedbackOrderIsRequired     string `properties:"feedbackOrderIsRequired"`
+		FeedbackOrderInvalid        string `properties:"feedbackOrderInvalid"`
+		FeedbackCanNotCreate        string `properties:"feedbackCanNotCreate"`
+		OrderDrinkCanNotFind        string `properties:"orderDrinkCanNotFind"`
+		OrderCanNotCreateOrder      string `properties:"orderCanNotCreateOrder"`
+		OrderCanNotFindUserByUserID string `properties:"orderCanNotFindUserByUserID"`
+		CategoryCanNotUpdate        string `properties:"categoryCanNotUpdate"`
 	}
 )
 
@@ -351,6 +359,38 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.FeedbackCanNotCreate,
 			},
 			Code: 43,
+		},
+		{
+			Key: OrderKeyDrinkCanNotFind,
+			Message: &Message{
+
+				Vi: commonVi.OrderDrinkCanNotFind,
+			},
+			Code: 44,
+		},
+		{
+			Key: OrderKeyCanNotCreateOrder,
+			Message: &Message{
+
+				Vi: commonVi.OrderCanNotCreateOrder,
+			},
+			Code: 45,
+		},
+		{
+			Key: OrderKeyCanNotFindUserByUserID,
+			Message: &Message{
+
+				Vi: commonVi.OrderCanNotFindUserByUserID,
+			},
+			Code: 46,
+		},
+		{
+			Key: CategoryKeyCanNotUpdate,
+			Message: &Message{
+
+				Vi: commonVi.CategoryCanNotUpdate,
+			},
+			Code: 47,
 		},
 	}
 	return response

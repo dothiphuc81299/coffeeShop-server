@@ -25,13 +25,19 @@ func NewDrinkAdminService(d *model.CommonDAO) model.DrinkAdminService {
 }
 
 // Create ...
-func (d *DrinkAdminService) Create(ctx context.Context, body model.DrinkBody) (model.AppID, error) {
+func (d *DrinkAdminService) Create(ctx context.Context, body model.DrinkBody) (doc model.DrinkAdminResponse, err error) {
 	if d.checkNameExisted(ctx, body.Name) {
-		return model.AppID{}, errors.New(locale.DrinkKeyNameIsRequired)
+		return doc, errors.New(locale.DrinkKeyNameExisted)
 	}
-	doc := body.NewDrinkRaw()
-	err := d.DrinkDAO.InsertOne(ctx, doc)
-	return doc.ID, err
+	payload := body.NewDrinkRaw()
+	err = d.DrinkDAO.InsertOne(ctx, payload)
+	if err != nil {
+		return doc, errors.New(locale.DrinkKeyCanNotCreate)
+	}
+	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": payload.Category})
+	catTemp := model.CategoryGetInfo(cat)
+	temp := payload.DrinkGetAdminResponse(catTemp)
+	return temp, err
 }
 
 func (d *DrinkAdminService) checkNameExisted(ctx context.Context, name string) bool {
@@ -43,7 +49,7 @@ func (d *DrinkAdminService) checkNameExisted(ctx context.Context, name string) b
 func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([]model.DrinkAdminResponse, int64) {
 	var (
 		wg    sync.WaitGroup
-		cond  bson.M
+		cond  = bson.M{}
 		res   = make([]model.DrinkAdminResponse, 0)
 		total int64
 	)
@@ -62,7 +68,7 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 		for _, value := range drinks {
 			cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": value.Category})
 			catTemp := model.CategoryGetInfo(cat)
-			temp := model.DrinkGetAdminResponse(value, catTemp)
+			temp := value.DrinkGetAdminResponse(catTemp)
 			res = append(res, temp)
 		}
 	}()
@@ -85,9 +91,11 @@ func (d *DrinkAdminService) Update(ctx context.Context, drink model.DrinkRaw, bo
 	if err != nil {
 		return res, err
 	}
-	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": drink.Category})
+
+	drinkRaw, _ := d.DrinkDAO.FindOneByCondition(ctx, bson.M{"_id": drink.ID})
+	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": drinkRaw.Category})
 	catTemp := model.CategoryGetInfo(cat)
-	temp := model.DrinkGetAdminResponse(drink, catTemp)
+	temp := drinkRaw.DrinkGetAdminResponse(catTemp)
 	return temp, nil
 }
 
@@ -109,4 +117,11 @@ func (d *DrinkAdminService) ChangeStatus(ctx context.Context, drink model.DrinkR
 	}
 	return active, nil
 
+}
+
+func (d *DrinkAdminService) GetDetail(ctx context.Context, drink model.DrinkRaw) model.DrinkAdminResponse {
+	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": drink.Category})
+	catTemp := model.CategoryGetInfo(cat)
+	temp := drink.DrinkGetAdminResponse(catTemp)
+	return temp
 }

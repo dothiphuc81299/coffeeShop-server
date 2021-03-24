@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -64,15 +65,18 @@ func (c *EchoCustomCtx) GetLang() string {
 // GetCurrentUserID ...
 func (c *EchoCustomCtx) GetCurrentUserID() (id primitive.ObjectID) {
 	token := c.Get("user")
+	log.Println("token", token)
 	if token == nil {
 		return
 	}
 	data, ok := token.(*jwt.Token)
+	log.Println("ok", ok)
 	if !ok {
 		return
 	}
 
 	m, ok := data.Claims.(jwt.MapClaims)
+	log.Println("ok2", ok)
 	if ok && data.Valid && m["_id"] != "" {
 		id = GetAppIDFromHex(m["_id"].(string))
 	}

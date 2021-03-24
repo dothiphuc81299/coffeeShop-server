@@ -23,13 +23,14 @@ func NewCategoryAdminService(d *model.CommonDAO) model.CategoryAdminService {
 }
 
 // Create ...
-func (d *CategoryAdminService) Create(ctx context.Context, body model.CategoryBody) (model.AppID, error) {
+func (d *CategoryAdminService) Create(ctx context.Context, body model.CategoryBody) (doc model.CategoryAdminResponse, err error) {
 	if d.checkNameExisted(ctx, body.Name) {
-		return model.AppID{}, errors.New(locale.CategoryKeyNameIsRequired)
+		return doc, errors.New(locale.CategoryKeyNameExisted)
 	}
-	doc := body.NewCategoryRaw()
-	err := d.CategoryDAO.InsertOne(ctx, doc)
-	return doc.ID, err
+	payload := body.NewCategoryRaw()
+	err = d.CategoryDAO.InsertOne(ctx, payload)
+	res := payload.CategoryGetAdminResponse()
+	return res, err
 }
 
 func (d *CategoryAdminService) checkNameExisted(ctx context.Context, name string) bool {
@@ -41,7 +42,7 @@ func (d *CategoryAdminService) checkNameExisted(ctx context.Context, name string
 func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([]model.CategoryAdminResponse, int64) {
 	var (
 		wg    sync.WaitGroup
-		cond  bson.M
+		cond  = bson.M{}
 		total int64
 		res   = make([]model.CategoryAdminResponse, 0)
 	)
@@ -57,7 +58,7 @@ func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery)
 		defer wg.Done()
 		categories, _ := d.CategoryDAO.FindByCondition(ctx, cond)
 		for _, value := range categories {
-			temp := model.CategoryGetAdminResponse(value)
+			temp := value.CategoryGetAdminResponse()
 			res = append(res, temp)
 		}
 	}()
@@ -67,16 +68,22 @@ func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery)
 }
 
 // Update ....
-func (d *CategoryAdminService) Update(ctx context.Context, category model.CategoryRaw, body model.CategoryBody) error {
-	doc := body.NewCategoryRaw()
+func (d *CategoryAdminService) Update(ctx context.Context, category model.CategoryRaw, body model.CategoryBody) (doc model.CategoryAdminResponse, err error) {
+	payload := body.NewCategoryRaw()
 
 	// assgin
-	category.Name = doc.Name
-	category.SearchString = doc.SearchString
-	category.UpdatedAt = doc.UpdatedAt
+	category.Name = payload.Name
+	category.SearchString = payload.SearchString
+	category.UpdatedAt = payload.UpdatedAt
 
-	err := d.CategoryDAO.UpdateByID(ctx, category.ID, bson.M{"$set": category})
-	return err
+	err = d.CategoryDAO.UpdateByID(ctx, category.ID, bson.M{"$set": category})
+	if err != nil {
+		return doc, errors.New(locale.CategoryKeyCanNotUpdate)
+	}
+
+	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": category.ID})
+	res := cat.CategoryGetAdminResponse()
+	return res, err
 }
 
 // FindByID ...
