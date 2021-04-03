@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	accountDAO "github.com/dothiphuc81299/coffeeShop-server/account/dao"
-	accountservice "github.com/dothiphuc81299/coffeeShop-server/account/service"
 	categoryDAO "github.com/dothiphuc81299/coffeeShop-server/category/dao"
 	categoryservice "github.com/dothiphuc81299/coffeeShop-server/category/service"
 	drinkDAO "github.com/dothiphuc81299/coffeeShop-server/drink/dao"
@@ -16,12 +14,18 @@ import (
 	roleDAO "github.com/dothiphuc81299/coffeeShop-server/role/dao"
 	roleservice "github.com/dothiphuc81299/coffeeShop-server/role/service"
 
+	feedbackDAO "github.com/dothiphuc81299/coffeeShop-server/feedback/dao"
+	feedbackservice "github.com/dothiphuc81299/coffeeShop-server/feedback/service"
+	orderDAO "github.com/dothiphuc81299/coffeeShop-server/order/dao"
+	orderservice "github.com/dothiphuc81299/coffeeShop-server/order/service"
+	userDAO "github.com/dothiphuc81299/coffeeShop-server/user/dao"
 	userservice "github.com/dothiphuc81299/coffeeShop-server/user/service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	userDAO "github.com/dothiphuc81299/coffeeShop-server/user/dao"
 
+	eventDAO "github.com/dothiphuc81299/coffeeShop-server/event/dao"
 
+	eventservice "github.com/dothiphuc81299/coffeeShop-server/event/service"
 )
 
 // InitAdminServices ...
@@ -30,8 +34,12 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Drink:    drinkservice.NewDrinkAdminService(d),
 		Category: categoryservice.NewCategoryAdminService(d),
 		User:     userservice.NewUserAdminService(d),
-		Account:  accountservice.NewAccountAdminService(d),
+
 		Role:     roleservice.NewRoleAdminService(d),
+		Order:    orderservice.NewOrderService(d),
+		Feedback: feedbackservice.NewFeedbackAdminService(d),
+
+		Event: eventservice.NewEventAdminService(d),
 	}
 }
 
@@ -52,8 +60,12 @@ func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
 	return db, &model.CommonDAO{
 		Drink:    drinkDAO.NewDrinkDAO(db),
 		Category: categoryDAO.NewCategoryDAO(db),
-		Account:  accountDAO.NewAccountDAO(db),
+
 		User:     userDAO.NewUserDAO(db),
 		Role:     roleDAO.NewRoleDAO(db),
+		Order:    orderDAO.NewOrderDAO(db),
+		Feedback: feedbackDAO.NewFeedbackDAO(db),
+
+		Event: eventDAO.NewEventDAO(db),
 	}
 }

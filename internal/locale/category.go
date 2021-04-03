@@ -9,11 +9,20 @@ import (
 // Keys ...
 const (
 	CategoryKeyNameIsRequired = "nameIsRequired"
+	CategoryKeyNameExisted    = "NameExisted"
+	EventKeyNameIsRequired    = "EventNameIsRequired"
+	EventKeyDescIsRequired    = "EventDescIsRequired"
+
+	EventKeyCanNotUpdate = "EventCanNotUpdate"
 )
 
 type (
 	categoryLang struct {
-		NameIsRequired string `properties:"nameIsRequired"`
+		NameIsRequired      string `properties:"nameIsRequired"`
+		NameExisted         string `properties:"nameExisted"`
+		EventNameIsRequired string `properties:"eventNameIsRequired"`
+		EventDescIsRequired string `properties:"eventDescIsRequired"`
+		EventCanNotUpdate   string `properties:"eventCanNotUpdate"`
 	}
 )
 
@@ -38,6 +47,37 @@ func categoryLoadLocales() (response []Locale) {
 				Vi: categoryVi.NameIsRequired,
 			},
 			Code: 200,
+		},
+		{
+			Key: CategoryKeyNameExisted,
+			Message: &Message{
+				Vi: categoryVi.NameExisted,
+			},
+			Code: 201,
+		},
+
+		{
+			Key: EventKeyNameIsRequired,
+			Message: &Message{
+				Vi: categoryVi.EventNameIsRequired,
+			},
+			Code: 202,
+		},
+
+		{
+			Key: EventKeyDescIsRequired,
+			Message: &Message{
+				Vi: categoryVi.EventDescIsRequired,
+			},
+			Code: 203,
+		},
+
+		{
+			Key: EventKeyCanNotUpdate,
+			Message: &Message{
+				Vi: categoryVi.EventCanNotUpdate,
+			},
+			Code: 204,
 		},
 	}
 	return response

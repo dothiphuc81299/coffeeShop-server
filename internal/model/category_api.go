@@ -39,7 +39,7 @@ func (c CategoryBody) NewCategoryRaw() CategoryRaw {
 	}
 }
 
-func CategoryGetAdminResponse(c CategoryRaw) CategoryAdminResponse {
+func (c CategoryRaw) CategoryGetAdminResponse() CategoryAdminResponse {
 	return CategoryAdminResponse{
 		ID:        c.ID,
 		Name:      c.Name,

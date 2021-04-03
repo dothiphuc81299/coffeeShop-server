@@ -4,20 +4,25 @@ package model
 type CommonDAO struct {
 	Drink    DrinkDAO
 	Category CategoryDAO
-	Account  AccountDAO
+
 	User     UserDAO
 	Role     RoleDAO
 	Feedback FeedbackDAO
+	Order    OrderDAO
+
+	Event EventDAO
 }
 
 // AdminService ....
 type AdminService struct {
 	Drink    DrinkAdminService
 	Category CategoryAdminService
-	Account  AccountAdminService
 	User     UserAdminService
 	Role     RoleService
 	Feedback FeedbackAdminService
+	Order    OrderAdminService
+
+	Event EventAdminService
 }
 
 // ResponseAppListData ...

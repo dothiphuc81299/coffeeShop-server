@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dothiphuc81299/coffeeShop-server/internal/format"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -84,6 +85,7 @@ func (us *UserAdminService) Update(ctx context.Context, body model.UserBody, raw
 	raw.Username = body.Username
 	raw.Password = body.Password
 	raw.Address = body.Address
+	raw.SearchString = format.NonAccentVietnamese(body.Username)
 
 	err := us.UserDAO.UpdateByID(ctx, raw.ID, bson.M{"$set": raw})
 

@@ -21,4 +21,6 @@ func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g.PUT("/:drinkID", h.Update, validation.DrinkBodyValidation, h.DrinkGetByID)
 
 	g.PATCH("/:drinkID/status", h.ChangeStatus, h.DrinkGetByID)
+
+	g.GET("/:drinkID", h.GetDetail, h.DrinkGetByID)
 }

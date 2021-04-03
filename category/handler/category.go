@@ -40,12 +40,16 @@ func (d *CategoryAdminHandler) Update(c echo.Context) error {
 		category     = c.Get("category").(model.CategoryRaw)
 	)
 
-	err := d.CategoryAdminService.Update(customCtx.GetRequestCtx(), category, CategoryBody)
+	data, err := d.CategoryAdminService.Update(customCtx.GetRequestCtx(), category, CategoryBody)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	return customCtx.Response200(nil, "")
+	result := model.ResponseAdminData{
+		Data: data,
+	}
+
+	return customCtx.Response200(result, "")
 }
 
 // ListAll ...

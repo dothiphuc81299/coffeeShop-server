@@ -42,7 +42,7 @@ func (h *UserAdminHandler) List(c echo.Context) error {
 			Sort:    bson.D{{"createdAt", -1}},
 		}
 	)
-
+	
 	data, total := h.UserAdminService.List(cc.GetRequestCtx(), query)
 	result := model.ResponseAppListData{
 		Data:         data,

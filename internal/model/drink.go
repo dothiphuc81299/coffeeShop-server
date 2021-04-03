@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -19,11 +18,12 @@ type DrinkDAO interface {
 
 // DrinkAdminService ...
 type DrinkAdminService interface {
-	Create(ctx context.Context, body DrinkBody) (primitive.ObjectID, error)
+	Create(ctx context.Context, body DrinkBody) (DrinkAdminResponse, error)
 	ListAll(ctx context.Context, q CommonQuery) ([]DrinkAdminResponse, int64)
 	Update(ctx context.Context, Drink DrinkRaw, body DrinkBody) (DrinkAdminResponse, error)
-	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool ,error)
+	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool, error)
 	FindByID(ctx context.Context, id AppID) (Drink DrinkRaw, err error)
+	GetDetail(ctx context.Context, drink DrinkRaw) DrinkAdminResponse
 }
 
 // DrinkRaw ...
