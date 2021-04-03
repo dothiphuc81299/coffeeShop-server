@@ -4,14 +4,15 @@ import (
 	drinkroute "github.com/dothiphuc81299/coffeeShop-server/drink/route"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 
-	accountroute "github.com/dothiphuc81299/coffeeShop-server/account/route"
 	categoryroute "github.com/dothiphuc81299/coffeeShop-server/category/route"
+	feedbackroute "github.com/dothiphuc81299/coffeeShop-server/feedback/route"
 	middleware "github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	orderroute "github.com/dothiphuc81299/coffeeShop-server/order/route"
 	roleroute "github.com/dothiphuc81299/coffeeShop-server/role/route"
 	userroute "github.com/dothiphuc81299/coffeeShop-server/user/route"
 	"github.com/labstack/echo/v4"
-	feedbackroute "github.com/dothiphuc81299/coffeeShop-server/feedback/route"
+
+	eventroute "github.com/dothiphuc81299/coffeeShop-server/event/route"
 )
 
 // StartAdmin ...
@@ -41,9 +42,10 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, d *model.Commo
 
 	drinkroute.InitDrinkAdmin(e, service, d)
 	categoryroute.InitCategoryAdmin(e, service, d)
-	accountroute.InitAccountAdmin(e, service, d)
 	userroute.InitUserAdmin(e, service, d)
 	roleroute.InitRoleAdmin(e, service, d)
 	orderroute.InitOrderAdmin(e, service, d)
 	feedbackroute.InitFeedbackAdmin(e, service, d)
+
+	eventroute.InitEventAdmin(e, service, d)
 }

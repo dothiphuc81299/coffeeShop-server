@@ -76,7 +76,7 @@ func (c *EchoCustomCtx) GetCurrentUserID() (id primitive.ObjectID) {
 	}
 
 	m, ok := data.Claims.(jwt.MapClaims)
-	log.Println("ok2", ok)
+
 	if ok && data.Valid && m["_id"] != "" {
 		id = GetAppIDFromHex(m["_id"].(string))
 	}

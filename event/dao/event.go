@@ -9,30 +9,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const accountcol = "accounts"
+const eventcol = "events"
 
-// AccountDAO ....
-type AccountDAO struct {
+// EventDAO ....
+type EventDAO struct {
 	DB  *mongo.Database
 	Col *mongo.Collection
 }
 
-// NewAccountDAO ...
-func NewAccountDAO(db *mongo.Database) model.AccountDAO {
-	return &AccountDAO{
+// NewEventDAO ...
+func NewEventDAO(db *mongo.Database) model.EventDAO {
+	return &EventDAO{
 		DB:  db,
-		Col: db.Collection(accountcol),
+		Col: db.Collection(eventcol),
 	}
 }
 
 // InsertOne ...
-func (d *AccountDAO) InsertOne(ctx context.Context, u model.AccountRaw) error {
+func (d *EventDAO) InsertOne(ctx context.Context, u model.EventRaw) error {
 	_, err := d.Col.InsertOne(ctx, u)
 	return err
 }
 
 // FindByCondition ...
-func (w *AccountDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.AccountRaw, err error) {
+func (w *EventDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.EventRaw, err error) {
 	cursor, err := w.Col.Find(ctx, cond, opts...)
 	if err != nil {
 		return nil, err
@@ -45,19 +45,19 @@ func (w *AccountDAO) FindByCondition(ctx context.Context, cond interface{}, opts
 }
 
 // CountByCondition ...
-func (w *AccountDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
+func (w *EventDAO) CountByCondition(ctx context.Context, cond interface{}) int64 {
 	total, _ := w.Col.CountDocuments(ctx, cond)
 	return total
 }
 
 // UpdateByID ...
-func (w *AccountDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *EventDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
 
 // FindOneByCondition ...
-func (w *AccountDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.AccountRaw, err error) {
+func (w *EventDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.EventRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }
