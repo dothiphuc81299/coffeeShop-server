@@ -26,6 +26,14 @@ import (
 	eventDAO "github.com/dothiphuc81299/coffeeShop-server/event/dao"
 
 	eventservice "github.com/dothiphuc81299/coffeeShop-server/event/service"
+
+	//	shiftDAO "github.com/dothiphuc81299/coffeeShop-server/shift/dao"
+	//	shiftservice "github.com/dothiphuc81299/coffeeShop-server/shift/service"
+
+	staffDAO "github.com/dothiphuc81299/coffeeShop-server/staff/dao"
+	staffservice "github.com/dothiphuc81299/coffeeShop-server/staff/service"
+	staffroleDAO "github.com/dothiphuc81299/coffeeShop-server/staffrole/dao"
+	staffroleservice "github.com/dothiphuc81299/coffeeShop-server/staffrole/service"
 )
 
 // InitAdminServices ...
@@ -40,6 +48,11 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Feedback: feedbackservice.NewFeedbackAdminService(d),
 
 		Event: eventservice.NewEventAdminService(d),
+
+	//	Shift: shiftservice.NewShiftAdminService(d),
+
+		StaffRole: staffroleservice.NewStaffRoleAdminService(d),
+		Staff:     staffservice.NewStaffAdminService(d),
 	}
 }
 
@@ -67,5 +80,11 @@ func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
 		Feedback: feedbackDAO.NewFeedbackDAO(db),
 
 		Event: eventDAO.NewEventDAO(db),
+
+	//	Shift: shiftDAO.NewShiftDAO(db),
+
+		Staff:     staffDAO.NewStaffDAO(db),
+		StaffRole: staffroleDAO.NewStaffRoleDAO(db),
+		Session:   staffDAO.NewSessionDAO(db),
 	}
 }

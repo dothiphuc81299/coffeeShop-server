@@ -11,6 +11,12 @@ type CommonDAO struct {
 	Order    OrderDAO
 
 	Event EventDAO
+
+	Shift ShiftDAO
+
+	Staff     StaffDAO
+	StaffRole StaffRoleDAO
+	Session   SessionDAO
 }
 
 // AdminService ....
@@ -23,6 +29,11 @@ type AdminService struct {
 	Order    OrderAdminService
 
 	Event EventAdminService
+
+	Shift ShiftAdminService
+
+	StaffRole StaffRoleAdminService
+	Staff     StaffAdminService
 }
 
 // ResponseAppListData ...
