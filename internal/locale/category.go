@@ -30,7 +30,7 @@ type (
 		EventDescIsRequired string `properties:"eventDescIsRequired"`
 		EventCanNotUpdate   string `properties:"eventCanNotUpdate"`
 
-		ShiftKeyNameIsRequired string `prooperties:"shiftNameIsRequired"`
+		ShiftKeyNameIsRequired string `properties:"shiftNameIsRequired"`
 		ShiftKeyNameInvalid    string `properties:"shiftNameInvalid"`
 		ShiftKeyDateIsRequired string `properties:"shiftDateIsRequired"`
 		ShiftKeyDateInvalid    string `properties:"shiftDateInvalid"`

@@ -52,6 +52,7 @@ func (u *StaffRaw) GetStaffResponseAdmin() StaffGetResponseAdmin {
 		Username:  u.Username,
 		Phone:     u.Phone,
 		Active:    u.Active,
+		Role:      u.Role,
 		Avatar:    u.Avatar.GetResponseData(),
 		IsRoot:    u.IsRoot,
 		CreatedAt: u.CreatedAt,
@@ -65,7 +66,7 @@ func (u *StaffRaw) GenerateToken() string {
 		"_id":      u.ID,
 		"username": u.Username,
 		"password": u.Password,
-		"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
+		//	"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
 	return tokenString

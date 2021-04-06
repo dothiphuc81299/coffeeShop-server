@@ -65,7 +65,6 @@ func (c *EchoCustomCtx) GetLang() string {
 // GetCurrentUserID ...
 func (c *EchoCustomCtx) GetCurrentUserID() (id primitive.ObjectID) {
 	token := c.Get("user")
-	log.Println("token", token)
 	if token == nil {
 		return
 	}

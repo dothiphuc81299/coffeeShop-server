@@ -77,6 +77,6 @@ func (ss *StaffRoleAdminService) Create(ctx context.Context, body model.StaffRol
 }
 
 // NewStaffRoleAdminService ...
-func NewStaffRoleAdminService(srd model.StaffRoleDAO) model.StaffRoleAdminService {
-	return &StaffRoleAdminService{StaffRoleDAO: srd}
+func NewStaffRoleAdminService(srd *model.CommonDAO) model.StaffRoleAdminService {
+	return &StaffRoleAdminService{StaffRoleDAO: srd.StaffRole}
 }

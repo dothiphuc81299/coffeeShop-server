@@ -53,6 +53,6 @@ func initAccountAdminRoot(d *model.CommonDAO) {
 		}
 
 		d.Staff.InsertOne(ctx, doc)
-		fmt.Println(aurora.Green("*** Init account admin root: " + )
+		fmt.Println(aurora.Green("*** Init account admin root: "))
 	}
 }

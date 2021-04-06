@@ -32,4 +32,9 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 		middleware.CheckPermissionRoot(d),
 		h.StaffGetByID)
 
+	// change password do nhan vien
+
+	// r.PUT("/:staffID/me", h.UpdatePassword, middleware.RequireLogin,
+	// 	middleware.CheckPermission(d),
+	// 	h.StaffGetByID, validation.StaffBodyValidation)
 }

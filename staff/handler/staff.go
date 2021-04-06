@@ -87,7 +87,7 @@ func (h *StaffAdminHandler) ChangeStatus(c echo.Context) error {
 	}
 
 	return cc.Response200(echo.Map{
-		"staff": data,
+		"active": data,
 	}, "")
 }
 

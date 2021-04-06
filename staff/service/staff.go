@@ -81,7 +81,8 @@ func (sfs *StaffAdminService) Update(ctx context.Context, body model.StaffBody, 
 	// Remove session by staff id
 	go sfs.SessionDAO.RemoveByCondition(context.Background(), bson.M{"staff": data.ID})
 
-	return data.GetStaffResponseAdmin(), nil
+	staff, _ := sfs.StaffDAO.FindByID(ctx, data.ID)
+	return staff.GetStaffResponseAdmin(), nil
 }
 
 // FindByID ...

@@ -55,6 +55,23 @@ const (
 	ShiftTypeThree = "ca3"
 )
 
+const (
+	ModelFieldUser     = "user"
+	ModelFieldDrink    = "drink"
+	ModelFieldCategory = "category"
+	ModelFieldFeedback = "feedback"
+	ModelFieldSalary   = "salary"
+	ModelFieldEvent    = "event"
+	ModelFieldShift    = "shift"
+	ModelFieldOrder    = "order"
+
+	PermissionView     = "view"
+	PermissionEdit     = "edit"
+	PermissionDelete   = "delete"
+	
+	PermissionAdmin    = "admin"
+)
+
 // Permissions ...
 var (
 	Permissions = []interface{}{
@@ -177,6 +194,73 @@ var (
 				bson.M{
 					"_id":  "salary_delete",
 					"name": "Delete",
+				},
+			},
+		},
+
+		// 5.User
+		bson.M{
+			"_id":  "users",
+			"name": "Users",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "user_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				bson.M{
+					"_id":  "user_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "user_edit",
+					"name": "Edit",
+				},
+				bson.M{
+					"_id":  "user_delete",
+					"name": "Delete",
+				},
+			},
+		},
+
+		//6. Event
+		bson.M{
+			"_id":  "events",
+			"name": "Events",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "event_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				bson.M{
+					"_id":  "event_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "event_edit",
+					"name": "Edit",
+				},
+			},
+		},
+
+		// 7.Order
+		bson.M{
+			"_id":  "orders",
+			"name": "Orders",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "order_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				bson.M{
+					"_id":  "order_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "order_edit",
+					"name": "Edit",
 				},
 			},
 		},
