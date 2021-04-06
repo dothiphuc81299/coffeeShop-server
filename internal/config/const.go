@@ -49,6 +49,12 @@ const (
 	PathUploadAdmin = "/uploads/"
 )
 
+const (
+	ShiftTypeOne   = "ca1"
+	ShiftTypeTwo   = "ca2"
+	ShiftTypeThree = "ca3"
+)
+
 // Permissions ...
 var (
 	Permissions = []interface{}{

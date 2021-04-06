@@ -21,7 +21,6 @@ const (
 	CommonKeyEmailExisted       = "emailExisted"
 
 	CommonKeyContactNameIsRequired    = "contactNameIsRequired"
-	CommonKeyContactPhoneIsRequired   = "contactPhoneIsRequired"
 	CommonKeyContactAddressIsRequired = "contactAddressIsRequired"
 	CommonKeyReadFileFail             = "readFileFail"
 
@@ -49,6 +48,11 @@ const (
 	OrderKeyCanNotCreateOrder      = "OrderCanNotCreateOrder"
 	OrderKeyCanNotFindUserByUserID = "OrderCanNotFindUserByUserID"
 	CategoryKeyCanNotUpdate        = "CategoryCanNotUpdate"
+
+	CommonKeyIDMongoInvalid = "CommonIDMongoInvalid"
+
+	CommonNoPermission     = "CommonNoPermission"
+	CommonKeyStaffDeactive = "CommonStaffDeactive"
 )
 
 type (
@@ -92,6 +96,10 @@ type (
 		OrderCanNotCreateOrder      string `properties:"orderCanNotCreateOrder"`
 		OrderCanNotFindUserByUserID string `properties:"orderCanNotFindUserByUserID"`
 		CategoryCanNotUpdate        string `properties:"categoryCanNotUpdate"`
+
+		CommonIDMongoInvalid string `properties:"commonIDMongoInvalid"`
+		CommonNoPermission   string `properties:"commonNoPermission"`
+		CommonStaffDeactive  string `properties:"commonStaffDeactive"`
 	}
 )
 
@@ -207,14 +215,7 @@ func commonLoadLocales() (response []Locale) {
 			},
 			Code: 16,
 		},
-		{
-			Key: CommonKeyContactPhoneIsRequired,
-			Message: &Message{
 
-				Vi: commonVi.ContactPhoneIsRequired,
-			},
-			Code: 17,
-		},
 		{
 			Key: CommonKeyContactAddressIsRequired,
 			Message: &Message{
@@ -391,6 +392,33 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.CategoryCanNotUpdate,
 			},
 			Code: 47,
+		},
+
+		{
+			Key: CommonKeyIDMongoInvalid,
+			Message: &Message{
+
+				Vi: commonVi.CommonIDMongoInvalid,
+			},
+			Code: 48,
+		},
+
+		{
+			Key: CommonNoPermission,
+			Message: &Message{
+
+				Vi: commonVi.CommonNoPermission,
+			},
+			Code: 49,
+		},
+
+		{
+			Key: CommonKeyStaffDeactive,
+			Message: &Message{
+
+				Vi: commonVi.CommonStaffDeactive,
+			},
+			Code: 50,
 		},
 	}
 	return response

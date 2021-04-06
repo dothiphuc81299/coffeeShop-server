@@ -13,6 +13,9 @@ import (
 	"github.com/labstack/echo/v4"
 
 	eventroute "github.com/dothiphuc81299/coffeeShop-server/event/route"
+
+	staffroute "github.com/dothiphuc81299/coffeeShop-server/staff/route"
+	staffrole "github.com/dothiphuc81299/coffeeShop-server/staffrole/route"
 )
 
 // StartAdmin ...
@@ -48,4 +51,7 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, d *model.Commo
 	feedbackroute.InitFeedbackAdmin(e, service, d)
 
 	eventroute.InitEventAdmin(e, service, d)
+
+	staffroute.InitStaffAdmin(e, service, d)
+	staffrole.InitStaffRoleAdmin(e,service,d)
 }
