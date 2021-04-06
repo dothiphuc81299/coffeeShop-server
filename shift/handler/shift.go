@@ -20,10 +20,10 @@ func (d *ShiftAdminHandler) Create(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
 		shiftBody = c.Get("shiftBody").(model.ShiftBody)
-		user      = c.Get("user").(model.UserRaw)
+		staff     = c.Get("user").(model.StaffRaw)
 	)
 
-	data, err := d.ShiftAdminService.Create(customCtx.GetRequestCtx(), shiftBody)
+	data, err := d.ShiftAdminService.Create(customCtx.GetRequestCtx(), shiftBody, staff)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}

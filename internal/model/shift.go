@@ -19,7 +19,7 @@ type ShiftDAO interface {
 
 // ShiftAdminService ....
 type ShiftAdminService interface {
-	Create(ctx context.Context, body ShiftBody) (ShiftAdminResponse, error)
+	Create(ctx context.Context, body ShiftBody, staff StaffRaw) (ShiftAdminResponse, error)
 	ListAll(ctx context.Context, q CommonQuery) ([]ShiftAdminResponse, int64)
 	Update(ctx context.Context, c ShiftRaw, body ShiftBody) (ShiftAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (Shift ShiftRaw, err error)
