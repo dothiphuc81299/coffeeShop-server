@@ -2,7 +2,6 @@ package util
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -69,7 +68,7 @@ func (c *EchoCustomCtx) GetCurrentUserID() (id primitive.ObjectID) {
 		return
 	}
 	data, ok := token.(*jwt.Token)
-	log.Println("ok", ok)
+
 	if !ok {
 		return
 	}

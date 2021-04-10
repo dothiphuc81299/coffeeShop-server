@@ -17,6 +17,7 @@ import (
 type StaffAdminService struct {
 	StaffDAO   model.StaffDAO
 	SessionDAO model.SessionDAO
+	StaffRole  model.StaffRoleDAO
 }
 
 // GetToken ...
@@ -60,29 +61,23 @@ func (sfs *StaffAdminService) ChangeStatus(ctx context.Context, data model.Staff
 
 // Update ...
 func (sfs *StaffAdminService) Update(ctx context.Context, body model.StaffBody, data model.StaffRaw) (model.StaffGetResponseAdmin, error) {
-	payload := bson.M{
-		"$set": bson.M{
-			"username":    body.Username,
-			"phone":       body.Phone,
-			"address":     body.Address,
-			"avatar":      body.Avatar,
-			"permissions": body.Permissions,
-			"updatedAt":   time.Now(),
-		},
-	}
+	roleID, _ := primitive.ObjectIDFromHex(body.Role)
+	staffRole, _ := sfs.StaffRole.FindByID(ctx, roleID)
 
-	err := sfs.StaffDAO.UpdateByID(ctx, data.ID, payload)
+	doc := body.StaffNewBSON(staffRole.Permissions)
+
+	// assign
+	data.Address = doc.Address
+	data.Permissions = doc.Permissions
+	data.Username = doc.Username
+	data.Phone = doc.Phone
+	data.Role = doc.Role
+	err := sfs.StaffDAO.UpdateByID(ctx, data.ID, bson.M{"$set": data})
 	if err != nil {
 		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonKeyErrorWhenHandle)
 	}
-	data.Username = body.Username
-	data.Permissions = body.Permissions
 
-	// Remove session by staff id
-	go sfs.SessionDAO.RemoveByCondition(context.Background(), bson.M{"staff": data.ID})
-
-	staff, _ := sfs.StaffDAO.FindByID(ctx, data.ID)
-	return staff.GetStaffResponseAdmin(), nil
+	return data.GetStaffResponseAdmin(), nil
 }
 
 // FindByID ...
@@ -91,16 +86,23 @@ func (sfs *StaffAdminService) FindByID(ctx context.Context, ID model.AppID) (mod
 }
 
 // Create ...
-func (sfs *StaffAdminService) Create(ctx context.Context, body model.StaffBody) (model.StaffGetResponseAdmin, error) {
+func (sfs *StaffAdminService) Create(ctx context.Context, body model.StaffBody) (res model.StaffGetResponseAdmin, err error) {
 	// Check username staff existed
 	isExisted := sfs.checkUserExisted(ctx, body.Username)
 	if isExisted {
 		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonKeyPhoneExisted)
 	}
-	// Create
-	doc := body.StaffNewBSON()
-	err := sfs.StaffDAO.InsertOne(ctx, doc)
 
+	roleID, _ := primitive.ObjectIDFromHex(body.Role)
+	staffRole, _ := sfs.StaffRole.FindByID(ctx, roleID)
+
+	// Create
+	doc := body.StaffNewBSON(staffRole.Permissions)
+	err = sfs.StaffDAO.InsertOne(ctx, doc)
+
+	if err != nil {
+		return
+	}
 	return doc.GetStaffResponseAdmin(), err
 }
 
@@ -142,5 +144,6 @@ func NewStaffAdminService(sd *model.CommonDAO) model.StaffAdminService {
 	return &StaffAdminService{
 		StaffDAO:   sd.Staff,
 		SessionDAO: sd.Session,
+		StaffRole:  sd.StaffRole,
 	}
 }

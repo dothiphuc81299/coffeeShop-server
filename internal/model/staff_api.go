@@ -20,6 +20,13 @@ type StaffMeResponse struct {
 	Permissions []string   `json:"permissions"`
 }
 
+type StaffInfo struct {
+	ID       AppID  `json:"_id"`
+	Username string `json:"username"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+}
+
 // StaffGetResponseAdmin ...
 type StaffGetResponseAdmin struct {
 	ID          AppID      `json:"_id"`
@@ -36,13 +43,12 @@ type StaffGetResponseAdmin struct {
 
 // StaffBody ...
 type StaffBody struct {
-	Username    string     `json:"username"`
-	Password    string     `json:"password"`
-	Avatar      *FilePhoto `json:"avatar"`
-	Role        string     `json:"role"`
-	Permissions []string   `json:"permissions"`
-	Phone       string     `json:"phone"`
-	Address     string     `json:"address"`
+	Username string     `json:"username"`
+	Password string     `json:"password"`
+	Avatar   *FilePhoto `json:"avatar"`
+	Role     string     `json:"role"`
+	Phone    string     `json:"phone"`
+	Address  string     `json:"address"`
 }
 
 // Validate ...
@@ -59,13 +65,9 @@ func (stf StaffBody) Validate() error {
 }
 
 // StaffNewBSON ...
-func (stf *StaffBody) StaffNewBSON() StaffRaw {
+func (stf *StaffBody) StaffNewBSON(permissions []string) StaffRaw {
 	roleID, _ := primitive.ObjectIDFromHex(stf.Role)
 	now := time.Now()
-	var permissions = make([]string, 0)
-	if len(stf.Permissions) > 0 {
-		permissions = stf.Permissions
-	}
 	avatar := FileDefaultPhoto()
 	if stf.Avatar != nil {
 		avatar = stf.Avatar.GetResponseData()

@@ -18,14 +18,18 @@ type UserDAO interface {
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
 }
 
-// UserAdminService ...
+// UserAppService ...
+type UserAppService interface {
+	UserSignUp(ctx context.Context, body UserSignUpBody) (string, error)
+	UserLoginIn(ctx context.Context, body UserLoginBody) (UserLoginResponse, error)
+	UserUpdateAccount(ctx context.Context, user UserRaw, body UserSignUpBody) (string, error)
+	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse
+}
+
 type UserAdminService interface {
-	Create(ctx context.Context, body UserBody) (UserAdminResponse, error)
-	List(ctx context.Context, q CommonQuery) ([]UserAdminResponse, int64)
+	GetList(ctx context.Context, query CommonQuery) ([]UserAdminResponse, int64)
+	ConfirmAccountActive(ctx context.Context, user UserRaw) (bool, error)
 	FindByID(ctx context.Context, id AppID) (UserRaw, error)
-	Update(ctx context.Context, body UserBody, raw UserRaw) (UserAdminResponse, error)
-	ChangeStatus(ctx context.Context, raw UserRaw) (bool, error)
-	GetDetail(ctx context.Context, raw UserRaw) UserAdminResponse
 }
 
 // UserRaw ...
@@ -36,7 +40,6 @@ type UserRaw struct {
 	Phone        string     `bson:"phone"`
 	Active       bool       `bson:"active"`
 	Avatar       *FilePhoto `bson:"avatar"`
-	IsRoot       bool       `bson:"isRoot"`
 	CreatedAt    time.Time  `bson:"createdAt"`
 	UpdatedAt    time.Time  `bson:"updatedAt"`
 	Address      string     `bson:"address"`
@@ -48,11 +51,9 @@ func (u *UserRaw) GetAdminResponse() UserAdminResponse {
 	return UserAdminResponse{
 		ID:        u.ID,
 		UserName:  u.Username,
-		Password:  u.Password,
 		Phone:     u.Phone,
 		Active:    u.Active,
 		Avatar:    u.Avatar.GetResponseData(),
-		IsRoot:    u.IsRoot,
 		CreatedAt: u.CreatedAt,
 		Address:   u.Address,
 	}
@@ -63,7 +64,7 @@ func (u *UserRaw) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"_id":      u.ID,
 		"username": u.Username,
-		"phone":    u.Phone,
+		"password": u.Password,
 		"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))

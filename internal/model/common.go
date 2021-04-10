@@ -26,7 +26,7 @@ type CommonQuery struct {
 	Keyword string
 	Status  string
 	Active  string
-	User    primitive.ObjectID
+	Staff   primitive.ObjectID
 	IsCheck string
 	StartAt time.Time
 	EndAt   time.Time
@@ -52,8 +52,8 @@ func (q *CommonQuery) AssignActive(cond *bson.M) {
 	}
 }
 
-func (q *CommonQuery) AssignUser(cond *bson.M) {
-	(*cond)["user"] = q.User
+func (q *CommonQuery) AssignStaff(cond *bson.M) {
+	(*cond)["staff"] = q.Staff
 }
 
 func (q *CommonQuery) AssignIsCheck(cond *bson.M) {
@@ -68,14 +68,17 @@ func (q *CommonQuery) AssignIsCheck(cond *bson.M) {
 }
 
 // AssignStartAtAndEndAt ...
-func (q CommonQuery) AssignStartAtAndEndAt(cond *bson.M) {
-	check := time.Time{}
-	if q.StartAt != check && q.EndAt != check {
+func (q *CommonQuery) AssignStartAtAndEndAt(cond *bson.M) {
+
+	if !q.StartAt.IsZero() && !q.EndAt.IsZero() {
+		q.StartAt = util.TimeStartOfDayInHCM(q.StartAt.AddDate(0, 0, 1))
+		q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
 		(*cond)["date"] = bson.M{
-			"$gte": util.TimeStartOfDayInHCM(q.StartAt),
-			"$lte": util.TimeEndOfDayHCM(q.EndAt),
+			"$gte": q.StartAt,
+			"$lte": q.EndAt,
 		}
 	}
+
 }
 
 // ResponseAdminListData ...

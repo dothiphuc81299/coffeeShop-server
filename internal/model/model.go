@@ -36,6 +36,10 @@ type AdminService struct {
 	Staff     StaffAdminService
 }
 
+type AppService struct {
+	User UserAppService
+}
+
 // ResponseAppListData ...
 type ResponseAppListData struct {
 	Data         interface{} `json:"data"`

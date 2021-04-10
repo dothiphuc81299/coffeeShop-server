@@ -7,27 +7,11 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UserAdminHandler ...
 type UserAdminHandler struct {
 	UserAdminService model.UserAdminService
-}
-
-// Create ...
-func (h *UserAdminHandler) Create(c echo.Context) error {
-	var (
-		cc   = util.EchoGetCustomCtx(c)
-		body = c.Get("body").(model.UserBody)
-	)
-	data, err := h.UserAdminService.Create(cc.GetRequestCtx(), body)
-	if err != nil {
-		return cc.Response400(nil, err.Error())
-	}
-	return cc.Response200(echo.Map{
-		"data": data,
-	}, "")
 }
 
 // List ...
@@ -42,8 +26,8 @@ func (h *UserAdminHandler) List(c echo.Context) error {
 			Sort:    bson.D{{"createdAt", -1}},
 		}
 	)
-	
-	data, total := h.UserAdminService.List(cc.GetRequestCtx(), query)
+
+	data, total := h.UserAdminService.GetList(cc.GetRequestCtx(), query)
 	result := model.ResponseAppListData{
 		Data:         data,
 		Total:        total,
@@ -52,30 +36,13 @@ func (h *UserAdminHandler) List(c echo.Context) error {
 	return cc.Response200(result, "")
 }
 
-// Update ...
-func (h *UserAdminHandler) Update(c echo.Context) error {
-	var (
-		cc   = util.EchoGetCustomCtx(c)
-		body = c.Get("body").(model.UserBody)
-		user = c.Get("user").(model.UserRaw)
-	)
-	data, err := h.UserAdminService.Update(cc.GetRequestCtx(), body, user)
-
-	if err != nil {
-		return cc.Response400(nil, err.Error())
-	}
-	return cc.Response200(echo.Map{
-		"data": data,
-	}, "")
-}
-
 // ChangeStatus ...
 func (h *UserAdminHandler) ChangeStatus(c echo.Context) error {
 	var (
 		cc   = util.EchoGetCustomCtx(c)
 		user = c.Get("user").(model.UserRaw)
 	)
-	active, err := h.UserAdminService.ChangeStatus(cc.GetRequestCtx(), user)
+	active, err := h.UserAdminService.ConfirmAccountActive(cc.GetRequestCtx(), user)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -84,33 +51,23 @@ func (h *UserAdminHandler) ChangeStatus(c echo.Context) error {
 	}, "")
 }
 
-// Detail ...
-func (h *UserAdminHandler) Detail(c echo.Context) error {
-	var (
-		cc   = util.EchoGetCustomCtx(c)
-		user = c.Get("user").(model.UserRaw)
-	)
-	data := h.UserAdminService.GetDetail(cc.GetRequestCtx(), user)
-	return cc.Response200(echo.Map{
-		"data": data,
-	}, "")
-}
-
-// GetByID ...
-func (h *UserAdminHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
+// UserGetByID ...
+func (d *UserAdminHandler) UserGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var (
-			cc = util.EchoGetCustomCtx(c)
-		)
-		userIDString := c.Param("userID")
-		userID, err := primitive.ObjectIDFromHex(userIDString)
-		if userID.IsZero() || err != nil {
-			return cc.Response404(nil, locale.CommonKeyNotFound)
+		customCtx := util.EchoGetCustomCtx(c)
+		id := c.Param("userID")
+		if id == "" {
+			return next(c)
 		}
-		user, err := h.UserAdminService.FindByID(cc.GetRequestCtx(), userID)
-		if user.ID.IsZero() || err != nil {
-			return cc.Response404(nil, locale.CommonKeyNotFound)
+		userID := util.GetAppIDFromHex(id)
+		if userID.IsZero() {
+			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 		}
+		user, err := d.UserAdminService.FindByID(customCtx.GetRequestCtx(), userID)
+		if err != nil {
+			return customCtx.Response404(nil, locale.CommonKeyNotFound)
+		}
+
 		c.Set("user", user)
 		return next(c)
 	}

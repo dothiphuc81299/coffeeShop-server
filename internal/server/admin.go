@@ -16,10 +16,12 @@ import (
 
 	staffroute "github.com/dothiphuc81299/coffeeShop-server/staff/route"
 	staffrole "github.com/dothiphuc81299/coffeeShop-server/staffrole/route"
+
+	shiftroute "github.com/dothiphuc81299/coffeeShop-server/shift/route"
 )
 
 // StartAdmin ...
-func StartAdmin(service *model.AdminService, d *model.CommonDAO) *echo.Echo {
+func StartAdmin(service *model.AdminService, app *model.AppService, d *model.CommonDAO) *echo.Echo {
 	server := echo.New()
 	// //CORS
 	// server.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -36,11 +38,11 @@ func StartAdmin(service *model.AdminService, d *model.CommonDAO) *echo.Echo {
 	// }))
 	// server.Use(middleware.Recover())
 	server.Use(middleware.AppMiddleware()...)
-	startAdminHandler(server, service, d)
+	startAdminHandler(server, service, app, d)
 	return server
 }
 
-func startAdminHandler(e *echo.Echo, service *model.AdminService, d *model.CommonDAO) {
+func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.AppService, d *model.CommonDAO) {
 	// drink
 
 	drinkroute.InitDrinkAdmin(e, service, d)
@@ -53,5 +55,8 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, d *model.Commo
 	eventroute.InitEventAdmin(e, service, d)
 
 	staffroute.InitStaffAdmin(e, service, d)
-	staffrole.InitStaffRoleAdmin(e,service,d)
+	staffrole.InitStaffRoleAdmin(e, service, d)
+	shiftroute.InitShiftAdmin(e, service, d)
+
+	userroute.InitUserApp(e, app, d)
 }

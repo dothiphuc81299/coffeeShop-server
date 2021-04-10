@@ -90,3 +90,33 @@ func CheckPermission(model string, fieldPermission string, d *model.CommonDAO) e
 		}
 	}
 }
+
+func CheckUser(d *model.CommonDAO) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := util.EchoGetCustomCtx(c)
+			ctx := cc.GetRequestCtx()
+			userID := cc.GetCurrentUserID()
+			if userID.IsZero() {
+				return cc.Response401(nil, "")
+			}
+
+			cond := bson.M{
+				"_id":    userID,
+				"active": true,
+			}
+			user, err := d.User.FindOneByCondition(ctx, cond)
+
+			if err != nil || user.ID.IsZero() {
+				return cc.Response401(nil, "tai khoan khong hop le")
+			}
+
+			if !user.Active {
+				return cc.Response401(nil, locale.CommonKeyStaffDeactive)
+			}
+
+			c.Set("user", user)
+			return next(c)
+		}
+	}
+}

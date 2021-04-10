@@ -50,9 +50,9 @@ const (
 )
 
 const (
-	ShiftTypeOne   = "ca1"
-	ShiftTypeTwo   = "ca2"
-	ShiftTypeThree = "ca3"
+	ShiftTypeOne   = "ca_1"
+	ShiftTypeTwo   = "ca_2"
+	ShiftTypeThree = "ca_3"
 )
 
 const (
@@ -64,12 +64,12 @@ const (
 	ModelFieldEvent    = "event"
 	ModelFieldShift    = "shift"
 	ModelFieldOrder    = "order"
-
-	PermissionView     = "view"
-	PermissionEdit     = "edit"
-	PermissionDelete   = "delete"
 	
-	PermissionAdmin    = "admin"
+	PermissionView   = "view"
+	PermissionEdit   = "edit"
+	PermissionDelete = "delete"
+
+	PermissionAdmin = "admin"
 )
 
 // Permissions ...

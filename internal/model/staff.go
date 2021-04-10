@@ -48,15 +48,16 @@ type StaffRaw struct {
 // GetAdminResponse ...
 func (u *StaffRaw) GetStaffResponseAdmin() StaffGetResponseAdmin {
 	return StaffGetResponseAdmin{
-		ID:        u.ID,
-		Username:  u.Username,
-		Phone:     u.Phone,
-		Active:    u.Active,
-		Role:      u.Role,
-		Avatar:    u.Avatar.GetResponseData(),
-		IsRoot:    u.IsRoot,
-		CreatedAt: u.CreatedAt,
-		Address:   u.Address,
+		ID:          u.ID,
+		Username:    u.Username,
+		Phone:       u.Phone,
+		Active:      u.Active,
+		Role:        u.Role,
+		Avatar:      u.Avatar.GetResponseData(),
+		IsRoot:      u.IsRoot,
+		CreatedAt:   u.CreatedAt,
+		Address:     u.Address,
+		Permissions: u.Permissions,
 	}
 }
 

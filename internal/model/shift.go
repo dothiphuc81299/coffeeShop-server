@@ -19,9 +19,9 @@ type ShiftDAO interface {
 
 // ShiftAdminService ....
 type ShiftAdminService interface {
-	Create(ctx context.Context, body ShiftBody) (ShiftAdminResponse, error)
-	ListAll(ctx context.Context, q CommonQuery) ([]ShiftAdminResponse, int64)
-	Update(ctx context.Context, c ShiftRaw, body ShiftBody) (ShiftAdminResponse, error)
+	Create(ctx context.Context, body ShiftBody, staff StaffRaw) (ShiftResponse, error)
+	ListAll(ctx context.Context, q CommonQuery) ([]ShiftResponse, int64)
+	Update(ctx context.Context, c ShiftRaw, body ShiftBody, staff StaffRaw) (ShiftResponse, error)
 	FindByID(ctx context.Context, id AppID) (Shift ShiftRaw, err error)
 	AcceptShiftByAdmin(ctx context.Context, raw ShiftRaw) (bool, error)
 }
@@ -34,5 +34,5 @@ type ShiftRaw struct {
 	Date      time.Time          `bson:"date"`
 	CreatedAt time.Time          `bson:"createdAt"`
 	UpdatedAt time.Time          `bson:"updatedAt"`
-	User      primitive.ObjectID `bson:"user"`
+	Staff     primitive.ObjectID `bson:"staff"`
 }

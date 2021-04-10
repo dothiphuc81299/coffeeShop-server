@@ -15,12 +15,19 @@ type ShiftBody struct {
 	Date string `json:"date"`
 }
 
+type ShiftResponse struct {
+	ID      AppID        `json:"_id"`
+	Name    string       `json:"name"`
+	Date    TimeResponse `json:"date"`
+	IsCheck bool         `json:"isCheck"`
+	Staff   StaffInfo    `json:"staff"`
+}
+
 type ShiftAdminResponse struct {
 	ID      AppID        `json:"_id"`
 	Name    string       `json:"name"`
 	Date    TimeResponse `json:"date"`
 	IsCheck bool         `json:"isCheck"`
-	User    UserInfo     `json:"user"`
 }
 
 func (s ShiftBody) Validate() error {
@@ -43,7 +50,7 @@ func (s ShiftBody) Validate() error {
 
 }
 
-func (s *ShiftBody) NewShiftRaw(user AppID) ShiftRaw {
+func (s *ShiftBody) NewShiftRaw(staff AppID) ShiftRaw {
 	shift := util.TimeParseISODate(s.Date)
 	return ShiftRaw{
 		ID:        primitive.NewObjectID(),
@@ -52,16 +59,25 @@ func (s *ShiftBody) NewShiftRaw(user AppID) ShiftRaw {
 		IsCheck:   false,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		User:      user,
+		Staff:     staff,
 	}
 }
 
-func (s *ShiftRaw) GetResponse(user UserInfo) ShiftAdminResponse {
-	return ShiftAdminResponse{
+func (s *ShiftRaw) GetResponse(Staff StaffInfo) ShiftResponse {
+	return ShiftResponse{
 		ID:      s.ID,
 		Name:    s.Name,
 		Date:    TimeResponse{Time: s.Date},
-		User:    user,
+		Staff:   Staff,
 		IsCheck: s.IsCheck,
+	}
+}
+
+func (s *StaffRaw) GetStaffInfo() StaffInfo {
+	return StaffInfo{
+		ID:       s.ID,
+		Username: s.Username,
+		Address:  s.Address,
+		Phone:    s.Phone,
 	}
 }

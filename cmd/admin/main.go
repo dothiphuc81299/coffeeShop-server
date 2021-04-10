@@ -23,8 +23,9 @@ func init() {
 func main() {
 	_, commonDAO := initialize.ConnectDB(config.GetEnv().Mongo)
 	service := initialize.InitAdminServices(commonDAO)
+	serviceApp := initialize.InitAppService(commonDAO)
 
-	e := server.StartAdmin(service, commonDAO)
+	e := server.StartAdmin(service, serviceApp, commonDAO)
 	// Init account admin root
 	initAccountAdminRoot(commonDAO)
 
@@ -40,8 +41,8 @@ func initAccountAdminRoot(d *model.CommonDAO) {
 		// Init Account root
 		doc := model.StaffRaw{
 			ID:          primitive.NewObjectID(),
-			Username: "admin",
-			Password: "123456",
+			Username:    "admin",
+			Password:    "123456",
 			Phone:       "0702654453",
 			Active:      true,
 			Role:        model.AppID{},

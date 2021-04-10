@@ -14,6 +14,38 @@ type UserLoginBody struct {
 	Password string `json:"password"`
 }
 
+// UserSignUpBody ...
+type UserSignUpBody struct {
+	Username string            `json:"username"`
+	Password string            `json:"password"`
+	Phone    string            `json:"phone"`
+	Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
+	Address  string            `json:"address"`
+}
+
+// UserAdminResponse ...
+type UserAdminResponse struct {
+	ID        AppID      `json:"_id"`
+	UserName  string     `json:"username"`
+	Phone     string     `json:"phone"`
+	Active    bool       `json:"active"`
+	Avatar    *FilePhoto `json:"avatar"`
+	CreatedAt time.Time  `json:"createdAt"`
+	Address   string     `json:"address"`
+}
+
+type UserLoginResponse struct {
+	ID        AppID      `json:"_id"`
+	Username  string     `json:"username"`
+	Phone     string     `json:"phone"`
+	Active    bool       `json:"active"`
+	Avatar    *FilePhoto `json:"avatar"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	Address   string     `json:"address"`
+	Token     string     `json:"token"`
+}
+
 // Validate ...
 func (alg UserLoginBody) Validate() error {
 	return validation.ValidateStruct(&alg,
@@ -22,17 +54,8 @@ func (alg UserLoginBody) Validate() error {
 	)
 }
 
-// UserBody ...
-type UserBody struct {
-	Username string            `json:"username"`
-	Password string            `json:"password"`
-	Phone    string            `json:"phone"`
-	Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
-	Address  string            `json:"address"`
-}
-
 // Validate ...
-func (u UserBody) Validate() error {
+func (u UserSignUpBody) Validate() error {
 	return validation.ValidateStruct(&u,
 		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
 		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
@@ -41,22 +64,8 @@ func (u UserBody) Validate() error {
 	)
 }
 
-// UserAdminResponse ...
-type UserAdminResponse struct {
-	ID        AppID      `json:"_id"`
-	UserName  string     `json:"username"`
-	Password  string     `json:"password"`
-	Phone     string     `json:"phone"`
-	Active    bool       `json:"active"`
-	Avatar    *FilePhoto `json:"avatar"`
-	IsRoot    bool       `json:"isRoot"`
-	CreatedAt time.Time  `json:"createdAt"`
-	Token     string     `json:"token,omitempty"`
-	Address   string     `json:"address"`
-}
-
-// NewRaw ...
-func (u *UserBody) NewRaw() UserRaw {
+// NewUserRaw																																													 ...
+func (u *UserSignUpBody) NewUserRaw() UserRaw {
 	now := time.Now()
 	return UserRaw{
 		ID:           NewAppID(),
@@ -69,5 +78,18 @@ func (u *UserBody) NewRaw() UserRaw {
 		UpdatedAt:    now,
 		Address:      u.Address,
 		SearchString: format.NonAccentVietnamese(u.Username),
+	}
+}
+
+func (u *UserRaw) GetUserLoginInResponse(token string) UserLoginResponse {
+	return UserLoginResponse{
+		ID:        u.ID,
+		Username:  u.Username,
+		Phone:     u.Phone,
+		Address:   u.Address,
+		Avatar:    u.Avatar.GetResponseData(),
+		CreatedAt: u.CreatedAt,
+		Token:     token,
+		Active:    u.Active,
 	}
 }
