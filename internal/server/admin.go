@@ -49,7 +49,7 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 	categoryroute.InitCategoryAdmin(e, service, d)
 	userroute.InitUserAdmin(e, service, d)
 	roleroute.InitRoleAdmin(e, service, d)
-	orderroute.InitOrderAdmin(e, service, d)
+
 	feedbackroute.InitFeedbackAdmin(e, service, d)
 
 	eventroute.InitEventAdmin(e, service, d)
@@ -59,4 +59,12 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 	shiftroute.InitShiftAdmin(e, service, d)
 
 	userroute.InitUserApp(e, app, d)
+
+	orderroute.InitOrderApp(e, app, d)
+	orderroute.InitOrderAdmin(e, service, d)
+
+	// feedback
+	feedbackroute.InitFeedbackAdmin(e, service, d)
+	feedbackroute.InitFeedbackApp(e, app, d)
+
 }

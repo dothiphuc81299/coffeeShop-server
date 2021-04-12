@@ -2,7 +2,7 @@ package route
 
 import (
 	"github.com/dothiphuc81299/coffeeShop-server/feedback/handler"
-	"github.com/dothiphuc81299/coffeeShop-server/feedback/validation"
+	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/labstack/echo/v4"
 )
@@ -13,11 +13,8 @@ func InitFeedbackAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO)
 		FeedbackAdminService: cs.Feedback,
 	}
 
-	g := e.Group("/Feedback")
-	g.POST("", h.Create, validation.FeedbackBodyValidation)
+	g := e.Group("/feedback")
 
-	g.GET("", h.GetList)
-
-	g.PUT("/:feedbackID", h.Update, validation.FeedbackBodyValidation, h.FeedbackGetByID)
+	g.PATCH("/:feedbackID/status", h.ChangeStatus, middleware.CheckPermissionRoot(d), h.FeedbackGetByID)
 
 }

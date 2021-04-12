@@ -20,8 +20,8 @@ type FeedbackResponse struct {
 	Name      string             `json:"name"`
 	Order     primitive.ObjectID `json:"order"`
 	Rating    int                `json:"rating"`
-	User      primitive.ObjectID `json:"user"`
-	CreatedAt time.Time          `json:"createdAt"`
+	User      UserInfo           `json:"user"`
+	CreatedAt TimeResponse       `json:"createdAt"`
 }
 
 func (f FeedbackBody) Validate() error {
@@ -33,7 +33,7 @@ func (f FeedbackBody) Validate() error {
 	)
 }
 
-func (f FeedbackBody) NewFeedbackBSON(userID primitive.ObjectID) FeedbackRaw {
+func (f *FeedbackBody) NewFeedbackBSON(userID primitive.ObjectID) FeedbackRaw {
 	orderID, _ := primitive.ObjectIDFromHex(f.Order)
 	return FeedbackRaw{
 		ID:        primitive.NewObjectID(),
@@ -41,17 +41,19 @@ func (f FeedbackBody) NewFeedbackBSON(userID primitive.ObjectID) FeedbackRaw {
 		Rating:    f.Rating,
 		Order:     orderID,
 		User:      userID,
+		Active:    false,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 }
 
-func (f FeedbackRaw) GetResponse() FeedbackResponse {
+func (f FeedbackRaw) GetResponse(user UserInfo) FeedbackResponse {
 	return FeedbackResponse{
-		ID:     f.ID,
-		Name:   f.Name,
-		Rating: f.Rating,
-		Order:  f.Order,
-		User:   f.User,
+		ID:        f.ID,
+		Name:      f.Name,
+		Rating:    f.Rating,
+		Order:     f.Order,
+		User:      user,
+		CreatedAt: TimeResponse{Time: f.CreatedAt},
 	}
 }

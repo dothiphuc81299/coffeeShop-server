@@ -17,16 +17,24 @@ type OrderDAO interface {
 }
 
 // OrderService ...
-type OrderAdminService interface {
-	Create(ctx context.Context, userID primitive.ObjectID, body OrderBody) (OrderResponse, error)
+type OrderAppService interface {
+	Create(ctx context.Context, userID UserRaw, body OrderBody) (OrderResponse, error)
+	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
+	GetDetail(ctx context.Context, order OrderRaw) OrderResponse
 }
-	
+
+type OrderAdminService interface {
+	ChangeStatus(ctx context.Context, order OrderRaw, status StatusBody) (string, error)
+	GetListByStatus(ctx context.Context, query CommonQuery) ([]OrderResponse, int64)
+	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
+}
+
 type OrderRaw struct {
-	ID         primitive.ObjectID   `bson:"_id"`
-	User       primitive.ObjectID   `bson:"user"`
-	Drink      []primitive.ObjectID `bson:"drink"`
-	Status     bool                 `bson:"status"`
-	TotalPrice float64              `bson:"totalPrice"`
-	CreatedAt  time.Time            `bson:"createdAt"`
-	UpdatedAt  time.Time            `bson:"updatedAt"`
+	ID         primitive.ObjectID `bson:"_id"`
+	User       primitive.ObjectID `bson:"user"`
+	Drink      []DrinkInfo        `bson:"drink"`
+	Status     string             `bson:"status"`
+	TotalPrice float64            `bson:"totalPrice"`
+	CreatedAt  time.Time          `bson:"createdAt"`
+	UpdatedAt  time.Time          `bson:"updatedAt"`
 }
