@@ -40,6 +40,12 @@ func (q *CommonQuery) AssignKeyword(cond *bson.M) {
 	}
 }
 
+func (q *CommonQuery) AssignStatus(cond *bson.M) {
+	if q.Status != "" {
+		(*cond)["status"] = q.Status
+	}
+}
+
 // AssignActive ...
 func (q *CommonQuery) AssignActive(cond *bson.M) {
 	if q.Active != "" {

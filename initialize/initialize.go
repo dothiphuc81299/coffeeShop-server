@@ -15,7 +15,6 @@ import (
 	roleservice "github.com/dothiphuc81299/coffeeShop-server/role/service"
 
 	feedbackDAO "github.com/dothiphuc81299/coffeeShop-server/feedback/dao"
-	feedbackservice "github.com/dothiphuc81299/coffeeShop-server/feedback/service"
 	orderDAO "github.com/dothiphuc81299/coffeeShop-server/order/dao"
 	orderservice "github.com/dothiphuc81299/coffeeShop-server/order/service"
 	userDAO "github.com/dothiphuc81299/coffeeShop-server/user/dao"
@@ -34,6 +33,8 @@ import (
 	staffservice "github.com/dothiphuc81299/coffeeShop-server/staff/service"
 	staffroleDAO "github.com/dothiphuc81299/coffeeShop-server/staffrole/dao"
 	staffroleservice "github.com/dothiphuc81299/coffeeShop-server/staffrole/service"
+
+	feedbackservice "github.com/dothiphuc81299/coffeeShop-server/feedback/service"
 )
 
 // InitAdminServices ...
@@ -43,9 +44,7 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Category: categoryservice.NewCategoryAdminService(d),
 		User:     userservice.NewUserAdminService(d),
 
-		Role:     roleservice.NewRoleAdminService(d),
-		Order:    orderservice.NewOrderService(d),
-		Feedback: feedbackservice.NewFeedbackAdminService(d),
+		Role: roleservice.NewRoleAdminService(d),
 
 		Event: eventservice.NewEventAdminService(d),
 
@@ -53,12 +52,16 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 
 		StaffRole: staffroleservice.NewStaffRoleAdminService(d),
 		Staff:     staffservice.NewStaffAdminService(d),
+		Order:     orderservice.NewOrderAdminService(d),
+		Feedback:  feedbackservice.NewFeedbackAdminService(d),
 	}
 }
 
 func InitAppService(d *model.CommonDAO) *model.AppService {
 	return &model.AppService{
-		User: userservice.NewUserAppService(d),
+		User:     userservice.NewUserAppService(d),
+		Order:    orderservice.NewOrderAppService(d),
+		Feedback: feedbackservice.NewFeedbackAppService(d),
 	}
 }
 

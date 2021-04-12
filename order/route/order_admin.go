@@ -1,6 +1,8 @@
 package route
 
 import (
+	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
+	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/order/handler"
 	"github.com/dothiphuc81299/coffeeShop-server/order/validation"
@@ -15,5 +17,8 @@ func InitOrderAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 
 	r := e.Group("/orders")
 
-	r.POST("", h.Create, validation.OrderBodyValidation)
+	r.GET("", h.GetListByStatus, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionView, d))
+
+	r.PUT("/:orderID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID, validation.StatusBodyValidation)
+
 }

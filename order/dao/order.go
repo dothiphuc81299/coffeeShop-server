@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"log"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -32,15 +33,19 @@ func (d *OrderDAO) InsertOne(ctx context.Context, u model.OrderRaw) error {
 }
 
 // FindByCondition ...
-func (w *OrderDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.OrderRaw, err error) {
-	cursor, err := w.Col.Find(ctx, cond, opts...)
+func (d *OrderDAO) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.OrderRaw, err error) {
+	cursor, err := d.Col.Find(ctx, cond, opts...)
+
 	if err != nil {
 		return nil, err
 	}
+
 	defer cursor.Close(ctx)
 	if err := cursor.All(ctx, &docs); err != nil {
+
 		return nil, err
 	}
+
 	return docs, nil
 }
 
@@ -59,5 +64,6 @@ func (w *OrderDAO) UpdateByID(ctx context.Context, id model.AppID, payload inter
 // FindOneByCondition ...
 func (w *OrderDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.OrderRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
+	log.Println("err", err)
 	return
 }

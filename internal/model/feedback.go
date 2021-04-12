@@ -17,14 +17,19 @@ type FeedbackDAO interface {
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
 }
 
-// FeedbackAdminService ...
-type FeedbackAdminService interface {
-	Create(ctx context.Context, userID primitive.ObjectID, body FeedbackBody) (FeedbackResponse, error)
-	ListAll(ctx context.Context, q CommonQuery) ([]FeedbackResponse, int64)
-	Update(ctx context.Context, userID primitive.ObjectID, Feedback FeedbackRaw, body FeedbackBody) (FeedbackResponse, error)
-	FindByID(ctx context.Context, id AppID) (Feedback FeedbackRaw, err error)
+// FeedbackAppService ...
+type FeedbackAppService interface {
+	Create(ctx context.Context, body FeedbackBody, user UserRaw) (FeedbackResponse, error)
+	ListAll(ctx context.Context) ([]FeedbackResponse, int64)
+	Update(ctx context.Context, body FeedbackBody, userID UserRaw, feedback FeedbackRaw) (FeedbackResponse, error)
+	FindByID(ctx context.Context, id AppID) (FeedbackRaw, error)
+	GetDetail(ctx context.Context, order FeedbackRaw) FeedbackResponse
 }
 
+type FeedbackAdminService interface {
+	ChangeStatus(ctx context.Context, raw FeedbackRaw) (bool, error)
+	FindByID(ctx context.Context, id AppID) (FeedbackRaw, error)
+}
 type FeedbackRaw struct {
 	ID        primitive.ObjectID `bson:"_id"`
 	Name      string             `bson:"name"`
@@ -33,4 +38,5 @@ type FeedbackRaw struct {
 	User      primitive.ObjectID `bson:"user"`
 	Order     primitive.ObjectID `bson:"order"`
 	UpdatedAt time.Time          `bson:"updatedAt"`
+	Active    bool               `bson:"active"`
 }

@@ -25,8 +25,6 @@ type AdminService struct {
 	Category CategoryAdminService
 	User     UserAdminService
 	Role     RoleService
-	Feedback FeedbackAdminService
-	Order    OrderAdminService
 
 	Event EventAdminService
 
@@ -34,10 +32,14 @@ type AdminService struct {
 
 	StaffRole StaffRoleAdminService
 	Staff     StaffAdminService
+	Order     OrderAdminService
+	Feedback  FeedbackAdminService
 }
 
 type AppService struct {
-	User UserAppService
+	User     UserAppService
+	Feedback FeedbackAppService
+	Order    OrderAppService
 }
 
 // ResponseAppListData ...
