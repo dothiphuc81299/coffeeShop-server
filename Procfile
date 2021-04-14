@@ -1,2 +1,1 @@
-web :
-	go run cmd/admin/main.go
+web: cmd/admin/main.go
