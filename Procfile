@@ -1,1 +1,1 @@
-web: cmd/admin/main.go
+web: bin/coffeeShop-server
