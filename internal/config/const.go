@@ -64,7 +64,7 @@ const (
 	ModelFieldEvent    = "event"
 	ModelFieldShift    = "shift"
 	ModelFieldOrder    = "order"
-	
+
 	PermissionView   = "view"
 	PermissionEdit   = "edit"
 	PermissionDelete = "delete"
@@ -265,4 +265,19 @@ var (
 			},
 		},
 	}
+)
+
+const (
+	SalaryMonthTypeJanuary   = "thang_1"
+	SalaryMonthTypeFebruary  = "thang_2"
+	SalaryMonthTypeMarch     = "thang_3"
+	SalaryMonthTypeApril     = "thang_4"
+	SalaryMonthTypeMay       = "thang_5"
+	SalaryMonthTypeJune      = "thang_6"
+	SalaryMonthTypeJuly      = "thang_7"
+	SalaryMonthTypeAugust    = "thang_8"
+	SalaryMonthTypeSeptember = "thang_9"
+	SalaryMonthTypeOctober   = "thang_10"
+	SalaryMonthTypeNovember  = "thang_11"
+	SalaryMonthTypeDecember  = "thang_12"
 )

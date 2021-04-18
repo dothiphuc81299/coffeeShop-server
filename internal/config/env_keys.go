@@ -6,7 +6,7 @@ type Config struct {
 
 	Mongo      MongoCfg `env:",prefix=MONGO_"`
 	AuthSecret string   `env:"AUTH_SECRET,required"`
-	AdminPort  string   `env:"ADMIN_PORT,required"`
+//	AdminPort  string   `env:"ADMIN_PORT,required"`
 
 	FileHost string `env:"FILE_HOST,required"`
 }

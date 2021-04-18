@@ -11,4 +11,6 @@ service
 "user" :
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxNTlhZmY1NGRjOTFlZWNjZDAwNzUiLCJleHAiOjE2MzM1OTMzNTMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJ1c2VyMDEifQ.n_qputonCARu8GrLTTcE56eFJPOg7n2dYQPz5kqDVbM
 
-web: cmd/admin/main.go
+web: cmd/admin/main.go 
+
+# how to build 
