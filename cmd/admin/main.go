@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/initialize"
@@ -29,8 +30,13 @@ func main() {
 	// Init account admin root
 	initAccountAdminRoot(commonDAO)
 
-	e.Logger.Fatal(e.Start(config.GetEnv().AdminPort))
+	port := os.Getenv("PORT")
+	
+	e.Logger.Fatal(e.Start(":" + port))
+
 }
+
+//onst PORT = process.env.PORT || 4000
 
 func initAccountAdminRoot(d *model.CommonDAO) {
 	ctx := context.Background()

@@ -17,6 +17,7 @@ import (
 	staffroute "github.com/dothiphuc81299/coffeeShop-server/staff/route"
 	staffrole "github.com/dothiphuc81299/coffeeShop-server/staffrole/route"
 
+	salaryroute "github.com/dothiphuc81299/coffeeShop-server/salary/route"
 	shiftroute "github.com/dothiphuc81299/coffeeShop-server/shift/route"
 )
 
@@ -66,5 +67,7 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 	// feedback
 	feedbackroute.InitFeedbackAdmin(e, service, d)
 	feedbackroute.InitFeedbackApp(e, app, d)
+
+	salaryroute.InitSalaryAdmin(e, service, d)
 
 }

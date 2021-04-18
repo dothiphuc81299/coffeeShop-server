@@ -35,6 +35,8 @@ import (
 	staffroleservice "github.com/dothiphuc81299/coffeeShop-server/staffrole/service"
 
 	feedbackservice "github.com/dothiphuc81299/coffeeShop-server/feedback/service"
+
+	salaryservice "github.com/dothiphuc81299/coffeeShop-server/salary/service"
 )
 
 // InitAdminServices ...
@@ -54,6 +56,8 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Staff:     staffservice.NewStaffAdminService(d),
 		Order:     orderservice.NewOrderAdminService(d),
 		Feedback:  feedbackservice.NewFeedbackAdminService(d),
+
+		Salary: salaryservice.NewSalaryAdminService(d),
 	}
 }
 

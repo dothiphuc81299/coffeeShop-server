@@ -17,6 +17,8 @@ type CommonDAO struct {
 	Staff     StaffDAO
 	StaffRole StaffRoleDAO
 	Session   SessionDAO
+
+	Salary SalaryDAO
 }
 
 // AdminService ....
@@ -34,6 +36,8 @@ type AdminService struct {
 	Staff     StaffAdminService
 	Order     OrderAdminService
 	Feedback  FeedbackAdminService
+
+	Salary SalaryAdminService
 }
 
 type AppService struct {
