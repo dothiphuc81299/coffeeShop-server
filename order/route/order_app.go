@@ -21,4 +21,6 @@ func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	// xem chi tieet don hang
 
 	r.GET("/:orderID", h.GetDetail, middleware.CheckUser(d), h.GetByID)
+
+	r.GET("", h.GetList, middleware.CheckUser(d))
 }

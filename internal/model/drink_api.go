@@ -12,10 +12,11 @@ import (
 
 // DrinkBody ...
 type DrinkBody struct {
-	Name     string     `json:"name"`
-	Category string     `json:"category"`
-	Price    float64    `json:"price"`
-	Photo    *FilePhoto `json:"photo"`
+	Name     string  `json:"name"`
+	Category string  `json:"category"`
+	Price    float64 `json:"price"`
+	//	Photo    *FilePhoto `json:"photo"`
+	Image string `json:"image"`
 }
 
 // DrinkAdminResponse ...
@@ -24,7 +25,8 @@ type DrinkAdminResponse struct {
 	Name     string       `json:"name"`
 	Category CategoryInfo `json:"category"`
 	Price    float64      `json:"price"`
-	Photo    *FilePhoto   `json:"photo,omitempty"`
+	//	Photo    *FilePhoto   `json:"photo,omitempty"`
+	Image string `json:"image"`
 }
 
 type CategoryInfo struct {
@@ -55,6 +57,7 @@ func (d DrinkBody) NewDrinkRaw() DrinkRaw {
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		Active:       false,
+		Image:        d.Image,
 	}
 }
 
@@ -64,7 +67,8 @@ func (b DrinkRaw) DrinkGetAdminResponse(c CategoryInfo) DrinkAdminResponse {
 		Name:     b.Name,
 		Category: c,
 		Price:    b.Price,
-		Photo:    b.Photo,
+		//Photo:    b.Photo,
+		Image: b.Image,
 	}
 }
 

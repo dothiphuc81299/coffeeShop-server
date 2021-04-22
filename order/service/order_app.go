@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"sync"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -69,4 +70,38 @@ func (o *OrderAppService) GetDetail(ctx context.Context, order model.OrderRaw) (
 
 	res := order.GetResponse(userInfo, order.Drink, order.Status)
 	return res
+}
+
+func (o *OrderAppService) GetList(ctx context.Context, user model.UserRaw) ([]model.OrderResponse, int64) {
+	var (
+		cond = bson.M{
+			"user": user.ID,
+		}
+		total int64
+		wg    sync.WaitGroup
+		res   = make([]model.OrderResponse, 0)
+	)
+
+	total = o.OrderDAO.CountByCondition(ctx, cond)
+	orders, _ := o.OrderDAO.FindByCondition(ctx, cond)
+
+	if len(orders) > 0 {
+		wg.Add(len(orders))
+		res = make([]model.OrderResponse, len(orders))
+		for index, order := range orders {
+			go func(od model.OrderRaw, i int) {
+				defer wg.Done()
+				user, _ := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": od.User})
+
+				userInfo := user.GetUserInfo()
+
+				temp := od.GetResponse(userInfo, od.Drink, od.Status)
+				res[i] = temp
+
+			}(order, index)
+		}
+		wg.Wait()
+
+	}
+	return res, total
 }

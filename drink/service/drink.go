@@ -56,6 +56,7 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 
 	q.AssignKeyword(&cond)
 	q.AssignActive(&cond)
+	q.AssignCategory(&cond)
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
@@ -86,16 +87,16 @@ func (d *DrinkAdminService) Update(ctx context.Context, drink model.DrinkRaw, bo
 	drink.SearchString = doc.SearchString
 	drink.Category = doc.Category
 	drink.Price = doc.Price
+	drink.Image = doc.Image
 
 	err = d.DrinkDAO.UpdateByID(ctx, drink.ID, bson.M{"$set": drink})
 	if err != nil {
 		return res, err
 	}
 
-	drinkRaw, _ := d.DrinkDAO.FindOneByCondition(ctx, bson.M{"_id": drink.ID})
-	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": drinkRaw.Category})
+	cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": drink.Category})
 	catTemp := model.CategoryGetInfo(cat)
-	temp := drinkRaw.DrinkGetAdminResponse(catTemp)
+	temp := drink.DrinkGetAdminResponse(catTemp)
 	return temp, nil
 }
 
