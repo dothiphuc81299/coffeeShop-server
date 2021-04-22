@@ -65,3 +65,17 @@ func (h *OrderAppHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
+func (h *OrderAppHandler) GetList(c echo.Context) error {
+	var (
+		cc   = util.EchoGetCustomCtx(c)
+		user = c.Get("user").(model.UserRaw)
+	)
+
+	data, total := h.OrderAppService.GetList(cc.GetRequestCtx(),user)
+
+	return cc.Response200(echo.Map{
+		"order": data,
+		"total": total,
+	}, "")
+}

@@ -20,6 +20,7 @@ type OrderDAO interface {
 type OrderAppService interface {
 	Create(ctx context.Context, userID UserRaw, body OrderBody) (OrderResponse, error)
 	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
+	GetList(ctx context.Context, user UserRaw) ([]OrderResponse, int64)
 	GetDetail(ctx context.Context, order OrderRaw) OrderResponse
 }
 

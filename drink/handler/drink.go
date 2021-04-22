@@ -36,8 +36,9 @@ func (d *DrinkAdminHandler) GetList(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
 		query     = model.CommonQuery{
-			Keyword: c.QueryParam("keyword"),
-			Active:  c.QueryParam("active"),
+			Keyword:  c.QueryParam("keyword"),
+			Active:   c.QueryParam("active"),
+			Category: c.QueryParam("category"),
 		}
 	)
 

@@ -28,13 +28,14 @@ type DrinkAdminService interface {
 
 // DrinkRaw ...
 type DrinkRaw struct {
-	ID           AppID      `bson:"_id"`
-	Name         string     `bson:"name"`
-	Category     AppID      `bson:"category"`
-	Price        float64    `bson:"price"`
-	SearchString string     `bson:"searchString"`
-	Photo        *FilePhoto `bson:"photo,omitempty"`
-	CreatedAt    time.Time  `bson:"createdAt"`
-	UpdatedAt    time.Time  `bson:"updatedAt"`
-	Active       bool       `bson:"active"`
+	ID           AppID   `bson:"_id"`
+	Name         string  `bson:"name"`
+	Category     AppID   `bson:"category"`
+	Price        float64 `bson:"price"`
+	SearchString string  `bson:"searchString"`
+	//	Photo        *FilePhoto `bson:"photo,omitempty"`
+	CreatedAt time.Time `bson:"createdAt"`
+	UpdatedAt time.Time `bson:"updatedAt"`
+	Active    bool      `bson:"active"`
+	Image     string    `bson:"image"`
 }

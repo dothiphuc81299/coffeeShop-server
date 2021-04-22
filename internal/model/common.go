@@ -20,16 +20,17 @@ func NewAppID() AppID {
 
 // CommonQuery ...
 type CommonQuery struct {
-	Page    int64
-	Limit   int64
-	Sort    bson.D
-	Keyword string
-	Status  string
-	Active  string
-	Staff   primitive.ObjectID
-	IsCheck string
-	StartAt time.Time
-	EndAt   time.Time
+	Page     int64
+	Limit    int64
+	Sort     bson.D
+	Keyword  string
+	Status   string
+	Active   string
+	Staff    primitive.ObjectID
+	IsCheck  string
+	StartAt  time.Time
+	EndAt    time.Time
+	Category string
 }
 
 // AssignKeyword ...
@@ -85,6 +86,15 @@ func (q *CommonQuery) AssignStartAtAndEndAt(cond *bson.M) {
 		}
 	}
 
+}
+
+func (q *CommonQuery) AssignCategory(cond *bson.M) {
+	if q.Category != "" {
+		categoryID, _ := primitive.ObjectIDFromHex(q.Category)
+		if !categoryID.IsZero() {
+			(*cond)["category"] = categoryID
+		}
+	}
 }
 
 // ResponseAdminListData ...
