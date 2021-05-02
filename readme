@@ -13,4 +13,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxNTlhZmY1NGRjOTFlZWNjZDAwNzU
 
 web: cmd/admin/main.go 
 
-# how to build 
+# how to push heroku
+heroku container:push web
+#release image
+heroku container:release web
