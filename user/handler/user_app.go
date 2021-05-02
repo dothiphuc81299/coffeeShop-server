@@ -43,7 +43,7 @@ func (u *UserAppHandler) UserLoginIn(c echo.Context) error {
 func (u *UserAppHandler) UserUpdateAccount(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(model.UserSignUpBody)
+		body = c.Get("body").(model.UserUpdateBody)
 		user = c.Get("user").(model.UserRaw)
 	)
 

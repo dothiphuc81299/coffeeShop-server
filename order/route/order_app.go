@@ -22,5 +22,5 @@ func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 
 	r.GET("/:orderID", h.GetDetail, middleware.CheckUser(d), h.GetByID)
 
-	r.GET("", h.GetList, middleware.CheckUser(d))
+	r.GET("/me", h.GetList, middleware.CheckUser(d))
 }

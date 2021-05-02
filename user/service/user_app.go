@@ -45,17 +45,15 @@ func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBo
 	return doc, nil
 }
 
-func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserRaw, body model.UserSignUpBody) (string, error) {
-	payload := body.NewUserRaw()
+func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserRaw, body model.UserUpdateBody) (string, error) {
+	payload := bson.M{
+		"username": body.Username,
+		"phone":    body.Phone,
+		"address":  body.Address,
+		"avatar":   body.Avatar,
+	}
 
-	// assign
-	user.Password = payload.Password
-	user.Phone = payload.Phone
-	user.Username = payload.Username
-	user.Address = payload.Address
-	user.Avatar = payload.Avatar
-
-	err := u.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": user})
+	err := u.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": payload})
 	if err != nil {
 		return "khong the cap nhat tai khoan", err
 	}

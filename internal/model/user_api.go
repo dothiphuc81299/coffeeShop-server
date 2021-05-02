@@ -23,6 +23,14 @@ type UserSignUpBody struct {
 	Address  string            `json:"address"`
 }
 
+// UserUpdateBody ...
+type UserUpdateBody struct {
+	Username string            `json:"username"`
+	Phone    string            `json:"phone"`
+	Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
+	Address  string            `json:"address"`
+}
+
 // UserAdminResponse ...
 type UserAdminResponse struct {
 	ID        AppID      `json:"_id"`
@@ -60,6 +68,15 @@ func (u UserSignUpBody) Validate() error {
 		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
 		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
 		validation.Field(&u.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
+		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
+	)
+}
+
+// Validate ...
+func (u UserUpdateBody) Validate() error {
+	return validation.ValidateStruct(&u,
+		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
+		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
 		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
 	)
 }

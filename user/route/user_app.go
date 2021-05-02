@@ -24,7 +24,7 @@ func InitUserApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r.POST("/log-in", h.UserLoginIn, validation.UserLoginBodyValidation)
 
 	// update user
-	r.PUT("/update", h.UserUpdateAccount, middleware.CheckUser(d), validation.UserSignUpBodyValidation)
+	r.PUT("/update", h.UserUpdateAccount, middleware.CheckUser(d), validation.UserUpdateBodyValidation)
 
 	// get detail user
 	r.GET("/me", h.GetDetailUser, middleware.CheckUser(d))
