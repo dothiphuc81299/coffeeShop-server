@@ -41,6 +41,17 @@ type StaffGetResponseAdmin struct {
 	IsRoot      bool       `json:"isRoot"`
 }
 
+// StaffResponse ...
+type StaffResponse struct {
+	ID          AppID      `json:"_id"`
+	Username    string     `json:"username"`
+	Address     string     `json:"address"`
+	Phone       string     `json:"phone"`
+	Avatar      *FilePhoto `json:"avatar"`
+	Permissions []string   `json:"permissions"`
+	Token       string     `json:"token"`
+}
+
 // StaffBody ...
 type StaffBody struct {
 	Username string     `json:"username"`
@@ -49,6 +60,11 @@ type StaffBody struct {
 	Role     string     `json:"role"`
 	Phone    string     `json:"phone"`
 	Address  string     `json:"address"`
+}
+
+type StaffLoginBody struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 // Validate ...
@@ -61,6 +77,14 @@ func (stf StaffBody) Validate() error {
 		validation.Field(&stf.Role,
 			validation.Required.Error(locale.CommonKeyPermissionIsRequired),
 			is.MongoID.Error(locale.CommonKeyIDMongoInvalid)),
+	)
+}
+
+// Validate ...
+func (alg StaffLoginBody) Validate() error {
+	return validation.ValidateStruct(&alg,
+		validation.Field(&alg.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
+		validation.Field(&alg.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
 	)
 }
 

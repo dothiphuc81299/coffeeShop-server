@@ -8,12 +8,16 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // DrinkAdminService ...
 type DrinkAdminService struct {
 	DrinkDAO    model.DrinkDAO
 	CategoryDAO model.CategoryDAO
+	OrderDAO    model.OrderDAO
+	FeedbackDAO model.FeedbackDAO
+	UserDAO     model.UserDAO
 }
 
 // NewDrinkAdminService ...
@@ -21,6 +25,9 @@ func NewDrinkAdminService(d *model.CommonDAO) model.DrinkAdminService {
 	return &DrinkAdminService{
 		DrinkDAO:    d.Drink,
 		CategoryDAO: d.Category,
+		OrderDAO:    d.Order,
+		FeedbackDAO: d.Feedback,
+		UserDAO:     d.User,
 	}
 }
 
@@ -125,4 +132,53 @@ func (d *DrinkAdminService) GetDetail(ctx context.Context, drink model.DrinkRaw)
 	catTemp := model.CategoryGetInfo(cat)
 	temp := drink.DrinkGetAdminResponse(catTemp)
 	return temp
+}
+
+func (d *DrinkAdminService) GetFeedbackByDrink(ctx context.Context, drink model.DrinkRaw) ([]model.FeedbackResponse, int64) {
+	var (
+		wg    sync.WaitGroup
+		res   = make([]model.FeedbackResponse, 0)
+		total int64
+	)
+
+	cond := bson.M{
+		"drink._id": drink.ID,
+	}
+	// find all order
+	orders, _ := d.OrderDAO.FindByCondition(ctx, cond)
+
+	orderIDs := make([]primitive.ObjectID, 0)
+	for _, value := range orders {
+		orderIDs = append(orderIDs, value.ID)
+	}
+	// find all feedback
+	condition := bson.M{
+		"active": true,
+		"order": bson.M{
+			"$in": orderIDs,
+		},
+	}
+
+	feedbacks, _ := d.FeedbackDAO.FindByCondition(ctx, condition)
+	total = d.FeedbackDAO.CountByCondition(ctx, condition)
+	if len(feedbacks) > 0 {
+		wg.Add(len(feedbacks))
+		for index, feedback := range feedbacks {
+			go func(f model.FeedbackRaw, i int) {
+				defer wg.Done()
+				user, _ := d.UserDAO.FindOneByCondition(ctx, bson.M{"_id": f.User})
+				userInfo := model.UserInfo{
+					ID:       user.ID,
+					UserName: user.Username,
+					Address:  user.Address,
+				}
+
+				temp := f.GetResponse(userInfo)
+				res = append(res, temp)
+			}(feedback, index)
+		}
+		wg.Wait()
+	}
+	return res, total
+
 }

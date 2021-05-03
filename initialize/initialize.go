@@ -58,6 +58,8 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Feedback:  feedbackservice.NewFeedbackAdminService(d),
 
 		Salary: salaryservice.NewSalaryAdminService(d),
+
+		DrinkAnalytic: orderservice.NewDrinkAnalyticService(d),
 	}
 }
 
@@ -84,8 +86,9 @@ func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
 	db := client.Database(dbCfg.Name)
 
 	return db, &model.CommonDAO{
-		Drink:    drinkDAO.NewDrinkDAO(db),
-		Category: categoryDAO.NewCategoryDAO(db),
+		Drink:         drinkDAO.NewDrinkDAO(db),
+		DrinkAnalytic: drinkDAO.NewDrinkAnalyticDAO(db),
+		Category:      categoryDAO.NewCategoryDAO(db),
 
 		User:     userDAO.NewUserDAO(db),
 		Role:     roleDAO.NewRoleDAO(db),

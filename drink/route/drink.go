@@ -24,4 +24,6 @@ func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g.PATCH("/:drinkID/status", h.ChangeStatus, middleware.CheckPermissionRoot(d), h.DrinkGetByID)
 
 	g.GET("/:drinkID", h.GetDetail, h.DrinkGetByID)
+	g.GET("/:drinkID/feedback", h.GetFeedbackByDrink, h.DrinkGetByID)
+
 }

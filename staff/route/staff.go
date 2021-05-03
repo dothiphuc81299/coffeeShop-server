@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/staff/handler"
@@ -37,4 +38,9 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	// r.PUT("/:staffID/me", h.UpdatePassword, middleware.RequireLogin,
 	// 	middleware.CheckPermission(d),
 	// 	h.StaffGetByID, validation.StaffBodyValidation)
+
+	// get detail user
+	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
+
+	r.POST("/log-in",h.StaffLogin,validation.StaffLoginBodyValidation)
 }

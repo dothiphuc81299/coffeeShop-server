@@ -88,6 +88,19 @@ func (q *CommonQuery) AssignStartAtAndEndAt(cond *bson.M) {
 
 }
 
+func (q *CommonQuery) AssignStartAtAndEndAtForDrink(cond *bson.M) {
+
+	if !q.StartAt.IsZero() && !q.EndAt.IsZero() {
+		q.StartAt = util.TimeStartOfDayInHCM(q.StartAt.AddDate(0, 0, 1))
+		q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
+		(*cond)["createdAt"] = bson.M{
+			"$gte": q.StartAt,
+			"$lte": q.EndAt,
+		}
+	}
+
+}
+
 func (q *CommonQuery) AssignCategory(cond *bson.M) {
 	if q.Category != "" {
 		categoryID, _ := primitive.ObjectIDFromHex(q.Category)

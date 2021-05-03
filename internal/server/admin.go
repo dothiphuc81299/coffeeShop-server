@@ -63,6 +63,7 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 
 	orderroute.InitOrderApp(e, app, d)
 	orderroute.InitOrderAdmin(e, service, d)
+	orderroute.InitDrinkAnalyticAdmin(e, service, d)
 
 	// feedback
 	feedbackroute.InitFeedbackAdmin(e, service, d)

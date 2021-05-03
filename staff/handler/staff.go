@@ -126,3 +126,31 @@ func (h *StaffAdminHandler) StaffGetByID(next echo.HandlerFunc) echo.HandlerFunc
 		return next(c)
 	}
 }
+
+func (h *StaffAdminHandler) GetDetailStaff(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+
+	data := h.StaffService.GetDetailStaff(cc.GetRequestCtx(), staff)
+
+	return cc.Response200(echo.Map{
+		"data": data,
+	}, "")
+}
+
+func (h *StaffAdminHandler) StaffLogin(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		body = c.Get("body").(model.StaffLoginBody)
+	)
+
+	data, err := h.StaffService.StaffLogin(cc.GetRequestCtx(), body)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(echo.Map{
+		"data": data,
+	}, "")
+}

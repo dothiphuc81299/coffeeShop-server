@@ -88,7 +88,7 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 		ID:           NewAppID(),
 		Username:     u.Username,
 		Password:     u.Password,
-		Active:       false,
+		Active:       true,
 		Phone:        u.Phone,
 		Avatar:       u.Avatar.ConvertToFilePhoto(),
 		CreatedAt:    now,

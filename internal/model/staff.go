@@ -27,6 +27,8 @@ type StaffAdminService interface {
 	Update(ctx context.Context, body StaffBody, raw StaffRaw) (StaffGetResponseAdmin, error)
 	ChangeStatus(ctx context.Context, raw StaffRaw) (bool, error)
 	GetToken(ctx context.Context, staffID AppID) (string, error)
+	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
+	StaffLogin(ctx context.Context, stafflogin StaffLoginBody) (StaffResponse, error)
 }
 
 // StaffRaw ...
@@ -71,4 +73,16 @@ func (u *StaffRaw) GenerateToken() string {
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
 	return tokenString
+}
+
+func (u *StaffRaw) GetStaffResponse(token string) StaffResponse {
+	return StaffResponse{
+		ID:          u.ID,
+		Username:    u.Username,
+		Phone:       u.Phone,
+		Address:     u.Address,
+		Token:       token,
+		Permissions: u.Permissions,
+		Avatar:      u.Avatar.GetResponseData(),
+	}
 }

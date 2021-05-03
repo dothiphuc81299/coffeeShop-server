@@ -139,6 +139,34 @@ func (sfs *StaffAdminService) ListStaff(ctx context.Context, q model.CommonQuery
 	return res, total
 }
 
+func (sfs *StaffAdminService) GetDetailStaff(ctx context.Context, staff model.StaffRaw) model.StaffMeResponse {
+	return model.StaffMeResponse{
+		ID:          staff.ID,
+		Username:    staff.Username,
+		Phone:       staff.Phone,
+		Avatar:      staff.Avatar,
+		Permissions: staff.Permissions,
+		Address:     staff.Address,
+		Token:       staff.GenerateToken(),
+	}
+}
+
+func (sfs *StaffAdminService) StaffLogin(ctx context.Context, body model.StaffLoginBody) (model.StaffResponse, error) {
+	cond := bson.M{
+		"username": body.Username,
+		"password": body.Password,
+	}
+
+	staff, err := sfs.StaffDAO.FindOneByCondition(ctx, cond)
+	if err != nil {
+		return model.StaffResponse{}, err
+	}
+
+	token := staff.GenerateToken()
+	doc := staff.GetStaffResponse(token)
+	return doc, nil
+}
+
 // NewStaffAdminService ...
 func NewStaffAdminService(sd *model.CommonDAO) model.StaffAdminService {
 	return &StaffAdminService{

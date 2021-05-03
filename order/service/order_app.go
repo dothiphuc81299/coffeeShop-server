@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
+	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -12,23 +14,27 @@ import (
 )
 
 type OrderAppService struct {
-	OrderDAO model.OrderDAO
-	DrinkDAO model.DrinkDAO
-	UserDAO  model.UserDAO
+	OrderDAO         model.OrderDAO
+	DrinkDAO         model.DrinkDAO
+	UserDAO          model.UserDAO
+	DrinkAnalyticDAO model.DrinkAnalyticDAO
 }
 
 func NewOrderAppService(d *model.CommonDAO) model.OrderAppService {
 	return &OrderAppService{
-		OrderDAO: d.Order,
-		DrinkDAO: d.Drink,
-		UserDAO:  d.User,
+		OrderDAO:         d.Order,
+		DrinkDAO:         d.Drink,
+		UserDAO:          d.User,
+		DrinkAnalyticDAO: d.DrinkAnalytic,
 	}
 }
 
 func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order model.OrderBody) (doc model.OrderResponse, err error) {
 	// convert order payload
 	drinks := make([]model.DrinkInfo, 0)
+	drinkAnalytics := make([]model.DrinkAnalyticRaw, 0)
 	for _, value := range order.Drink {
+		drinkAnalytic := model.DrinkAnalyticRaw{}
 		drinkID, _ := primitive.ObjectIDFromHex(value.Name)
 		drinkRaw, err := o.DrinkDAO.FindOneByCondition(ctx, bson.M{"_id": drinkID})
 		if err != nil {
@@ -41,15 +47,45 @@ func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order 
 			Quantity: value.Quantity,
 		}
 		doc.TotalPrice += drink.Price * float64(drink.Quantity)
+
+		// append
+		drinkAnalytic.ID = primitive.NewObjectID()
+		drinkAnalytic.Category = drinkRaw.Category
+		drinkAnalytic.Name = drinkRaw.ID
+		drinkAnalytic.TotalDrink = float64(value.Quantity)
+		drinkAnalytic.UpdateAt = time.Now()
+		drinkAnalytic.CreatedAt = time.Now()
+
 		drinks = append(drinks, drink)
+		drinkAnalytics = append(drinkAnalytics, drinkAnalytic)
+
 	}
 
 	orderPayload := order.NewOrderRaw(user.ID, drinks, doc.TotalPrice)
+
 	err = o.OrderDAO.InsertOne(ctx, orderPayload)
 	if err != nil {
 		return doc, errors.New(locale.OrderKeyCanNotCreateOrder)
 	}
 
+	// for _, drink := range drinks {
+	// 	a := model.DrinkAnalyticRaw{}
+	// 	a.Name = drink.ID
+	// 	a.TotalDrink = float64(drink.Quantity)
+	// 	a.UpdateAt = time.Now()
+	// 	a.CreatedAt = time.Now()
+	// 	drinkAnalytic = append(drinkAnalytic, a)
+	// }
+	// log.Println("doodod", drinkAnalytic)
+	var docs []interface{}
+	for _, item := range drinkAnalytics {
+		docs = append(docs, item)
+	}
+	if len(docs) > 0 {
+		if err := o.DrinkAnalyticDAO.InsertMany(ctx, docs); err != nil {
+			fmt.Println("Insert analytic err: ", err)
+		}
+	}
 	userInfo := user.GetUserInfo()
 
 	res := orderPayload.GetResponse(userInfo, drinks, orderPayload.Status)

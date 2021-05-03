@@ -80,7 +80,7 @@ func CheckPermission(model string, fieldPermission string, d *model.CommonDAO) e
 			if err != nil || staff.ID.IsZero() {
 				return cc.Response401(nil, locale.CommonNoPermission)
 			}
-
+			
 			if !staff.Active {
 				return cc.Response401(nil, locale.CommonKeyStaffDeactive)
 			}

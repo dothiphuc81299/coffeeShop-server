@@ -64,6 +64,7 @@ const (
 	ModelFieldEvent    = "event"
 	ModelFieldShift    = "shift"
 	ModelFieldOrder    = "order"
+	ModelFieldStaff    = "staff"
 
 	PermissionView   = "view"
 	PermissionEdit   = "edit"
@@ -260,6 +261,27 @@ var (
 				},
 				bson.M{
 					"_id":  "order_edit",
+					"name": "Edit",
+				},
+			},
+		},
+
+		// 7.Staff
+		bson.M{
+			"_id":  "staff",
+			"name": "staff",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "staff_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				bson.M{
+					"_id":  "staff_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "staff_edit",
 					"name": "Edit",
 				},
 			},

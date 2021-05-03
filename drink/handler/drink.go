@@ -101,6 +101,21 @@ func (d *DrinkAdminHandler) GetDetail(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
+func (d *DrinkAdminHandler) GetFeedbackByDrink(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		drink     = c.Get("drink").(model.DrinkRaw)
+	)
+
+	data, total := d.DrinkAdminService.GetFeedbackByDrink(customCtx.GetRequestCtx(), drink)
+
+	result := model.ResponseAppListData{
+		Data:  data,
+		Total: total,
+	}
+	return customCtx.Response200(result, "")
+}
+
 // DrinkGetByID ...
 func (d *DrinkAdminHandler) DrinkGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {

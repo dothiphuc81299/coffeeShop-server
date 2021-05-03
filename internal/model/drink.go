@@ -24,6 +24,7 @@ type DrinkAdminService interface {
 	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool, error)
 	FindByID(ctx context.Context, id AppID) (Drink DrinkRaw, err error)
 	GetDetail(ctx context.Context, drink DrinkRaw) DrinkAdminResponse
+	GetFeedbackByDrink(ctx context.Context,drink DrinkRaw) ([]FeedbackResponse,int64)
 }
 
 // DrinkRaw ...
