@@ -15,7 +15,7 @@ type DrinkAnalyticDAO interface {
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByCondition(ctx context.Context, cond interface{}, payload interface{}) error
 	InsertMany(ctx context.Context, cond []interface{}) error
-	AggregateDrink(ctx context.Context, cond interface{}) ([]DrinkAnalyticResponse, error)
+	AggregateDrink(ctx context.Context, cond interface{}) ([]DrinkAnalyticTempResponse, error)
 }
 
 type DrinkAnalyticService interface {
@@ -33,14 +33,33 @@ type DrinkAnalyticRaw struct {
 }
 
 type DrinkAnalyticResponse struct {
-	ID       primitive.ObjectID `json:"_id"`
+	//ID       primitive.ObjectID `json:"_id"`
 	Total    float64            `json:"total"`
 	Drink    DrinkAnalyticInfo  `json:"drink"`
 	Category CategoryInfo       `json:"category"`
-	UpdateAt time.Time          `json:"updatedAt"`
+	//UpdateAt time.Time          `json:"updatedAt"`
+}
+
+type DrinkAnalyticTempResponse struct {
+	ID    primitive.ObjectID `json:"_id"`
+	Total float64            `json:"total"`
 }
 
 type DrinkAnalyticInfo struct {
 	ID   primitive.ObjectID `json:"_id" bson:"_id"`
 	Name string             `json:"name" bson:"name"`
+}
+
+func (d *DrinkRaw) GetResponse() DrinkAnalyticInfo {
+	return DrinkAnalyticInfo{
+		ID:   d.ID,
+		Name: d.Name,
+	}
+}
+
+func (d *CategoryRaw) GetResponse() CategoryInfo {
+	return CategoryInfo{
+		ID:   d.ID,
+		Name: d.Name,
+	}
 }

@@ -16,11 +16,11 @@ type UserLoginBody struct {
 
 // UserSignUpBody ...
 type UserSignUpBody struct {
-	Username string            `json:"username"`
-	Password string            `json:"password"`
-	Phone    string            `json:"phone"`
-	Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
-	Address  string            `json:"address"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Phone    string `json:"phone"`
+	Avatar   string `json:"avatar,omitempty"`
+	Address  string `json:"address"`
 }
 
 // UserUpdateBody ...
@@ -33,25 +33,25 @@ type UserUpdateBody struct {
 
 // UserAdminResponse ...
 type UserAdminResponse struct {
-	ID        AppID      `json:"_id"`
-	UserName  string     `json:"username"`
-	Phone     string     `json:"phone"`
-	Active    bool       `json:"active"`
-	Avatar    *FilePhoto `json:"avatar"`
-	CreatedAt time.Time  `json:"createdAt"`
-	Address   string     `json:"address"`
+	ID        AppID     `json:"_id"`
+	UserName  string    `json:"username"`
+	Phone     string    `json:"phone"`
+	Active    bool      `json:"active"`
+	Avatar    string    `json:"avatar"`
+	CreatedAt time.Time `json:"createdAt"`
+	Address   string    `json:"address"`
 }
 
 type UserLoginResponse struct {
-	ID        AppID      `json:"_id"`
-	Username  string     `json:"username"`
-	Phone     string     `json:"phone"`
-	Active    bool       `json:"active"`
-	Avatar    *FilePhoto `json:"avatar"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	Address   string     `json:"address"`
-	Token     string     `json:"token"`
+	ID        AppID     `json:"_id"`
+	Username  string    `json:"username"`
+	Phone     string    `json:"phone"`
+	Active    bool      `json:"active"`
+	Avatar    string    `json:"avatar"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Address   string    `json:"address"`
+	Token     string    `json:"token"`
 }
 
 // Validate ...
@@ -90,7 +90,7 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 		Password:     u.Password,
 		Active:       true,
 		Phone:        u.Phone,
-		Avatar:       u.Avatar.ConvertToFilePhoto(),
+		Avatar:       u.Avatar,
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		Address:      u.Address,
@@ -104,7 +104,7 @@ func (u *UserRaw) GetUserLoginInResponse(token string) UserLoginResponse {
 		Username:  u.Username,
 		Phone:     u.Phone,
 		Address:   u.Address,
-		Avatar:    u.Avatar.GetResponseData(),
+		Avatar:    u.Avatar,
 		CreatedAt: u.CreatedAt,
 		Token:     token,
 		Active:    u.Active,

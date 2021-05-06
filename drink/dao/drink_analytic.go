@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -68,11 +69,11 @@ func (w *DrinkAnalyticDAO) InsertMany(ctx context.Context, docs []interface{}) e
 	return err
 }
 
-func (w *DrinkAnalyticDAO) AggregateDrink(ctx context.Context, cond interface{}) ([]model.DrinkAnalyticResponse, error) {
-	res := make([]model.DrinkAnalyticResponse, 0)
-	match := bson.M{
-		"$match": cond,
-	}
+func (w *DrinkAnalyticDAO) AggregateDrink(ctx context.Context, cond interface{}) ([]model.DrinkAnalyticTempResponse, error) {
+	res := make([]model.DrinkAnalyticTempResponse, 0)
+	// match := bson.M{
+	// 	"$match": cond,
+	// }
 	group := bson.M{
 		"$group": bson.M{
 			"_id": "$name",
@@ -81,13 +82,14 @@ func (w *DrinkAnalyticDAO) AggregateDrink(ctx context.Context, cond interface{})
 			},
 		},
 	}
-	cursor, err := w.Col.Aggregate(ctx, []bson.M{match, group})
+	cursor, err := w.Col.Aggregate(ctx, []bson.M{group})
 	if err != nil {
 		fmt.Println("Error : ", err)
 	}
 
 	defer cursor.Close(ctx)
 	err = cursor.All(ctx, &res)
+	log.Println("err", res)
 	return res, err
 
 }

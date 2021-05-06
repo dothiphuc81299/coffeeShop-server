@@ -34,16 +34,16 @@ type UserAdminService interface {
 
 // UserRaw ...
 type UserRaw struct {
-	ID           AppID      `bson:"_id"`
-	Username     string     `bson:"username"`
-	Password     string     `bson:"password"`
-	Phone        string     `bson:"phone"`
-	Active       bool       `bson:"active"`
-	Avatar       *FilePhoto `bson:"avatar"`
-	CreatedAt    time.Time  `bson:"createdAt"`
-	UpdatedAt    time.Time  `bson:"updatedAt"`
-	Address      string     `bson:"address"`
-	SearchString string     `bson:"searchString"`
+	ID           AppID     `bson:"_id"`
+	Username     string    `bson:"username"`
+	Password     string    `bson:"password"`
+	Phone        string    `bson:"phone"`
+	Active       bool      `bson:"active"`
+	Avatar       string    `bson:"avatar"`
+	CreatedAt    time.Time `bson:"createdAt"`
+	UpdatedAt    time.Time `bson:"updatedAt"`
+	Address      string    `bson:"address"`
+	SearchString string    `bson:"searchString"`
 }
 
 // GetAdminResponse ...
@@ -53,7 +53,7 @@ func (u *UserRaw) GetAdminResponse() UserAdminResponse {
 		UserName:  u.Username,
 		Phone:     u.Phone,
 		Active:    u.Active,
-		Avatar:    u.Avatar.GetResponseData(),
+		Avatar:    u.Avatar,
 		CreatedAt: u.CreatedAt,
 		Address:   u.Address,
 	}
