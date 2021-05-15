@@ -26,7 +26,8 @@ type DrinkAdminResponse struct {
 	Category CategoryInfo `json:"category"`
 	Price    float64      `json:"price"`
 	//	Photo    *FilePhoto   `json:"photo,omitempty"`
-	Image string `json:"image"`
+	Image  string `json:"image"`
+	Active bool   `json:"active"`
 }
 
 type CategoryInfo struct {
@@ -56,7 +57,7 @@ func (d DrinkBody) NewDrinkRaw() DrinkRaw {
 		Category:     categoryID,
 		CreatedAt:    now,
 		UpdatedAt:    now,
-		Active:       false,
+		Active:       true,
 		Image:        d.Image,
 	}
 }
@@ -68,7 +69,8 @@ func (b DrinkRaw) DrinkGetAdminResponse(c CategoryInfo) DrinkAdminResponse {
 		Category: c,
 		Price:    b.Price,
 		//Photo:    b.Photo,
-		Image: b.Image,
+		Image:  b.Image,
+		Active: b.Active,
 	}
 }
 

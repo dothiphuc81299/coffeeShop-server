@@ -33,17 +33,31 @@ func (h *OrderAdminHandler) ChangeStatus(c echo.Context) error {
 	var (
 		cc    = util.EchoGetCustomCtx(c)
 		order = c.Get("order").(model.OrderRaw)
+		staff = c.Get("staff").(model.StaffRaw)
 	)
 
 	status := c.Get("statusBody").(model.StatusBody)
 
-	data, err := h.OrderAdminService.ChangeStatus(cc.GetRequestCtx(), order, status)
+	data, err := h.OrderAdminService.ChangeStatus(cc.GetRequestCtx(), order, status, staff)
 
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 	return cc.Response200(echo.Map{
 		"status": data,
+	}, "")
+}
+
+func (h *OrderAdminHandler) GetDetail(c echo.Context) error {
+	var (
+		cc    = util.EchoGetCustomCtx(c)
+		order = c.Get("order").(model.OrderRaw)
+	)
+
+	data := h.OrderAdminService.GetDetail(cc.GetRequestCtx(), order)
+
+	return cc.Response200(echo.Map{
+		"order": data,
 	}, "")
 }
 

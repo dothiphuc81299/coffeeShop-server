@@ -17,7 +17,7 @@ func (h *SalaryAdminHandler) GetDetail(c echo.Context) error {
 		salary = c.Get("salaryBody").(model.SalaryBody)
 		staff  = c.Get("staff").(model.StaffRaw)
 	)
-
+	
 	data := h.SalaryAdminService.GetDetail(cc.GetRequestCtx(), salary, staff)
 
 	return cc.Response200(echo.Map{

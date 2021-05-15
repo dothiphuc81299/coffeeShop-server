@@ -140,6 +140,19 @@ func (h *StaffAdminHandler) GetDetailStaff(c echo.Context) error {
 	}, "")
 }
 
+func (h *StaffAdminHandler) GetDetailStaffByAdmin(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+
+	data := h.StaffService.GetDetailStaff(cc.GetRequestCtx(), staff)
+
+	return cc.Response200(echo.Map{
+		"data": data,
+	}, "")
+}
+
 func (h *StaffAdminHandler) StaffLogin(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
@@ -153,4 +166,19 @@ func (h *StaffAdminHandler) StaffLogin(c echo.Context) error {
 	return cc.Response200(echo.Map{
 		"data": data,
 	}, "")
+}
+
+func (h *StaffAdminHandler) UpdatePassword(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		body  = c.Get("body").(model.PasswordBody)
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+
+	err := h.StaffService.ChangePassword(cc.GetRequestCtx(), staff, body)
+
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(echo.Map{}, "")
 }

@@ -15,6 +15,7 @@ type SalaryAdminService struct {
 	ShiftDAO  model.ShiftDAO
 	StaffDAO  model.StaffDAO
 	StaffRole model.StaffRoleDAO
+	OrderDAO  model.OrderDAO
 }
 
 // NewSalaryAdminService ...
@@ -23,10 +24,11 @@ func NewSalaryAdminService(d *model.CommonDAO) model.SalaryAdminService {
 		ShiftDAO:  d.Shift,
 		StaffDAO:  d.Staff,
 		StaffRole: d.StaffRole,
+		OrderDAO:  d.Order,
 	}
 }
 
-func (s *SalaryAdminService) GetMonth(cond bson.M, month string) {
+func (s *SalaryAdminService) getMonth(cond bson.M, date string, month string) {
 	var (
 		now      = time.Now()
 		from, to time.Time
@@ -74,7 +76,7 @@ func (s *SalaryAdminService) GetMonth(cond bson.M, month string) {
 
 	to = util.TimeStartOfDayInHCM(to)
 	from = util.TimeStartOfDayInHCM(from)
-	cond["date"] = bson.M{
+	cond[date] = bson.M{
 		"$gte": from,
 		"$lt":  to,
 	}
@@ -90,24 +92,53 @@ func (s *SalaryAdminService) GetDetail(ctx context.Context, salary model.SalaryB
 		Phone:    staff.Phone,
 	}
 
-	cond := bson.M{
-		"isCheck": true,
-		"staff":   staff.ID,
+	if staff.Username == "shipper" {
+		cond := bson.M{
+			"shipper": staff.ID,
+		}
+		s.getMonth(cond, "updatedAt", salary.Month)
+		total := s.OrderDAO.CountByCondition(ctx, cond)
+		if total > 10 {
+			res.Allowance = 10000
+			res.Coefficient = 50000
+			res.TotalShift = float64(total)
+			res.TotalSalary = float64(total)*res.Coefficient + res.Allowance
+		} else {
+			res.Allowance = 0
+			res.Coefficient = 50000
+			res.TotalShift = float64(total)
+			res.TotalSalary = float64(total)*res.Coefficient + res.Allowance
+		}
+
+		res.Month = salary.Month
+		res.Staff = staffRes
+
+	} else {
+		cond := bson.M{
+			"isCheck": true,
+			"staff":   staff.ID,
+		}
+
+		s.getMonth(cond, "date", salary.Month)
+
+		res.Allowance = 200000
+
+		totalShift := s.ShiftDAO.CountByCondition(ctx, cond)
+		if totalShift > 10 {
+			res.Allowance = 100000
+			res.Coefficient = 50000
+			res.TotalShift = float64(totalShift)
+			res.TotalSalary = float64(totalShift)*res.Coefficient + res.Allowance
+
+		} else {
+			res.Allowance = 0
+			res.Coefficient = 50000
+			res.TotalShift = float64(totalShift)
+			res.TotalSalary = float64(totalShift)*res.Coefficient + res.Allowance
+		}
+		res.Month = salary.Month
+		res.Staff = staffRes
+
 	}
-
-	s.GetMonth(cond, salary.Month)
-
-	res.Allowance = 200000
-
-	totalShift := s.ShiftDAO.CountByCondition(ctx, cond)
-	if totalShift < 10 {
-		res.Allowance = 100000
-	}
-	res.Coefficient = 50000
-	res.TotalShift = float64(totalShift)
-	res.TotalSalary = float64(totalShift)*res.Coefficient + res.Allowance
-	res.Month = salary.Month
-	res.Staff = staffRes
-
-	return res
+	return
 }

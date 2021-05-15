@@ -49,3 +49,17 @@ func UserUpdateBodyValidation(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
+func UserChangePasswordValidation(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var body model.UserChangePasswordBody
+		c.Bind(&body)
+
+		if err := body.Validate(); err != nil {
+			return util.ValidationError(c, err)
+		}
+
+		c.Set("body", body)
+		return next(c)
+	}
+}

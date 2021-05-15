@@ -17,3 +17,20 @@ web: cmd/admin/main.go
 heroku container:push web
 #release image
 heroku container:release web
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDk5NDUwOTZmYWEyOWFiMjgwODU2NzYiLCJleHAiOjE2MzYyMDk0NDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJ1c2VyMDEifQ.iHTp7KkSqZK3w9QlewLoK5ztNs_0OLKNuwefnPHaYjg
+
+shipper 
+{
+    "code": 1,
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxMGIzMmUzZDFhOGZlMjBjYWVhOTkiLCJwYXNzd29yZCI6IjEyMyIsInVzZXJuYW1lIjoic2hpcHBlciJ9.Jw6bS74Qa673UMy18Zrjee5qKSPtNoRS31jLtahpCWQ"
+    },
+    "message": "Thành công!"
+}
+
+1. get deevent
+2.cataegory/nhan vien 
+3. showw luowng doi vs admin
++lay het thang hien tai,chi tiet
++role

@@ -21,11 +21,24 @@ func StaffBodyValidation(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-
 // StaffLoginBodyValidation ...
 func StaffLoginBodyValidation(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var body model.StaffLoginBody
+		c.Bind(&body)
+
+		if err := body.Validate(); err != nil {
+			return util.ValidationError(c, err)
+		}
+
+		c.Set("body", body)
+		return next(c)
+	}
+}
+
+func StaffChangePasswordBodyValidation(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var body model.PasswordBody
 		c.Bind(&body)
 
 		if err := body.Validate(); err != nil {

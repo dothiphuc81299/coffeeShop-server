@@ -67,3 +67,17 @@ func (u *UserAppHandler) GetDetailUser(c echo.Context) error {
 		"data": data,
 	}, "")
 }
+
+func (u *UserAppHandler) ChangePassword(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		user = c.Get("user").(model.UserRaw)
+		body = c.Get("body").(model.UserChangePasswordBody)
+	)
+
+	err := u.UserAppService.ChangePassword(cc.GetRequestCtx(), user, body)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(echo.Map{}, "")
+}

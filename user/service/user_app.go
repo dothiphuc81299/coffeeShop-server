@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,10 +19,15 @@ func NewUserAppService(d *model.CommonDAO) model.UserAppService {
 	}
 }
 
-func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBody) (string, error) {
+func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBody) (s string, err error) {
 	payload := body.NewUserRaw()
 
-	err := u.UserDAO.InsertOne(ctx, payload)
+	// find db
+	count := u.UserDAO.CountByCondition(ctx, bson.M{"username": payload.Username})
+	if count > 0 {
+		return "usernam da ton tai", err
+	}
+	err = u.UserDAO.InsertOne(ctx, payload)
 	if err != nil {
 		return "tao tai khoan that bai", err
 	}
@@ -66,4 +72,21 @@ func (u *UserAppService) GetDetailUser(ctx context.Context, user model.UserRaw) 
 	token := user.GenerateToken()
 	res := doc.GetUserLoginInResponse(token)
 	return res
+}
+
+func (u *UserAppService) ChangePassword(ctx context.Context, user model.UserRaw, body model.UserChangePasswordBody) (err error) {
+	res, _ := u.UserDAO.FindOneByCondition(ctx, bson.M{"_id": user.ID})
+	if res.ID.IsZero() {
+		return errors.New("staff khong ton tai")
+	}
+
+	if body.Password != res.Password || body.NewPassword != body.NewPasswordAgain || body.NewPassword == body.Password {
+		return errors.New("mat khau  khong dung")
+	}
+
+	err = u.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
+	if err != nil {
+		return
+	}
+	return
 }

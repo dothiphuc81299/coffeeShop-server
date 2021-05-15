@@ -20,5 +20,6 @@ func InitOrderAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r.GET("", h.GetListByStatus, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionView, d))
 
 	r.PUT("/:orderID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID, validation.StatusBodyValidation)
+	r.GET("/:orderID", h.GetDetail, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionView, d), h.GetByID)
 
 }

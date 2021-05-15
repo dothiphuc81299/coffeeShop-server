@@ -67,6 +67,12 @@ type StaffLoginBody struct {
 	Password string `json:"password"`
 }
 
+type PasswordBody struct {
+	Password         string `json:"password"`
+	NewPassword      string `json:"newPassword"`
+	NewPasswordAgain string `json:"newPasswordAgain"`
+}
+
 // Validate ...
 func (stf StaffBody) Validate() error {
 	return validation.ValidateStruct(&stf,
@@ -85,6 +91,14 @@ func (alg StaffLoginBody) Validate() error {
 	return validation.ValidateStruct(&alg,
 		validation.Field(&alg.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
 		validation.Field(&alg.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
+	)
+}
+
+func (a PasswordBody) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Password, validation.Required.Error("password duoc yeu cau")),
+		validation.Field(&a.NewPassword, validation.Required.Error("password duoc yeu cau")),
+		validation.Field(&a.NewPasswordAgain, validation.Required.Error("password duoc yeu cau")),
 	)
 }
 

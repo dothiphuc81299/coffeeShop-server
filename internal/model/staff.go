@@ -29,6 +29,7 @@ type StaffAdminService interface {
 	GetToken(ctx context.Context, staffID AppID) (string, error)
 	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
 	StaffLogin(ctx context.Context, stafflogin StaffLoginBody) (StaffResponse, error)
+	ChangePassword(ctx context.Context, staff StaffRaw, body PasswordBody) error
 }
 
 // StaffRaw ...

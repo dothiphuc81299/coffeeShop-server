@@ -17,5 +17,4 @@ func InitSalaryAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 
 	g := e.Group("/salary")
 	g.GET("", h.GetDetail, middleware.CheckPermission(config.ModelFieldSalary, config.PermissionView, d), validation.SalaryBodyValidation)
-
 }

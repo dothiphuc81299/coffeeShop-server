@@ -24,6 +24,7 @@ type UserAppService interface {
 	UserLoginIn(ctx context.Context, body UserLoginBody) (UserLoginResponse, error)
 	UserUpdateAccount(ctx context.Context, user UserRaw, body UserUpdateBody) (string, error)
 	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse
+	ChangePassword(ctx context.Context,user UserRaw,body UserChangePasswordBody) error
 }
 
 type UserAdminService interface {

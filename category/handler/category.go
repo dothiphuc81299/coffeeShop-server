@@ -70,6 +70,19 @@ func (d *CategoryAdminHandler) ListAll(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
+func (d *CategoryAdminHandler) GetDetail(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		category  = c.Get("category").(model.CategoryRaw)
+	)
+
+	data := d.CategoryAdminService.GetDetail(customCtx.GetRequestCtx(), category)
+	return customCtx.Response200(echo.Map{
+		"category": data,
+	}, "")
+
+}
+
 // CategoryGetByID ...
 func (d *CategoryAdminHandler) CategoryGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {

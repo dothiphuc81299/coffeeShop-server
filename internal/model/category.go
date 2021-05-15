@@ -22,6 +22,7 @@ type CategoryAdminService interface {
 	ListAll(ctx context.Context, q CommonQuery) ([]CategoryAdminResponse, int64)
 	Update(ctx context.Context, c CategoryRaw, body CategoryBody) (CategoryAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (Category CategoryRaw, err error)
+	GetDetail(ctx context.Context, cate CategoryRaw) CategoryAdminResponse
 }
 
 // CategoryRaw ....

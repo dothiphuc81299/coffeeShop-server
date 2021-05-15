@@ -67,6 +67,10 @@ func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery)
 	return res, total
 }
 
+func (d *CategoryAdminService) GetDetail(ctx context.Context, cate model.CategoryRaw) model.CategoryAdminResponse {
+	return cate.CategoryGetAdminResponse()
+}
+
 // Update ....
 func (d *CategoryAdminService) Update(ctx context.Context, category model.CategoryRaw, body model.CategoryBody) (doc model.CategoryAdminResponse, err error) {
 	payload := body.NewCategoryRaw()

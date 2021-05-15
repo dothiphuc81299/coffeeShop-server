@@ -23,6 +23,7 @@ type EventAdminService interface {
 	Update(ctx context.Context, c EventRaw, body EventBody) (EventAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (Event EventRaw, err error)
 	ChangeStatus(ctx context.Context, c EventRaw) (bool, error)
+	GetDetail(ctx context.Context, c EventRaw) EventAdminResponse
 }
 
 // EventRaw ....

@@ -39,4 +39,5 @@ type FeedbackRaw struct {
 	Order     primitive.ObjectID `bson:"order"`
 	UpdatedAt time.Time          `bson:"updatedAt"`
 	Active    bool               `bson:"active"`
+	Drink     primitive.ObjectID `bson:"drink"`
 }

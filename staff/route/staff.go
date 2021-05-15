@@ -35,12 +35,13 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 
 	// change password do nhan vien
 
-	// r.PUT("/:staffID/me", h.UpdatePassword, middleware.RequireLogin,
-	// 	middleware.CheckPermission(d),
-	// 	h.StaffGetByID, validation.StaffBodyValidation)
+	r.PUT("/me/password", h.UpdatePassword,
+		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), validation.StaffChangePasswordBodyValidation)
 
 	// get detail user
 	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
 
-	r.POST("/log-in",h.StaffLogin,validation.StaffLoginBodyValidation)
+	r.GET("/:staffID/me", h.GetDetailStaffByAdmin)
+
+	r.POST("/log-in", h.StaffLogin, validation.StaffLoginBodyValidation)
 }

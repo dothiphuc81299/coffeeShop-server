@@ -98,17 +98,18 @@ func (o *OrderAppService) FindByID(ctx context.Context, id model.AppID) (model.O
 }
 
 func (o *OrderAppService) GetDetail(ctx context.Context, order model.OrderRaw) (doc model.OrderResponse) {
-	user, err := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": order.User})
-	if err != nil {
+	user, _ := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": order.User})
+
+	if user.ID.IsZero() {
 		return
 	}
-	userInfo := user.GetUserInfo()
 
+	userInfo := user.GetUserInfo()
 	res := order.GetResponse(userInfo, order.Drink, order.Status)
 	return res
 }
 
-func (o *OrderAppService) GetList(ctx context.Context, user model.UserRaw) ([]model.OrderResponse, int64) {
+func (o *OrderAppService) GetList(ctx context.Context, query model.CommonQuery, user model.UserRaw) ([]model.OrderResponse, int64) {
 	var (
 		cond = bson.M{
 			"user": user.ID,
@@ -117,7 +118,8 @@ func (o *OrderAppService) GetList(ctx context.Context, user model.UserRaw) ([]mo
 		wg    sync.WaitGroup
 		res   = make([]model.OrderResponse, 0)
 	)
-
+	// assign
+	query.AssignStatus(&cond)
 	total = o.OrderDAO.CountByCondition(ctx, cond)
 	orders, _ := o.OrderDAO.FindByCondition(ctx, cond)
 

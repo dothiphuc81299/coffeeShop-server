@@ -30,6 +30,10 @@ func (d *EventAdminService) Create(ctx context.Context, body model.EventBody) (d
 	return res, err
 }
 
+func (d *EventAdminService) GetDetail(ctx context.Context, event model.EventRaw) model.EventAdminResponse {
+	return event.EventGetAdminResponse()
+}
+
 // ListAll ...
 func (d *EventAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([]model.EventAdminResponse, int64) {
 	var (

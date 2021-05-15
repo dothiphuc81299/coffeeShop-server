@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"log"
+
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/labstack/echo/v4"
@@ -23,6 +25,8 @@ func (h *OrderAppHandler) Create(c echo.Context) error {
 	)
 
 	data, err := h.OrderAppService.Create(cc.GetRequestCtx(), user, body)
+	log.Println("data", data)
+	log.Println("err", err)
 
 	if err != nil {
 		return cc.Response400(nil, err.Error())
@@ -35,7 +39,7 @@ func (h *OrderAppHandler) Create(c echo.Context) error {
 func (h *OrderAppHandler) GetDetail(c echo.Context) error {
 	var (
 		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
+		order = cc.Get("order").(model.OrderRaw)
 	)
 
 	data := h.OrderAppService.GetDetail(cc.GetRequestCtx(), order)
@@ -68,11 +72,14 @@ func (h *OrderAppHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
 
 func (h *OrderAppHandler) GetList(c echo.Context) error {
 	var (
-		cc   = util.EchoGetCustomCtx(c)
-		user = c.Get("user").(model.UserRaw)
+		cc    = util.EchoGetCustomCtx(c)
+		user  = c.Get("user").(model.UserRaw)
+		query = model.CommonQuery{
+			Status: c.QueryParam("status"),
+		}
 	)
 
-	data, total := h.OrderAppService.GetList(cc.GetRequestCtx(),user)
+	data, total := h.OrderAppService.GetList(cc.GetRequestCtx(), query, user)
 
 	return cc.Response200(echo.Map{
 		"order": data,

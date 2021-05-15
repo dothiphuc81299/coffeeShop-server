@@ -92,6 +92,18 @@ func (d *EventAdminHandler) ChangeStatus(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
+func (d *EventAdminHandler) GetDetail(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		event     = customCtx.Get("Event").(model.EventRaw)
+	)
+
+	data := d.EventAdminService.GetDetail(customCtx.GetRequestCtx(), event)
+	return customCtx.Response200(echo.Map{
+		"event": data,
+	}, "")
+}
+
 // EventGetByID ...
 func (d *EventAdminHandler) EventGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {

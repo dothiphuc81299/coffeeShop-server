@@ -20,6 +20,7 @@ func InitEventAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g.PUT("/:eventID", h.Update, middleware.CheckPermissionRoot(d), h.EventGetByID, validation.EventBodyValidation)
 
 	g.GET("", h.ListAll)
+	g.GET("/:eventID", h.GetDetail, h.EventGetByID)
 
 	g.PATCH("/:eventID/status", h.ChangeStatus, middleware.CheckPermissionRoot(d), h.EventGetByID)
 }

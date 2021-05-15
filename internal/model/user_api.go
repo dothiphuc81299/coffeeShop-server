@@ -52,6 +52,13 @@ type UserLoginResponse struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	Address   string    `json:"address"`
 	Token     string    `json:"token"`
+	Password  string    `json:"password"`
+}
+
+type UserChangePasswordBody struct {
+	Password         string `json:"password"`
+	NewPassword      string `json:"newPassword"`
+	NewPasswordAgain string `json:"newPasswordAgain"`
 }
 
 // Validate ...
@@ -78,6 +85,14 @@ func (u UserUpdateBody) Validate() error {
 		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
 		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
 		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
+	)
+}
+
+func (a UserChangePasswordBody) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Password, validation.Required.Error("password duoc yeu cau")),
+		validation.Field(&a.NewPassword, validation.Required.Error("password duoc yeu cau")),
+		validation.Field(&a.NewPasswordAgain, validation.Required.Error("password duoc yeu cau")),
 	)
 }
 
@@ -108,5 +123,6 @@ func (u *UserRaw) GetUserLoginInResponse(token string) UserLoginResponse {
 		CreatedAt: u.CreatedAt,
 		Token:     token,
 		Active:    u.Active,
+		Password:  u.Password,
 	}
 }

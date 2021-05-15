@@ -2,7 +2,6 @@ package dao
 
 import (
 	"context"
-	"log"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -64,6 +63,5 @@ func (w *OrderDAO) UpdateByID(ctx context.Context, id model.AppID, payload inter
 // FindOneByCondition ...
 func (w *OrderDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.OrderRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
-	log.Println("err", err)
 	return
 }

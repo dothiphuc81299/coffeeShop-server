@@ -20,14 +20,15 @@ type OrderDAO interface {
 type OrderAppService interface {
 	Create(ctx context.Context, userID UserRaw, body OrderBody) (OrderResponse, error)
 	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
-	GetList(ctx context.Context, user UserRaw) ([]OrderResponse, int64)
+	GetList(ctx context.Context, query CommonQuery, user UserRaw) ([]OrderResponse, int64)
 	GetDetail(ctx context.Context, order OrderRaw) OrderResponse
 }
 
 type OrderAdminService interface {
-	ChangeStatus(ctx context.Context, order OrderRaw, status StatusBody) (string, error)
+	ChangeStatus(ctx context.Context, order OrderRaw, status StatusBody, staff StaffRaw) (string, error)
 	GetListByStatus(ctx context.Context, query CommonQuery) ([]OrderResponse, int64)
 	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
+	GetDetail(ctx context.Context, order OrderRaw) OrderResponse
 }
 
 type OrderRaw struct {
@@ -38,4 +39,5 @@ type OrderRaw struct {
 	TotalPrice float64            `bson:"totalPrice"`
 	CreatedAt  time.Time          `bson:"createdAt"`
 	UpdatedAt  time.Time          `bson:"updatedAt"`
+	Shipper    primitive.ObjectID `bson:"shipper,omitempty"`
 }

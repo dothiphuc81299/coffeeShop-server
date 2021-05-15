@@ -61,19 +61,32 @@ func (o *OrderAdminService) GetListByStatus(ctx context.Context, query model.Com
 
 }
 
-func (o *OrderAdminService) ChangeStatus(ctx context.Context, order model.OrderRaw, status model.StatusBody) (res string, err error) {
+func (o *OrderAdminService) ChangeStatus(ctx context.Context, order model.OrderRaw, status model.StatusBody, staff model.StaffRaw) (res string, err error) {
 	payload := bson.M{
 		"updatedAt": time.Now(),
 		"status":    status.Status,
+		"shipper":   staff.ID,
 	}
 
 	err = o.OrderDAO.UpdateByID(ctx, order.ID, bson.M{"$set": payload})
 	if err != nil {
 		return res, err
 	}
+
 	return status.Status, err
 }
 
 func (o *OrderAdminService) FindByID(ctx context.Context, id model.AppID) (model.OrderRaw, error) {
 	return o.OrderDAO.FindOneByCondition(ctx, bson.M{"_id": id})
+}
+
+func (o *OrderAdminService) GetDetail(ctx context.Context, order model.OrderRaw) (doc model.OrderResponse) {
+	user, _ := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": order.User})
+	if user.ID.IsZero() {
+		return
+	}
+	userInfo := user.GetUserInfo()
+
+	res := order.GetResponse(userInfo, order.Drink, order.Status)
+	return res
 }
