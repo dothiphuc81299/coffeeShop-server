@@ -57,8 +57,6 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Order:     orderservice.NewOrderAdminService(d),
 		Feedback:  feedbackservice.NewFeedbackAdminService(d),
 
-		Salary: salaryservice.NewSalaryAdminService(d),
-
 		DrinkAnalytic: orderservice.NewDrinkAnalyticService(d),
 	}
 }
@@ -68,6 +66,7 @@ func InitAppService(d *model.CommonDAO) *model.AppService {
 		User:     userservice.NewUserAppService(d),
 		Order:    orderservice.NewOrderAppService(d),
 		Feedback: feedbackservice.NewFeedbackAppService(d),
+		Salary:   salaryservice.NewSalaryAppService(d),
 	}
 }
 

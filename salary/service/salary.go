@@ -11,16 +11,16 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type SalaryAdminService struct {
+type SalaryAppService struct {
 	ShiftDAO  model.ShiftDAO
 	StaffDAO  model.StaffDAO
 	StaffRole model.StaffRoleDAO
 	OrderDAO  model.OrderDAO
 }
 
-// NewSalaryAdminService ...
-func NewSalaryAdminService(d *model.CommonDAO) model.SalaryAdminService {
-	return &SalaryAdminService{
+// NewSalaryAppService ...
+func NewSalaryAppService(d *model.CommonDAO) model.SalaryAppService {
+	return &SalaryAppService{
 		ShiftDAO:  d.Shift,
 		StaffDAO:  d.Staff,
 		StaffRole: d.StaffRole,
@@ -28,7 +28,7 @@ func NewSalaryAdminService(d *model.CommonDAO) model.SalaryAdminService {
 	}
 }
 
-func (s *SalaryAdminService) getMonth(cond bson.M, date string, month string) {
+func (s *SalaryAppService) getMonth(cond bson.M, date string, month string) {
 	var (
 		now      = time.Now()
 		from, to time.Time
@@ -83,7 +83,7 @@ func (s *SalaryAdminService) getMonth(cond bson.M, date string, month string) {
 	fmt.Println("Cond : ", cond)
 }
 
-func (s *SalaryAdminService) GetDetail(ctx context.Context, salary model.SalaryBody, staff model.StaffRaw) (res model.SalaryResponse) {
+func (s *SalaryAppService) GetDetail(ctx context.Context, salary model.SalaryBody, staff model.StaffRaw) (res model.SalaryResponse) {
 
 	staffRes := model.StaffInfo{
 		ID:       staff.ID,

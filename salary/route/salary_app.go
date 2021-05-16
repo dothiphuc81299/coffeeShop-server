@@ -9,10 +9,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// InitSalaryAdmin ...
-func InitSalaryAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
-	h := &handler.SalaryAdminHandler{
-		SalaryAdminService: cs.Salary,
+// InitSalaryApp ...
+func InitSalaryApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
+	h := &handler.SalaryAppHandler{
+		SalaryAppService: cs.Salary,
 	}
 
 	g := e.Group("/salary")

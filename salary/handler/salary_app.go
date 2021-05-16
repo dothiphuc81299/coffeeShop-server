@@ -6,19 +6,19 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// SalaryAdminHandler ...
-type SalaryAdminHandler struct {
-	SalaryAdminService model.SalaryAdminService
+// SalaryAppHandler ...
+type SalaryAppHandler struct {
+	SalaryAppService model.SalaryAppService
 }
 
-func (h *SalaryAdminHandler) GetDetail(c echo.Context) error {
+func (h *SalaryAppHandler) GetDetail(c echo.Context) error {
 	var (
 		cc     = util.EchoGetCustomCtx(c)
 		salary = c.Get("salaryBody").(model.SalaryBody)
 		staff  = c.Get("staff").(model.StaffRaw)
 	)
-	
-	data := h.SalaryAdminService.GetDetail(cc.GetRequestCtx(), salary, staff)
+
+	data := h.SalaryAppService.GetDetail(cc.GetRequestCtx(), salary, staff)
 
 	return cc.Response200(echo.Map{
 		"Salary": data,

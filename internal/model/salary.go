@@ -21,11 +21,11 @@ type SalaryRaw struct {
 type SalaryDAO interface {
 }
 
-type SalaryAdminService interface {
+type SalaryAppService interface {
 	GetDetail(ctx context.Context, salary SalaryBody, staff StaffRaw) SalaryResponse
 	//GetMonth(cond bson.M, month string)
 }
 
-type SalaryRootService interface {
-	GetList(ctx context.Context)
+type SalaryAdminService interface {
+	GetList(ctx context.Context) []SalaryResponse
 }

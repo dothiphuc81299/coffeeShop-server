@@ -167,22 +167,7 @@ func (sfs *StaffAdminService) StaffLogin(ctx context.Context, body model.StaffLo
 	return doc, nil
 }
 
-func (sfs *StaffAdminService) ChangePassword(ctx context.Context, staff model.StaffRaw, body model.PasswordBody) (err error) {
-	res, _ := sfs.StaffDAO.FindOneByCondition(ctx, bson.M{"_id": staff.ID})
-	if res.ID.IsZero() {
-		return errors.New("staff khong ton tai")
-	}
 
-	if body.Password != res.Password || body.NewPassword != body.NewPasswordAgain || body.NewPassword == body.Password {
-		return errors.New("mat khau  khong dung")
-	}
-
-	err = sfs.StaffDAO.UpdateByID(ctx, staff.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
-	if err != nil {
-		return
-	}
-	return
-}
 
 // NewStaffAdminService ...
 func NewStaffAdminService(sd *model.CommonDAO) model.StaffAdminService {

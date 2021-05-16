@@ -7,13 +7,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// InitSalaryRoot ...
-func InitSalaryRoot(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
-	h := &handler.SalaryRootHandler{
-		SalaryRootService: cs.Salary,
+// InitSalaryAdmin ...
+func InitSalaryAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
+	h := &handler.SalaryAdminHandler{
+		SalaryAdminService: cs.Salary,
 	}
 
 	g := e.Group("/salary")
 	g.GET("", h.GetList, middleware.CheckPermissionRoot(d))
-
+	//g.GET("/staffID", h.GetDetail, middleware.CheckPermissionRoot(d), h.GetStaffByID)
 }

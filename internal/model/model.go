@@ -46,6 +46,8 @@ type AppService struct {
 	User     UserAppService
 	Feedback FeedbackAppService
 	Order    OrderAppService
+	Staff    StaffAppService
+	Salary   SalaryAppService
 }
 
 // ResponseAppListData ...
