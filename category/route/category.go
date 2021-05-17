@@ -20,5 +20,5 @@ func InitCategoryAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO)
 	g.PUT("/:categoryID", h.Update, middleware.CheckPermissionRoot(d), h.CategoryGetByID, validation.CategoryBodyValidation)
 
 	g.GET("", h.ListAll)
-	g.GET("/:categoryID",h.GetDetail)
+	g.GET("/:categoryID", h.GetDetail, h.CategoryGetByID)
 }

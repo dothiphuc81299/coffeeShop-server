@@ -3,11 +3,12 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type StaffAppService struct {
@@ -23,23 +24,22 @@ func NewStaffAppService(d *model.CommonDAO) model.StaffAppService {
 }
 
 // Update ...
-func (sfs *StaffAppService) Update(ctx context.Context, body model.StaffBody, data model.StaffRaw) (model.StaffGetResponseAdmin, error) {
-	roleID, _ := primitive.ObjectIDFromHex(body.Role)
-	staffRole, _ := sfs.StaffRole.FindByID(ctx, roleID)
+func (sfs *StaffAppService) Update(ctx context.Context, body model.StaffUpdateBodyByIt, data model.StaffRaw) (model.StaffGetResponseAdmin, error) {
+	log.Println("7")
+	payload := bson.M{
+		"username":  body.Username,
+		"address":   body.Address,
+		"phone":     body.Phone,
+		"updatedAt": time.Now(),
+	}
 
-	doc := body.StaffNewBSON(staffRole.Permissions)
-
-	// assign
-	data.Address = doc.Address
-	data.Permissions = doc.Permissions
-	data.Username = doc.Username
-	data.Phone = doc.Phone
-	data.Role = doc.Role
-	err := sfs.StaffDAO.UpdateByID(ctx, data.ID, bson.M{"$set": data})
+	log.Println("8")
+	err := sfs.StaffDAO.UpdateByID(ctx, data.ID, bson.M{"$set": payload})
+	log.Println("9")
 	if err != nil {
 		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonKeyErrorWhenHandle)
 	}
-
+	log.Println("10")
 	return data.GetStaffResponseAdmin(), nil
 }
 
@@ -58,4 +58,9 @@ func (sfs *StaffAppService) ChangePassword(ctx context.Context, staff model.Staf
 		return
 	}
 	return
+}
+
+// FindByID ...
+func (sfs *StaffAppService) FindByID(ctx context.Context, ID model.AppID) (model.StaffRaw, error) {
+	return sfs.StaffDAO.FindByID(ctx, ID)
 }

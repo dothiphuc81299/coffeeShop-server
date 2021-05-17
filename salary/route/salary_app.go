@@ -5,7 +5,6 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/salary/handler"
-	"github.com/dothiphuc81299/coffeeShop-server/salary/validation"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,5 +15,5 @@ func InitSalaryApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	}
 
 	g := e.Group("/salary")
-	g.GET("", h.GetDetail, middleware.CheckPermission(config.ModelFieldSalary, config.PermissionView, d), validation.SalaryBodyValidation)
+	g.GET("/me", h.GetDetail, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
 }

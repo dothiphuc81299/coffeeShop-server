@@ -83,8 +83,7 @@ func (s *SalaryAppService) getMonth(cond bson.M, date string, month string) {
 	fmt.Println("Cond : ", cond)
 }
 
-func (s *SalaryAppService) GetDetail(ctx context.Context, salary model.SalaryBody, staff model.StaffRaw) (res model.SalaryResponse) {
-
+func (s *SalaryAppService) GetDetail(ctx context.Context, query model.CommonQuery, staff model.StaffRaw) (res model.SalaryResponse) {
 	staffRes := model.StaffInfo{
 		ID:       staff.ID,
 		Username: staff.Username,
@@ -96,7 +95,7 @@ func (s *SalaryAppService) GetDetail(ctx context.Context, salary model.SalaryBod
 		cond := bson.M{
 			"shipper": staff.ID,
 		}
-		s.getMonth(cond, "updatedAt", salary.Month)
+		s.getMonth(cond, "updatedAt", query.Month)
 		total := s.OrderDAO.CountByCondition(ctx, cond)
 		if total > 10 {
 			res.Allowance = 10000
@@ -110,7 +109,7 @@ func (s *SalaryAppService) GetDetail(ctx context.Context, salary model.SalaryBod
 			res.TotalSalary = float64(total)*res.Coefficient + res.Allowance
 		}
 
-		res.Month = salary.Month
+		res.Month = query.Month
 		res.Staff = staffRes
 
 	} else {
@@ -119,7 +118,7 @@ func (s *SalaryAppService) GetDetail(ctx context.Context, salary model.SalaryBod
 			"staff":   staff.ID,
 		}
 
-		s.getMonth(cond, "date", salary.Month)
+		s.getMonth(cond, "date", query.Month)
 
 		res.Allowance = 200000
 
@@ -136,7 +135,7 @@ func (s *SalaryAppService) GetDetail(ctx context.Context, salary model.SalaryBod
 			res.TotalShift = float64(totalShift)
 			res.TotalSalary = float64(totalShift)*res.Coefficient + res.Allowance
 		}
-		res.Month = salary.Month
+		res.Month = query.Month
 		res.Staff = staffRes
 
 	}

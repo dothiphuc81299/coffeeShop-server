@@ -56,6 +56,7 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 	eventroute.InitEventAdmin(e, service, d)
 
 	staffroute.InitStaffAdmin(e, service, d)
+	staffroute.InitStaffApp(e, app, d)
 	staffrole.InitStaffRoleAdmin(e, service, d)
 	shiftroute.InitShiftAdmin(e, service, d)
 
@@ -70,5 +71,6 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 	feedbackroute.InitFeedbackApp(e, app, d)
 
 	salaryroute.InitSalaryAdmin(e, service, d)
+	salaryroute.InitSalaryApp(e, app, d)
 
 }

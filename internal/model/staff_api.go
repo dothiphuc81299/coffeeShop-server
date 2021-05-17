@@ -62,6 +62,12 @@ type StaffBody struct {
 	Address  string     `json:"address"`
 }
 
+type StaffUpdateBodyByIt struct {
+	Username string `json:"username"`
+	Phone    string `json:"phone"`
+	Address  string `json:"address"`
+}
+
 type StaffLoginBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -71,6 +77,14 @@ type PasswordBody struct {
 	Password         string `json:"password"`
 	NewPassword      string `json:"newPassword"`
 	NewPasswordAgain string `json:"newPasswordAgain"`
+}
+
+func (stf StaffUpdateBodyByIt) Validate() error {
+	return validation.ValidateStruct(&stf,
+		validation.Field(&stf.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
+		validation.Field(&stf.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
+		validation.Field(&stf.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
+	)
 }
 
 // Validate ...

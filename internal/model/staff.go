@@ -32,8 +32,9 @@ type StaffAdminService interface {
 }
 
 type StaffAppService interface {
-	Update(ctx context.Context, body StaffBody, raw StaffRaw) (StaffGetResponseAdmin, error)
+	Update(ctx context.Context, body StaffUpdateBodyByIt, raw StaffRaw) (StaffGetResponseAdmin, error)
 	ChangePassword(ctx context.Context, staff StaffRaw, body PasswordBody) error
+	FindByID(ctx context.Context, id AppID) (StaffRaw, error)
 }
 
 // StaffRaw ...

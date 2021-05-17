@@ -13,12 +13,15 @@ type SalaryAppHandler struct {
 
 func (h *SalaryAppHandler) GetDetail(c echo.Context) error {
 	var (
-		cc     = util.EchoGetCustomCtx(c)
-		salary = c.Get("salaryBody").(model.SalaryBody)
-		staff  = c.Get("staff").(model.StaffRaw)
+		cc = util.EchoGetCustomCtx(c)
+		// salary = c.Get("salaryBody").(model.SalaryBody)
+		staff = c.Get("staff").(model.StaffRaw)
+		query = model.CommonQuery{
+			Month: cc.QueryParam("month"),
+		}
 	)
 
-	data := h.SalaryAppService.GetDetail(cc.GetRequestCtx(), salary, staff)
+	data := h.SalaryAppService.GetDetail(cc.GetRequestCtx(), query, staff)
 
 	return cc.Response200(echo.Map{
 		"Salary": data,

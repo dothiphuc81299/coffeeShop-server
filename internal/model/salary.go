@@ -22,7 +22,7 @@ type SalaryDAO interface {
 }
 
 type SalaryAppService interface {
-	GetDetail(ctx context.Context, salary SalaryBody, staff StaffRaw) SalaryResponse
+	GetDetail(ctx context.Context, query CommonQuery, staff StaffRaw) SalaryResponse
 	//GetMonth(cond bson.M, month string)
 }
 

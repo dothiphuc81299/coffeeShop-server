@@ -25,8 +25,8 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r.POST("", h.Create, middleware.RequireLogin,
 		middleware.CheckPermissionRoot(d), validation.StaffBodyValidation)
 
-	r.PUT("/:staffID", h.Update, middleware.RequireLogin,
-		middleware.CheckPermissionRoot(d),
+	r.PUT("/:staffID", h.Update,
+		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d),
 		h.StaffGetByID, validation.StaffBodyValidation)
 
 	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.RequireLogin,

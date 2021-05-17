@@ -31,6 +31,7 @@ type CommonQuery struct {
 	StartAt  time.Time
 	EndAt    time.Time
 	Category string
+	Month    string
 }
 
 // AssignKeyword ...

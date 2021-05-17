@@ -16,8 +16,8 @@ func InitStaffApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r := e.Group("/staff")
 
 	// nhan vien cap nhat tai khoan
-	r.PUT("", h.Update,
-		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), validation.StaffBodyValidation)
+	r.PUT("/update", h.Update,
+		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), validation.StaffUpdateBodyByItValidation)
 
 	// change password do nhan vien
 	r.PUT("/me/password", h.UpdatePassword,
