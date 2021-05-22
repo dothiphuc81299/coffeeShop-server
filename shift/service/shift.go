@@ -12,15 +12,17 @@ import (
 
 // ShiftAdminService ...
 type ShiftAdminService struct {
-	ShiftDAO model.ShiftDAO
-	StaffDAO model.StaffDAO
+	ShiftDAO         model.ShiftDAO
+	StaffDAO         model.StaffDAO
+	ShiftAnalyticDAO model.ShiftAnalyticDAO
 }
 
 // NewShiftAdminService ...
 func NewShiftAdminService(d *model.CommonDAO) model.ShiftAdminService {
 	return &ShiftAdminService{
-		ShiftDAO: d.Shift,
-		StaffDAO: d.Staff,
+		ShiftDAO:         d.Shift,
+		StaffDAO:         d.Staff,
+		ShiftAnalyticDAO: d.ShiftAnalytic,
 	}
 }
 
@@ -53,9 +55,10 @@ func (d *ShiftAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 	q.AssignKeyword(&cond)
 	q.AssignStaff(&cond)
 	q.AssignStartAtAndEndAt(&cond)
+	q.AssignIsCheck(&cond)
 
 	total = d.ShiftDAO.CountByCondition(ctx, cond)
-	shifts, _ := d.ShiftDAO.FindByCondition(ctx, cond)
+	shifts, _ := d.ShiftDAO.FindByCondition(ctx, cond, q.GetFindOptionsUsingSort())
 	if len(shifts) > 0 {
 		wg.Add(len(shifts))
 		for index, shift := range shifts {
@@ -108,5 +111,16 @@ func (d *ShiftAdminService) AcceptShiftByAdmin(ctx context.Context, raw model.Sh
 	if err != nil {
 		return raw.IsCheck, errors.New("khong the thay doi trang thai ca lam viec")
 	}
+
 	return check, nil
+}
+
+// check
+func (d *ShiftAdminService) UpdateShiftAnalytic(ctx context.Context, raw model.ShiftRaw) {
+	// // check : neu staff
+	// cond :=bson.M{
+	// 	"staff":raw.Staff,
+	// }
+	// if d.ShiftAnalyticDAO.CountByCondition(ctx,cond)
+	panic("gs")
 }

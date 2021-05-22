@@ -1,36 +1,11 @@
-root :"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDZiZDFjNzMwMjJmYTU3ZDhlNTE1NDgiLCJleHAiOjE2MzMyMzQ0MTAsInBhc3N3b3JkIjoiMTIzNDU2IiwidXNlcm5hbWUiOiJhZG1pbiJ9.ZEHlCZ724fl8EezBUyzXX1GG1kUqR93DZ_cfvOjPaeU"
-service 
-{
-    "code": 1,
-    "data": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxMGE5M2UzZDFhOGZlMjBjYWVhOTciLCJwYXNzd29yZCI6IjEyMzQ1NjciLCJ1c2VybmFtZSI6InNlcnZpY2UifQ.QFkHBdTf9y6peXCObEaF35OJwYaAFUmUeYLaZXcHJwY"
-    }, 
-    "message": "Thành công!"
-}
-
-"user" :
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxNTlhZmY1NGRjOTFlZWNjZDAwNzUiLCJleHAiOjE2MzM1OTMzNTMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJ1c2VyMDEifQ.n_qputonCARu8GrLTTcE56eFJPOg7n2dYQPz5kqDVbM
-
+#How to run it 
+1. Create file .env 
+2. Copy file .env.example into .env file
+3. Command : make run 
+#
 web: cmd/admin/main.go 
 
 # how to push heroku
 heroku container:push web
 #release image
 heroku container:release web
-
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDk5NDUwOTZmYWEyOWFiMjgwODU2NzYiLCJleHAiOjE2MzYyMDk0NDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJ1c2VyMDEifQ.iHTp7KkSqZK3w9QlewLoK5ztNs_0OLKNuwefnPHaYjg
-
-shipper 
-{
-    "code": 1,
-    "data": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxMGIzMmUzZDFhOGZlMjBjYWVhOTkiLCJwYXNzd29yZCI6IjEyMyIsInVzZXJuYW1lIjoic2hpcHBlciJ9.Jw6bS74Qa673UMy18Zrjee5qKSPtNoRS31jLtahpCWQ"
-    },
-    "message": "Thành công!"
-}
-
-1. get deevent
-2.cataegory/nhan vien 
-3. showw luowng doi vs admin
-+lay het thang hien tai,chi tiet
-+role

@@ -1,0 +1,12 @@
+root :"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDZiZDFjNzMwMjJmYTU3ZDhlNTE1NDgiLCJleHAiOjE2MzMyMzQ0MTAsInBhc3N3b3JkIjoiMTIzNDU2IiwidXNlcm5hbWUiOiJhZG1pbiJ9.ZEHlCZ724fl8EezBUyzXX1GG1kUqR93DZ_cfvOjPaeU"
+service 
+{
+    "code": 1,
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxMGE5M2UzZDFhOGZlMjBjYWVhOTciLCJwYXNzd29yZCI6IjEyMzQ1NjciLCJ1c2VybmFtZSI6InNlcnZpY2UifQ.QFkHBdTf9y6peXCObEaF35OJwYaAFUmUeYLaZXcHJwY"
+    }, 
+    "message": "Thành công!"
+}
+
+"user" :
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcxNTlhZmY1NGRjOTFlZWNjZDAwNzUiLCJleHAiOjE2MzM1OTMzNTMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJ1c2VyMDEifQ.n_qputonCARu8GrLTTcE56eFJPOg7n2dYQPz5kqDVbM

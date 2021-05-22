@@ -52,11 +52,10 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 
 		Shift: shiftservice.NewShiftAdminService(d),
 
-		StaffRole: staffroleservice.NewStaffRoleAdminService(d),
-		Staff:     staffservice.NewStaffAdminService(d),
-		Order:     orderservice.NewOrderAdminService(d),
-		Feedback:  feedbackservice.NewFeedbackAdminService(d),
-
+		StaffRole:     staffroleservice.NewStaffRoleAdminService(d),
+		Staff:         staffservice.NewStaffAdminService(d),
+		Order:         orderservice.NewOrderAdminService(d),
+		Feedback:      feedbackservice.NewFeedbackAdminService(d),
 		DrinkAnalytic: orderservice.NewDrinkAnalyticService(d),
 	}
 }
@@ -67,6 +66,7 @@ func InitAppService(d *model.CommonDAO) *model.AppService {
 		Order:    orderservice.NewOrderAppService(d),
 		Feedback: feedbackservice.NewFeedbackAppService(d),
 		Salary:   salaryservice.NewSalaryAppService(d),
+		Staff:    staffservice.NewStaffAppService(d),
 	}
 }
 
@@ -96,7 +96,8 @@ func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
 
 		Event: eventDAO.NewEventDAO(db),
 
-		Shift: shiftDAO.NewShiftDAO(db),
+		Shift:         shiftDAO.NewShiftDAO(db),
+		ShiftAnalytic: shiftDAO.NewShiftAnalyticDAO(db),
 
 		Staff:     staffDAO.NewStaffDAO(db),
 		StaffRole: staffroleDAO.NewStaffRoleDAO(db),

@@ -26,7 +26,7 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 		middleware.CheckPermissionRoot(d), validation.StaffBodyValidation)
 
 	r.PUT("/:staffID", h.Update,
-		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d),
+		middleware.CheckPermissionRoot(d),
 		h.StaffGetByID, validation.StaffBodyValidation)
 
 	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.RequireLogin,

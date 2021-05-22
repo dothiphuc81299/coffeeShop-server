@@ -54,12 +54,11 @@ type StaffResponse struct {
 
 // StaffBody ...
 type StaffBody struct {
-	Username string     `json:"username"`
-	Password string     `json:"password"`
-	Avatar   *FilePhoto `json:"avatar"`
-	Role     string     `json:"role"`
-	Phone    string     `json:"phone"`
-	Address  string     `json:"address"`
+	Username string `json:"username"`
+	Role     string `json:"role"`
+	Phone    string `json:"phone"`
+	Address  string `json:"address"`
+	Password string `json:"password"`
 }
 
 type StaffUpdateBodyByIt struct {
@@ -81,21 +80,19 @@ type PasswordBody struct {
 
 func (stf StaffUpdateBodyByIt) Validate() error {
 	return validation.ValidateStruct(&stf,
-		validation.Field(&stf.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
-		validation.Field(&stf.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
-		validation.Field(&stf.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
+		validation.Field(&stf.Username),
+		validation.Field(&stf.Phone),
+		validation.Field(&stf.Address),
 	)
 }
 
 // Validate ...
 func (stf StaffBody) Validate() error {
 	return validation.ValidateStruct(&stf,
-		validation.Field(&stf.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
-		validation.Field(&stf.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
-		validation.Field(&stf.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
-		validation.Field(&stf.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
+		validation.Field(&stf.Username),
+		validation.Field(&stf.Phone),
+		validation.Field(&stf.Address),
 		validation.Field(&stf.Role,
-			validation.Required.Error(locale.CommonKeyPermissionIsRequired),
 			is.MongoID.Error(locale.CommonKeyIDMongoInvalid)),
 	)
 }
@@ -120,10 +117,7 @@ func (a PasswordBody) Validate() error {
 func (stf *StaffBody) StaffNewBSON(permissions []string) StaffRaw {
 	roleID, _ := primitive.ObjectIDFromHex(stf.Role)
 	now := time.Now()
-	avatar := FileDefaultPhoto()
-	if stf.Avatar != nil {
-		avatar = stf.Avatar.GetResponseData()
-	}
+
 	return StaffRaw{
 		ID:          primitive.NewObjectID(),
 		Password:    stf.Password,
@@ -131,7 +125,6 @@ func (stf *StaffBody) StaffNewBSON(permissions []string) StaffRaw {
 		Phone:       stf.Phone,
 		Address:     stf.Address,
 		Role:        roleID,
-		Avatar:      avatar,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 		Permissions: permissions,

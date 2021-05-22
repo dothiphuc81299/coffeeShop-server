@@ -20,6 +20,7 @@ type CommonDAO struct {
 
 	Salary        SalaryDAO
 	DrinkAnalytic DrinkAnalyticDAO
+	ShiftAnalytic ShiftAnalyticDAO
 }
 
 // AdminService ....

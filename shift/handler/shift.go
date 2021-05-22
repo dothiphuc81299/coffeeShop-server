@@ -7,6 +7,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -74,6 +75,7 @@ func (d *ShiftAdminHandler) ListAll(c echo.Context) error {
 			StartAt: startAt,
 			EndAt:   endAt,
 			Keyword: c.QueryParam("keyword"),
+			Sort:    bson.D{{"date", 1}},
 		}
 	)
 

@@ -8,6 +8,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // AppID custom ObjectID
@@ -121,4 +122,33 @@ type ResponseAdminListData struct {
 // ResponseAdminData ...
 type ResponseAdminData struct {
 	Data interface{} `json:"data"`
+}
+
+// GetFindOptsUsingPage ...
+func (q *CommonQuery) GetFindOptsUsingPage() *options.FindOptions {
+	opts := options.Find()
+	if q.Limit > 0 {
+		opts.SetLimit(q.Limit).SetSkip(q.Page * q.Limit)
+	}
+	if q.Sort != nil {
+		opts.SetSort(q.Sort)
+	}
+	return opts
+}
+
+// GetFindOptsUsingTimestamp ...
+func (q *CommonQuery) GetFindOptsUsingTimestamp() *options.FindOptions {
+	opts := options.Find()
+	if q.Limit > 0 {
+		opts.SetLimit(q.Limit)
+	}
+	if q.Sort != nil {
+		opts.SetSort(q.Sort)
+	}
+	return opts
+}
+
+// GetFindOptionsUsingSort ...
+func (q *CommonQuery) GetFindOptionsUsingSort() *options.FindOptions {
+	return options.Find().SetSort(q.Sort)
 }
