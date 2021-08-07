@@ -9,6 +9,7 @@ import (
 // SalaryAdminHandler ...
 type SalaryAdminHandler struct {
 	SalaryAdminService model.SalaryAdminService
+	model.StaffAdminService
 }
 
 func (s *SalaryAdminHandler) GetList(c echo.Context) error {
@@ -22,3 +23,4 @@ func (s *SalaryAdminHandler) GetList(c echo.Context) error {
 		"salaries": data,
 	}, "")
 }
+

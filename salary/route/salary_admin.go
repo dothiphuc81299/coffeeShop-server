@@ -16,4 +16,7 @@ func InitSalaryAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g := e.Group("/salary")
 	g.GET("", h.GetList, middleware.CheckPermissionRoot(d))
 	//g.GET("/staffID", h.GetDetail, middleware.CheckPermissionRoot(d), h.GetStaffByID)
+
+	// get salary by id
+//	g.GET("/:staffID", h.GetDetail, middleware.CheckPermissionRoot(d), h.GetStaffByID)
 }

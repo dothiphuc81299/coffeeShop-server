@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
@@ -59,7 +58,8 @@ func (d *EventAdminHandler) ListAll(c echo.Context) error {
 		customCtx = util.EchoGetCustomCtx(c)
 		query     = model.CommonQuery{
 			Active: c.QueryParam("active"),
-			Limit:  config.Limit20,
+			Limit:  customCtx.GetLimitQuery(),
+			Page:   customCtx.GetPageQuery(),
 		}
 	)
 

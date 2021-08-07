@@ -39,6 +39,8 @@ func (d *DrinkAdminHandler) GetList(c echo.Context) error {
 			Keyword:  c.QueryParam("keyword"),
 			Active:   c.QueryParam("active"),
 			Category: c.QueryParam("category"),
+			Limit:    customCtx.GetLimitQuery(),
+			Page:     customCtx.GetPageQuery(),
 		}
 	)
 

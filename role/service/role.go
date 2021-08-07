@@ -47,7 +47,7 @@ func (rs *RoleAdminService) List(ctx context.Context, q model.CommonQuery) ([]mo
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		docs, _ := rs.RoleDAO.FindByCondition(ctx, cond)
+		docs, _ := rs.RoleDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
 		for _, doc := range docs {
 			item := model.RoleAdminResponse{
 				ID:          doc.ID,

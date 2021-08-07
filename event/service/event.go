@@ -53,7 +53,7 @@ func (d *EventAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 
 	go func() {
 		defer wg.Done()
-		events, _ := d.EventDAO.FindByCondition(ctx, cond)
+		events, _ := d.EventDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
 		for _, value := range events {
 			temp := value.EventGetAdminResponse()
 			res = append(res, temp)

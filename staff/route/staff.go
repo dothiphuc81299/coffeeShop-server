@@ -39,4 +39,10 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r.GET("/:staffID/me", h.GetDetailStaffByAdmin)
 
 	r.POST("/log-in", h.StaffLogin, validation.StaffLoginBodyValidation)
+
+	// get salary
+	r.GET("/:staffID/salary", h.GetDetailSalary, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), h.StaffGetByID)
+
+	r.GET("/salary", h.GetListSalary, middleware.CheckPermissionRoot(d))
+
 }

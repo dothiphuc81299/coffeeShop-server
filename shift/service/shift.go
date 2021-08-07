@@ -58,7 +58,7 @@ func (d *ShiftAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 	q.AssignIsCheck(&cond)
 
 	total = d.ShiftDAO.CountByCondition(ctx, cond)
-	shifts, _ := d.ShiftDAO.FindByCondition(ctx, cond, q.GetFindOptionsUsingSort())
+	shifts, _ := d.ShiftDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
 	if len(shifts) > 0 {
 		wg.Add(len(shifts))
 		for index, shift := range shifts {
@@ -123,4 +123,16 @@ func (d *ShiftAdminService) UpdateShiftAnalytic(ctx context.Context, raw model.S
 	// }
 	// if d.ShiftAnalyticDAO.CountByCondition(ctx,cond)
 	panic("gs")
+}
+
+func (d *ShiftAdminService) DeleteShift(ctx context.Context, raw model.ShiftRaw) error {
+	err := d.ShiftDAO.RemoveOne(ctx, bson.M{"_id": raw.ID})
+	return err
+}
+
+func (d *ShiftAdminService) GetDetail(ctx context.Context, raw model.ShiftRaw) model.ShiftResponse {
+	staffRaw, _ := d.StaffDAO.FindOneByCondition(ctx, bson.M{"_id": raw.Staff})
+	staffInfo := staffRaw.GetStaffInfo()
+	doc := raw.GetResponse(staffInfo)
+	return doc
 }

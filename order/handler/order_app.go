@@ -76,6 +76,8 @@ func (h *OrderAppHandler) GetList(c echo.Context) error {
 		user  = c.Get("user").(model.UserRaw)
 		query = model.CommonQuery{
 			Status: c.QueryParam("status"),
+			Limit:  cc.GetLimitQuery(),
+			Page:   cc.GetPageQuery(),
 		}
 	)
 

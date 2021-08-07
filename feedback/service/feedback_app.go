@@ -42,7 +42,7 @@ func (d *FeedbackAppService) Create(ctx context.Context, body model.FeedbackBody
 }
 
 // ListAll ...
-func (d *FeedbackAppService) ListAll(ctx context.Context) ([]model.FeedbackResponse, int64) {
+func (d *FeedbackAppService) ListAll(ctx context.Context, query model.CommonQuery) ([]model.FeedbackResponse, int64) {
 	var (
 		wg   sync.WaitGroup
 		cond = bson.M{
@@ -53,7 +53,7 @@ func (d *FeedbackAppService) ListAll(ctx context.Context) ([]model.FeedbackRespo
 	)
 
 	total = d.FeedbackDAO.CountByCondition(ctx, cond)
-	feedbacks, _ := d.FeedbackDAO.FindByCondition(ctx, cond)
+	feedbacks, _ := d.FeedbackDAO.FindByCondition(ctx, cond, query.GetFindOptsUsingPage())
 	if len(feedbacks) > 0 {
 		wg.Add(len(feedbacks))
 		for index, feedback := range feedbacks {

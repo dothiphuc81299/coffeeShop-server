@@ -19,8 +19,13 @@ func InitShiftAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldShift, config.PermissionEdit, d), validation.ShiftBodyValidation)
 
 	g.PUT("/:shiftID", h.Update, middleware.CheckPermission(config.ModelFieldShift, config.PermissionEdit, d), h.ShiftGetByID, validation.ShiftBodyValidation)
-	
+
 	g.GET("", h.ListAll, middleware.CheckPermission(config.ModelFieldShift, config.PermissionView, d))
 
 	g.PATCH("/:shiftID/status", h.AcceptShiftByAdmin, h.ShiftGetByID, middleware.CheckPermissionRoot(d))
+
+	g.DELETE("/:shiftID", h.DeleteShift, middleware.CheckPermission(config.ModelFieldShift, config.PermissionEdit, d), h.ShiftGetByID)
+
+	g.GET("/:shiftID", h.GetDetail, middleware.CheckPermission(config.ModelFieldShift, config.PermissionEdit, d), h.ShiftGetByID)
+
 }

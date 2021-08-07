@@ -61,3 +61,8 @@ func (w *ShiftDAO) FindOneByCondition(ctx context.Context, cond interface{}) (do
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }
+
+func (w *ShiftDAO) RemoveOne(ctx context.Context, cond interface{}) error {
+	_, err := w.Col.DeleteOne(ctx, cond)
+	return err
+}

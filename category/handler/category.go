@@ -58,6 +58,8 @@ func (d *CategoryAdminHandler) ListAll(c echo.Context) error {
 		customCtx = util.EchoGetCustomCtx(c)
 		query     = model.CommonQuery{
 			Keyword: c.QueryParam("keyword"),
+			Limit:   customCtx.GetLimitQuery(),
+			Page:    customCtx.GetPageQuery(),
 		}
 	)
 

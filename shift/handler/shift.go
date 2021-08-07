@@ -76,6 +76,8 @@ func (d *ShiftAdminHandler) ListAll(c echo.Context) error {
 			EndAt:   endAt,
 			Keyword: c.QueryParam("keyword"),
 			Sort:    bson.D{{"date", 1}},
+			Limit:   customCtx.GetLimitQuery(),
+			Page:    customCtx.GetPageQuery(),
 		}
 	)
 
@@ -104,6 +106,33 @@ func (d *ShiftAdminHandler) AcceptShiftByAdmin(c echo.Context) error {
 	}
 
 	return customCtx.Response200(result, "")
+}
+
+func (d *ShiftAdminHandler) DeleteShift(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		shift     = c.Get("shift").(model.ShiftRaw)
+	)
+
+	err := d.ShiftAdminService.DeleteShift(customCtx.GetRequestCtx(), shift)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+	return customCtx.Response200(echo.Map{
+		"shiftId": shift.ID,
+	}, "")
+}
+
+func (d *ShiftAdminHandler) GetDetail(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		shift     = c.Get("shift").(model.ShiftRaw)
+	)
+
+	data := d.ShiftAdminService.GetDetail(customCtx.GetRequestCtx(), shift)
+	return customCtx.Response200(echo.Map{
+		"shift": data,
+	}, "")
 }
 
 // ShiftGetByID ...

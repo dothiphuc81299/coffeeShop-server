@@ -35,9 +35,13 @@ func (d *FeedbackAppHandler) Create(c echo.Context) error {
 func (d *FeedbackAppHandler) GetList(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
+		query     = model.CommonQuery{
+			Limit: customCtx.GetLimitQuery(),
+			Page:  customCtx.GetPageQuery(),
+		}
 	)
 
-	data, total := d.FeedbackAppService.ListAll(context.Background())
+	data, total := d.FeedbackAppService.ListAll(context.Background(), query)
 
 	result := model.ResponseAppListData{
 		Data:  data,

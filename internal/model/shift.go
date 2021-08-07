@@ -15,6 +15,7 @@ type ShiftDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]ShiftRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	RemoveOne(ctx context.Context, cond interface{}) error
 }
 
 // ShiftAdminService ....
@@ -24,6 +25,8 @@ type ShiftAdminService interface {
 	Update(ctx context.Context, c ShiftRaw, body ShiftBody, staff StaffRaw) (ShiftResponse, error)
 	FindByID(ctx context.Context, id AppID) (Shift ShiftRaw, err error)
 	AcceptShiftByAdmin(ctx context.Context, raw ShiftRaw) (bool, error)
+	DeleteShift(ctx context.Context, raw ShiftRaw) error
+	GetDetail(ctx context.Context, raw ShiftRaw) ShiftResponse
 }
 
 // ShiftRaw ....

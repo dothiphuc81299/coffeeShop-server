@@ -167,3 +167,32 @@ func (h *StaffAdminHandler) StaffLogin(c echo.Context) error {
 		"data": data,
 	}, "")
 }
+
+func (h *StaffAdminHandler) GetDetailSalary(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+
+	data := h.StaffService.GetDetailSalary(cc.GetRequestCtx(), staff)
+
+	return cc.Response200(echo.Map{
+		"salary": data,
+	}, "")
+
+}
+
+func (h *StaffAdminHandler) GetListSalary(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		query = model.CommonQuery{
+			Staff: util.GetAppIDFromHex(cc.QueryParam("staff")),
+		}
+	)
+
+	data := h.StaffService.GetListSalary(cc.GetRequestCtx(), query)
+
+	return cc.Response200(echo.Map{
+		"salaries": data,
+	}, "")
+}

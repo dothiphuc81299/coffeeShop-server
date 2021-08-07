@@ -18,6 +18,8 @@ func (h *OrderAdminHandler) GetListByStatus(c echo.Context) error {
 		cc    = util.EchoGetCustomCtx(c)
 		query = model.CommonQuery{
 			Status: c.QueryParam("status"),
+			Limit:  cc.GetLimitQuery(),
+			Page:   cc.GetPageQuery(),
 		}
 	)
 

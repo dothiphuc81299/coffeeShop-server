@@ -56,7 +56,7 @@ func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery)
 
 	go func() {
 		defer wg.Done()
-		categories, _ := d.CategoryDAO.FindByCondition(ctx, cond)
+		categories, _ := d.CategoryDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
 		for _, value := range categories {
 			temp := value.CategoryGetAdminResponse()
 			res = append(res, temp)

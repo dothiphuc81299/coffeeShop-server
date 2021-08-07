@@ -29,6 +29,8 @@ type StaffAdminService interface {
 	GetToken(ctx context.Context, staffID AppID) (string, error)
 	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
 	StaffLogin(ctx context.Context, stafflogin StaffLoginBody) (StaffResponse, error)
+	GetDetailSalary(ctx context.Context, staff StaffRaw) SalaryResponse
+	GetListSalary(ctx context.Context, query CommonQuery) []SalaryResponse
 }
 
 type StaffAppService interface {

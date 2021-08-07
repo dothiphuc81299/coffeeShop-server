@@ -121,7 +121,7 @@ func (o *OrderAppService) GetList(ctx context.Context, query model.CommonQuery, 
 	// assign
 	query.AssignStatus(&cond)
 	total = o.OrderDAO.CountByCondition(ctx, cond)
-	orders, _ := o.OrderDAO.FindByCondition(ctx, cond)
+	orders, _ := o.OrderDAO.FindByCondition(ctx, cond, query.GetFindOptsUsingPage())
 
 	if len(orders) > 0 {
 		wg.Add(len(orders))

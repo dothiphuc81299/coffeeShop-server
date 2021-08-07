@@ -20,7 +20,7 @@ type FeedbackDAO interface {
 // FeedbackAppService ...
 type FeedbackAppService interface {
 	Create(ctx context.Context, body FeedbackBody, user UserRaw) (FeedbackResponse, error)
-	ListAll(ctx context.Context) ([]FeedbackResponse, int64)
+	ListAll(ctx context.Context, query CommonQuery) ([]FeedbackResponse, int64)
 	Update(ctx context.Context, body FeedbackBody, userID UserRaw, feedback FeedbackRaw) (FeedbackResponse, error)
 	FindByID(ctx context.Context, id AppID) (FeedbackRaw, error)
 	GetDetail(ctx context.Context, order FeedbackRaw) FeedbackResponse

@@ -41,6 +41,8 @@ func (h *RoleAdminHandler) List(c echo.Context) error {
 			Sort: bson.D{
 				bson.E{Key: "createdAt", Value: -1},
 			},
+			Limit: cc.GetLimitQuery(),
+			Page:  cc.GetPageQuery(),
 		}
 	)
 
