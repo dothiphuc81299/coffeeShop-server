@@ -24,7 +24,7 @@ type UserAppService interface {
 	UserLoginIn(ctx context.Context, body UserLoginBody) (UserLoginResponse, error)
 	UserUpdateAccount(ctx context.Context, user UserRaw, body UserUpdateBody) (string, error)
 	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse
-	ChangePassword(ctx context.Context,user UserRaw,body UserChangePasswordBody) error
+	ChangePassword(ctx context.Context, user UserRaw, body UserChangePasswordBody) error
 }
 
 type UserAdminService interface {
@@ -45,6 +45,12 @@ type UserRaw struct {
 	UpdatedAt    time.Time `bson:"updatedAt"`
 	Address      string    `bson:"address"`
 	SearchString string    `bson:"searchString"`
+	Position     Position  `bson:"position"`
+}
+
+type Position struct {
+	Lat float64 `bson:"lat" json:"lat"`
+	Ing float64 `bson:"lng" json:"lng"`
 }
 
 // GetAdminResponse ...
@@ -57,6 +63,7 @@ func (u *UserRaw) GetAdminResponse() UserAdminResponse {
 		Avatar:    u.Avatar,
 		CreatedAt: u.CreatedAt,
 		Address:   u.Address,
+		Position:  u.Position,
 	}
 }
 

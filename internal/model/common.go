@@ -128,7 +128,7 @@ type ResponseAdminData struct {
 func (q *CommonQuery) GetFindOptsUsingPage() *options.FindOptions {
 	opts := options.Find()
 	if q.Limit > 0 {
-		opts.SetLimit(q.Limit).SetSkip(q.Page * q.Limit)
+		opts.SetLimit(q.Limit).SetSkip((q.Page - 1) * q.Limit)
 	}
 	if q.Sort != nil {
 		opts.SetSort(q.Sort)

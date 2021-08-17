@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"context"
-
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
@@ -44,11 +42,12 @@ func (d *DrinkAdminHandler) GetList(c echo.Context) error {
 		}
 	)
 
-	data, total := d.DrinkAdminService.ListAll(context.Background(), query)
+	data, total := d.DrinkAdminService.ListAll(customCtx.GetRequestCtx(), query)
 
 	result := model.ResponseAdminListData{
-		Data:  data,
-		Total: total,
+		Data:         data,
+		Total:        total,
+		LimitPerPage: query.Limit,
 	}
 	return customCtx.Response200(result, "")
 }

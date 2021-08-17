@@ -164,8 +164,10 @@ func (sfs *StaffAdminService) StaffLogin(ctx context.Context, body model.StaffLo
 	if err != nil {
 		return model.StaffResponse{}, err
 	}
-
-	token := staff.GenerateToken()
+	token, err := sfs.GetToken(ctx, staff.ID)
+	if err != nil {
+		return model.StaffResponse{}, err
+	}
 	doc := staff.GetStaffResponse(token)
 	return doc, nil
 }

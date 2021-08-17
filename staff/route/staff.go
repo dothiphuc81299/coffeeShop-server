@@ -17,6 +17,8 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 
 	r := e.Group("/staff")
 	r.GET("/token", h.GetToken)
+	// get detail user
+	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
 
 	r.GET("", h.ListStaff,
 		middleware.RequireLogin,
@@ -32,9 +34,6 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.RequireLogin,
 		middleware.CheckPermissionRoot(d),
 		h.StaffGetByID)
-
-	// get detail user
-	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
 
 	r.GET("/:staffID/me", h.GetDetailStaffByAdmin)
 

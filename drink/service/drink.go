@@ -64,24 +64,24 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 	q.AssignKeyword(&cond)
 	q.AssignActive(&cond)
 	q.AssignCategory(&cond)
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		total = d.DrinkDAO.CountByCondition(ctx, cond)
-	}()
 
-	go func() {
-		defer wg.Done()
-		drinks, _ := d.DrinkDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
+	total = d.DrinkDAO.CountByCondition(ctx, cond)
+	drinks, _ := d.DrinkDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
+	if len(drinks) > 0 {
+		wg.Add(len(drinks))
 		for _, value := range drinks {
-			cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": value.Category})
-			catTemp := model.CategoryGetInfo(cat)
-			temp := value.DrinkGetAdminResponse(catTemp)
-			res = append(res, temp)
-		}
-	}()
+			go func(abc model.DrinkRaw) {
+				defer wg.Done()
+				cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": value.Category})
+				catTemp := model.CategoryGetInfo(cat)
+				temp := value.DrinkGetAdminResponse(catTemp)
+				res = append(res, temp)
+			}(value)
 
+		}
+	}
 	wg.Wait()
+
 	return res, total
 }
 

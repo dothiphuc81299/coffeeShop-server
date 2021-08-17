@@ -128,11 +128,11 @@ func (h *StaffAdminHandler) StaffGetByID(next echo.HandlerFunc) echo.HandlerFunc
 }
 
 func (h *StaffAdminHandler) GetDetailStaff(c echo.Context) error {
+
 	cc := util.EchoGetCustomCtx(c)
 	var (
 		staff = c.Get("staff").(model.StaffRaw)
 	)
-
 	data := h.StaffService.GetDetailStaff(cc.GetRequestCtx(), staff)
 
 	return cc.Response200(echo.Map{

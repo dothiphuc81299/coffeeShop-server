@@ -16,11 +16,12 @@ type UserLoginBody struct {
 
 // UserSignUpBody ...
 type UserSignUpBody struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Phone    string `json:"phone"`
-	Avatar   string `json:"avatar,omitempty"`
-	Address  string `json:"address"`
+	Username string   `json:"username"`
+	Password string   `json:"password"`
+	Phone    string   `json:"phone"`
+	Avatar   string   `json:"avatar,omitempty"`
+	Address  string   `json:"address"`
+	Position Position `json:"position"`
 }
 
 // UserUpdateBody ...
@@ -29,6 +30,7 @@ type UserUpdateBody struct {
 	Phone    string            `json:"phone"`
 	Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
 	Address  string            `json:"address"`
+	Position Position          `json:"position"`
 }
 
 // UserAdminResponse ...
@@ -40,6 +42,7 @@ type UserAdminResponse struct {
 	Avatar    string    `json:"avatar"`
 	CreatedAt time.Time `json:"createdAt"`
 	Address   string    `json:"address"`
+	Position  Position  `json:"position"`
 }
 
 type UserLoginResponse struct {
@@ -53,6 +56,7 @@ type UserLoginResponse struct {
 	Address   string    `json:"address"`
 	Token     string    `json:"token"`
 	Password  string    `json:"password"`
+	Position  Position  `json:"position"`
 }
 
 type UserChangePasswordBody struct {
@@ -110,6 +114,7 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 		UpdatedAt:    now,
 		Address:      u.Address,
 		SearchString: format.NonAccentVietnamese(u.Username),
+		Position:     u.Position,
 	}
 }
 
@@ -124,5 +129,6 @@ func (u *UserRaw) GetUserLoginInResponse(token string) UserLoginResponse {
 		Token:     token,
 		Active:    u.Active,
 		Password:  u.Password,
+		Position:  u.Position,
 	}
 }

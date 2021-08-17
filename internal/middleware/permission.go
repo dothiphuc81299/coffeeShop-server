@@ -51,6 +51,7 @@ func CheckPermission(model string, fieldPermission string, d *model.CommonDAO) e
 			cc := util.EchoGetCustomCtx(c)
 			ctx := cc.GetRequestCtx()
 			userID := cc.GetCurrentUserID()
+
 			if userID.IsZero() {
 				return cc.Response401(nil, "")
 			}

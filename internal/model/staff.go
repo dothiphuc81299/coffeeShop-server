@@ -76,7 +76,7 @@ func (u *StaffRaw) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"_id":      u.ID,
 		"username": u.Username,
-		"password": u.Password,
+		//"password": u.Password,
 		//	"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
