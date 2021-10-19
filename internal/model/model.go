@@ -5,22 +5,23 @@ type CommonDAO struct {
 	Drink    DrinkDAO
 	Category CategoryDAO
 
-	User     UserDAO
-	Role     RoleDAO
-	Feedback FeedbackDAO
-	Order    OrderDAO
+	User UserDAO
+	Role RoleDAO
+
+	Order OrderDAO
 
 	Event EventDAO
-
-	Shift ShiftDAO
 
 	Staff     StaffDAO
 	StaffRole StaffRoleDAO
 	Session   SessionDAO
 
-	Salary        SalaryDAO
-	DrinkAnalytic DrinkAnalyticDAO
-	ShiftAnalytic ShiftAnalyticDAO
+	DrinkAnalytic    DrinkAnalyticDAO
+	Question         QuestionDAO
+	Group            GroupDAO
+	Package          PackageDAO
+	UserPackageGroup UserPackageGroupDAO
+	PackageGroup     PackageGroupDAO
 }
 
 // AdminService ....
@@ -32,23 +33,18 @@ type AdminService struct {
 
 	Event EventAdminService
 
-	Shift ShiftAdminService
-
-	StaffRole StaffRoleAdminService
-	Staff     StaffAdminService
-	Order     OrderAdminService
-	Feedback  FeedbackAdminService
-
-	Salary        SalaryAdminService
+	StaffRole     StaffRoleAdminService
+	Staff         StaffAdminService
+	Order         OrderAdminService
 	DrinkAnalytic DrinkAnalyticService
+	Question      QuestionAdminService
+	Group         GroupAdminService
 }
 
 type AppService struct {
-	User     UserAppService
-	Feedback FeedbackAppService
-	Order    OrderAppService
-	Staff    StaffAppService
-	Salary   SalaryAppService
+	User  UserAppService
+	Order OrderAppService
+	Staff StaffAppService
 }
 
 // ResponseAppListData ...

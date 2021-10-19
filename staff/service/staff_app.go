@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"log"
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
@@ -25,7 +24,6 @@ func NewStaffAppService(d *model.CommonDAO) model.StaffAppService {
 
 // Update ...
 func (sfs *StaffAppService) Update(ctx context.Context, body model.StaffUpdateBodyByIt, data model.StaffRaw) (model.StaffGetResponseAdmin, error) {
-	log.Println("7")
 	payload := bson.M{
 		"username":  body.Username,
 		"address":   body.Address,
@@ -33,13 +31,10 @@ func (sfs *StaffAppService) Update(ctx context.Context, body model.StaffUpdateBo
 		"updatedAt": time.Now(),
 	}
 
-	log.Println("8")
 	err := sfs.StaffDAO.UpdateByID(ctx, data.ID, bson.M{"$set": payload})
-	log.Println("9")
 	if err != nil {
 		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonKeyErrorWhenHandle)
 	}
-	log.Println("10")
 	return data.GetStaffResponseAdmin(), nil
 }
 

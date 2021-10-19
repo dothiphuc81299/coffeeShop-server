@@ -5,7 +5,6 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 
 	categoryroute "github.com/dothiphuc81299/coffeeShop-server/category/route"
-	feedbackroute "github.com/dothiphuc81299/coffeeShop-server/feedback/route"
 	middleware "github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	orderroute "github.com/dothiphuc81299/coffeeShop-server/order/route"
 	roleroute "github.com/dothiphuc81299/coffeeShop-server/role/route"
@@ -14,11 +13,9 @@ import (
 
 	eventroute "github.com/dothiphuc81299/coffeeShop-server/event/route"
 
+	gameroute "github.com/dothiphuc81299/coffeeShop-server/game/route"
 	staffroute "github.com/dothiphuc81299/coffeeShop-server/staff/route"
 	staffrole "github.com/dothiphuc81299/coffeeShop-server/staffrole/route"
-
-	salaryroute "github.com/dothiphuc81299/coffeeShop-server/salary/route"
-	shiftroute "github.com/dothiphuc81299/coffeeShop-server/shift/route"
 )
 
 // StartAdmin ...
@@ -44,33 +41,21 @@ func StartAdmin(service *model.AdminService, app *model.AppService, d *model.Com
 }
 
 func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.AppService, d *model.CommonDAO) {
-	// drink
 
 	drinkroute.InitDrinkAdmin(e, service, d)
 	categoryroute.InitCategoryAdmin(e, service, d)
 	userroute.InitUserAdmin(e, service, d)
 	roleroute.InitRoleAdmin(e, service, d)
 
-	feedbackroute.InitFeedbackAdmin(e, service, d)
-
 	eventroute.InitEventAdmin(e, service, d)
 
 	staffroute.InitStaffAdmin(e, service, d)
 	staffroute.InitStaffApp(e, app, d)
 	staffrole.InitStaffRoleAdmin(e, service, d)
-	shiftroute.InitShiftAdmin(e, service, d)
 
 	userroute.InitUserApp(e, app, d)
 
 	orderroute.InitOrderApp(e, app, d)
 	orderroute.InitOrderAdmin(e, service, d)
-	orderroute.InitDrinkAnalyticAdmin(e, service, d)
-
-	// feedback
-	feedbackroute.InitFeedbackAdmin(e, service, d)
-	feedbackroute.InitFeedbackApp(e, app, d)
-
-	salaryroute.InitSalaryAdmin(e, service, d)
-	salaryroute.InitSalaryApp(e, app, d)
-
+	gameroute.InitQuestionAdmin(e, service, d)
 }

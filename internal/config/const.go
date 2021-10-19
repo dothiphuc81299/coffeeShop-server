@@ -50,21 +50,13 @@ const (
 )
 
 const (
-	ShiftTypeOne   = "ca_1"
-	ShiftTypeTwo   = "ca_2"
-	ShiftTypeThree = "ca_3"
-)
-
-const (
 	ModelFieldUser     = "user"
 	ModelFieldDrink    = "drink"
 	ModelFieldCategory = "category"
-	ModelFieldFeedback = "feedback"
-	ModelFieldSalary   = "salary"
-	ModelFieldEvent    = "event"
-	ModelFieldShift    = "shift"
-	ModelFieldOrder    = "order"
-	ModelFieldStaff    = "staff"
+
+	ModelFieldEvent = "event"
+	ModelFieldOrder = "order"
+	ModelFieldStaff = "staff"
 
 	PermissionView   = "view"
 	PermissionEdit   = "edit"
@@ -121,79 +113,6 @@ var (
 				},
 				bson.M{
 					"_id":  "drink_delete",
-					"name": "Delete",
-				},
-			},
-		},
-
-		// 3. feedback
-		bson.M{
-			"_id":  "feedback",
-			"name": "feedback",
-			"permissions": []interface{}{
-				bson.M{
-					"_id":     "feedback_admin",
-					"name":    "Admin",
-					"isAdmin": true,
-				},
-				bson.M{
-					"_id":  "feedback_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "feedback_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id":  "feedback_delete",
-					"name": "Delete",
-				},
-			},
-		},
-		// 4. shift
-		bson.M{
-			"_id":  "shift",
-			"name": "shift",
-			"permissions": []interface{}{
-				bson.M{
-					"_id":     "shift_admin",
-					"name":    "Admin",
-					"isAdmin": true,
-				},
-				bson.M{
-					"_id":  "shift_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "shift_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id":  "shift_delete",
-					"name": "Delete",
-				},
-			},
-		},
-		// 4. salary
-		bson.M{
-			"_id":  "salary",
-			"name": "salary",
-			"permissions": []interface{}{
-				bson.M{
-					"_id":     "salary_admin",
-					"name":    "Admin",
-					"isAdmin": true,
-				},
-				bson.M{
-					"_id":  "salary_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "salary_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id":  "salary_delete",
 					"name": "Delete",
 				},
 			},
@@ -289,17 +208,17 @@ var (
 	}
 )
 
-const (
-	SalaryMonthTypeJanuary   = "thang_1"
-	SalaryMonthTypeFebruary  = "thang_2"
-	SalaryMonthTypeMarch     = "thang_3"
-	SalaryMonthTypeApril     = "thang_4"
-	SalaryMonthTypeMay       = "thang_5"
-	SalaryMonthTypeJune      = "thang_6"
-	SalaryMonthTypeJuly      = "thang_7"
-	SalaryMonthTypeAugust    = "thang_8"
-	SalaryMonthTypeSeptember = "thang_9"
-	SalaryMonthTypeOctober   = "thang_10"
-	SalaryMonthTypeNovember  = "thang_11"
-	SalaryMonthTypeDecember  = "thang_12"
-)
+// const (
+// 	SalaryMonthTypeJanuary   = "thang_1"
+// 	SalaryMonthTypeFebruary  = "thang_2"
+// 	SalaryMonthTypeMarch     = "thang_3"
+// 	SalaryMonthTypeApril     = "thang_4"
+// 	SalaryMonthTypeMay       = "thang_5"
+// 	SalaryMonthTypeJune      = "thang_6"
+// 	SalaryMonthTypeJuly      = "thang_7"
+// 	SalaryMonthTypeAugust    = "thang_8"
+// 	SalaryMonthTypeSeptember = "thang_9"
+// 	SalaryMonthTypeOctober   = "thang_10"
+// 	SalaryMonthTypeNovember  = "thang_11"
+// 	SalaryMonthTypeDecember  = "thang_12"
+// )

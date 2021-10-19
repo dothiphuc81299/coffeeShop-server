@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"sync"
 	"time"
 
@@ -20,7 +19,6 @@ type StaffAdminService struct {
 	SessionDAO model.SessionDAO
 	StaffRole  model.StaffRoleDAO
 	OrderDAO   model.OrderDAO
-	ShiftDAO   model.ShiftDAO
 }
 
 // GetToken ...
@@ -184,72 +182,6 @@ func (sfs *StaffAdminService) getMonthNow(cond bson.M, date string) {
 		"$gte": from,
 		"$lt":  to,
 	}
-	fmt.Println("Cond : ", cond)
-}
-
-func (sfs *StaffAdminService) GetDetailSalary(ctx context.Context, staff model.StaffRaw) (res model.SalaryResponse) {
-	staffRes := model.StaffInfo{
-		ID:       staff.ID,
-		Username: staff.Username,
-		Address:  staff.Address,
-		Phone:    staff.Phone,
-	}
-
-	now := time.Now()
-	_, m, _ := now.Date()
-	if staff.Username == "shipper" {
-		cond := bson.M{
-			"shipper": staff.ID,
-		}
-		sfs.getMonthNow(cond, "updatedAt")
-		total := sfs.OrderDAO.CountByCondition(ctx, cond)
-		if total > 10 {
-			res.Allowance = 10000
-			res.Coefficient = 50000
-			res.TotalShift = float64(total)
-			res.TotalSalary = float64(total)*res.Coefficient + res.Allowance
-		} else {
-			res.Allowance = 0
-			res.Coefficient = 50000
-			res.TotalShift = float64(total)
-			res.TotalSalary = float64(total)*res.Coefficient + res.Allowance
-		}
-
-		res.Month = m.String()
-		res.Staff = staffRes
-
-	} else {
-		cond := bson.M{
-			"isCheck": true,
-			"staff":   staff.ID,
-		}
-
-		sfs.getMonthNow(cond, "date")
-
-		res.Allowance = 200000
-
-		totalShift := sfs.ShiftDAO.CountByCondition(ctx, cond)
-		if totalShift > 10 {
-			res.Allowance = 100000
-			res.Coefficient = 50000
-			res.TotalShift = float64(totalShift)
-			res.TotalSalary = float64(totalShift)*res.Coefficient + res.Allowance
-
-		} else {
-			res.Allowance = 0
-			res.Coefficient = 50000
-			res.TotalShift = float64(totalShift)
-			res.TotalSalary = float64(totalShift)*res.Coefficient + res.Allowance
-		}
-		res.Month = m.String()
-		res.Staff = staffRes
-
-	}
-	return res
-}
-
-func (sfs *StaffAdminService) GetListSalary(ctx context.Context, query model.CommonQuery) []model.SalaryResponse {
-	panic("TODo")
 }
 
 // NewStaffAdminService ...
@@ -259,6 +191,5 @@ func NewStaffAdminService(sd *model.CommonDAO) model.StaffAdminService {
 		SessionDAO: sd.Session,
 		StaffRole:  sd.StaffRole,
 		OrderDAO:   sd.Order,
-		ShiftDAO:   sd.Shift,
 	}
 }

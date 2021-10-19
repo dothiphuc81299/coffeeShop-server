@@ -40,7 +40,6 @@ type UserInfo struct {
 	ID       primitive.ObjectID `json:"_id"`
 	UserName string             `json:"username"`
 	Address  string             `json:"address"`
-	Position Position           `json:"position"`
 }
 
 type StatusBody struct {
@@ -123,6 +122,5 @@ func (u UserRaw) GetUserInfo() UserInfo {
 		ID:       u.ID,
 		UserName: u.Username,
 		Address:  u.Address,
-		Position: u.Position,
 	}
 }

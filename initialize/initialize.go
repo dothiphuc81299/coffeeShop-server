@@ -12,9 +12,11 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	roleDAO "github.com/dothiphuc81299/coffeeShop-server/role/dao"
+
+	gameDAO "github.com/dothiphuc81299/coffeeShop-server/game/dao"
+
 	roleservice "github.com/dothiphuc81299/coffeeShop-server/role/service"
 
-	feedbackDAO "github.com/dothiphuc81299/coffeeShop-server/feedback/dao"
 	orderDAO "github.com/dothiphuc81299/coffeeShop-server/order/dao"
 	orderservice "github.com/dothiphuc81299/coffeeShop-server/order/service"
 	userDAO "github.com/dothiphuc81299/coffeeShop-server/user/dao"
@@ -26,17 +28,11 @@ import (
 
 	eventservice "github.com/dothiphuc81299/coffeeShop-server/event/service"
 
-	shiftDAO "github.com/dothiphuc81299/coffeeShop-server/shift/dao"
-	shiftservice "github.com/dothiphuc81299/coffeeShop-server/shift/service"
-
+	gameservice "github.com/dothiphuc81299/coffeeShop-server/game/service"
 	staffDAO "github.com/dothiphuc81299/coffeeShop-server/staff/dao"
 	staffservice "github.com/dothiphuc81299/coffeeShop-server/staff/service"
 	staffroleDAO "github.com/dothiphuc81299/coffeeShop-server/staffrole/dao"
 	staffroleservice "github.com/dothiphuc81299/coffeeShop-server/staffrole/service"
-
-	feedbackservice "github.com/dothiphuc81299/coffeeShop-server/feedback/service"
-
-	salaryservice "github.com/dothiphuc81299/coffeeShop-server/salary/service"
 )
 
 // InitAdminServices ...
@@ -50,23 +46,19 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 
 		Event: eventservice.NewEventAdminService(d),
 
-		Shift: shiftservice.NewShiftAdminService(d),
-
-		StaffRole:     staffroleservice.NewStaffRoleAdminService(d),
-		Staff:         staffservice.NewStaffAdminService(d),
-		Order:         orderservice.NewOrderAdminService(d),
-		Feedback:      feedbackservice.NewFeedbackAdminService(d),
-		DrinkAnalytic: orderservice.NewDrinkAnalyticService(d),
+		StaffRole: staffroleservice.NewStaffRoleAdminService(d),
+		Staff:     staffservice.NewStaffAdminService(d),
+		Order:     orderservice.NewOrderAdminService(d),
+		Question:  gameservice.NewQuestionAdminService(d),
+		Group:     gameservice.NewGroupAdminService(d),
 	}
 }
 
 func InitAppService(d *model.CommonDAO) *model.AppService {
 	return &model.AppService{
-		User:     userservice.NewUserAppService(d),
-		Order:    orderservice.NewOrderAppService(d),
-		Feedback: feedbackservice.NewFeedbackAppService(d),
-		Salary:   salaryservice.NewSalaryAppService(d),
-		Staff:    staffservice.NewStaffAppService(d),
+		User:  userservice.NewUserAppService(d),
+		Order: orderservice.NewOrderAppService(d),
+		Staff: staffservice.NewStaffAppService(d),
 	}
 }
 
@@ -85,22 +77,21 @@ func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
 	db := client.Database(dbCfg.Name)
 
 	return db, &model.CommonDAO{
-		Drink:         drinkDAO.NewDrinkDAO(db),
-		DrinkAnalytic: drinkDAO.NewDrinkAnalyticDAO(db),
-		Category:      categoryDAO.NewCategoryDAO(db),
+		Drink:    drinkDAO.NewDrinkDAO(db),
+		Category: categoryDAO.NewCategoryDAO(db),
 
-		User:     userDAO.NewUserDAO(db),
-		Role:     roleDAO.NewRoleDAO(db),
-		Order:    orderDAO.NewOrderDAO(db),
-		Feedback: feedbackDAO.NewFeedbackDAO(db),
+		User:  userDAO.NewUserDAO(db),
+		Role:  roleDAO.NewRoleDAO(db),
+		Order: orderDAO.NewOrderDAO(db),
 
-		Event: eventDAO.NewEventDAO(db),
-
-		Shift:         shiftDAO.NewShiftDAO(db),
-		ShiftAnalytic: shiftDAO.NewShiftAnalyticDAO(db),
-
-		Staff:     staffDAO.NewStaffDAO(db),
-		StaffRole: staffroleDAO.NewStaffRoleDAO(db),
-		Session:   staffDAO.NewSessionDAO(db),
+		Event:            eventDAO.NewEventDAO(db),
+		Staff:            staffDAO.NewStaffDAO(db),
+		StaffRole:        staffroleDAO.NewStaffRoleDAO(db),
+		Session:          staffDAO.NewSessionDAO(db),
+		Package:          gameDAO.NewPackageDAO(db),
+		Question:         gameDAO.NewQuestionDAO(db),
+		PackageGroup:     gameDAO.NewPackageGroupDAO(db),
+		UserPackageGroup: gameDAO.NewUserPackageGroupDAO(db),
+		Group:            gameDAO.NewGroupDAO(db),
 	}
 }

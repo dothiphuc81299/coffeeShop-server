@@ -35,6 +35,17 @@ type CommonQuery struct {
 	Month    string
 }
 
+func (q *CommonQuery) GetFindOptions() *options.FindOptions {
+	opts := options.Find()
+	if q.Limit > 0 {
+		opts.SetLimit(q.Limit).SetSkip(q.Limit * q.Page)
+	}
+	if len(q.Sort) > 0 {
+		opts = opts.SetSort(q.Sort)
+	}
+	return opts
+}
+
 // AssignKeyword ...
 func (q *CommonQuery) AssignKeyword(cond *bson.M) {
 	if q.Keyword != "" {

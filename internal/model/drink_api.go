@@ -15,8 +15,7 @@ type DrinkBody struct {
 	Name     string  `json:"name"`
 	Category string  `json:"category"`
 	Price    float64 `json:"price"`
-	//	Photo    *FilePhoto `json:"photo"`
-	Image string `json:"image"`
+	Image    string  `json:"image"`
 }
 
 // DrinkAdminResponse ...
@@ -25,9 +24,8 @@ type DrinkAdminResponse struct {
 	Name     string       `json:"name"`
 	Category CategoryInfo `json:"category"`
 	Price    float64      `json:"price"`
-	//	Photo    *FilePhoto   `json:"photo,omitempty"`
-	Image  string `json:"image"`
-	Active bool   `json:"active"`
+	Image    string       `json:"image"`
+	Active   bool         `json:"active"`
 }
 
 type CategoryInfo struct {
@@ -68,9 +66,8 @@ func (b DrinkRaw) DrinkGetAdminResponse(c CategoryInfo) DrinkAdminResponse {
 		Name:     b.Name,
 		Category: c,
 		Price:    b.Price,
-		//Photo:    b.Photo,
-		Image:  b.Image,
-		Active: b.Active,
+		Image:    b.Image,
+		Active:   b.Active,
 	}
 }
 

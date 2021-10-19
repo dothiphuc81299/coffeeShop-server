@@ -39,11 +39,6 @@ const (
 	AuthKeyUserUnActive            = "UserUnActive"
 	CommonKeyCanNotCreateUser      = "CanNotCreateUser"
 	UserKeyCanNotChangeStatus      = "UserCanNotChangeStatus"
-	FeedbackKeyNameIsRequired      = "FeedbackNameIsRequired"
-	FeedbackKeyRatingIsRequired    = "FeedbackRatingIsRequired"
-	FeedbackKeyOrderIsRequired     = "FeedbackOrderIsRequired"
-	FeedbackKeyOrderInvalid        = "FeedbackOrderInvalid"
-	FeedbackKeyCanNotCreate        = "FeedbackCanNotCreate"
 	OrderKeyDrinkCanNotFind        = "OrderDrinkCanNotFind"
 	OrderKeyCanNotCreateOrder      = "OrderCanNotCreateOrder"
 	OrderKeyCanNotFindUserByUserID = "OrderCanNotFindUserByUserID"
@@ -87,11 +82,6 @@ type (
 		AccountUnActive             string `properties:"accountUnActive"`
 		CanNotCreateUser            string `properties:"canNotCreateUser"`
 		UserCanNotChangeStatus      string `properties:"userCanNotChangeStatus"`
-		FeedbackNameIsRequired      string `properties:"feedbackNameIsRequired"`
-		FeedbackRatingIsRequired    string `properties:"feedbackRatingIsRequired"`
-		FeedbackOrderIsRequired     string `properties:"feedbackOrderIsRequired"`
-		FeedbackOrderInvalid        string `properties:"feedbackOrderInvalid"`
-		FeedbackCanNotCreate        string `properties:"feedbackCanNotCreate"`
 		OrderDrinkCanNotFind        string `properties:"orderDrinkCanNotFind"`
 		OrderCanNotCreateOrder      string `properties:"orderCanNotCreateOrder"`
 		OrderCanNotFindUserByUserID string `properties:"orderCanNotFindUserByUserID"`
@@ -321,46 +311,7 @@ func commonLoadLocales() (response []Locale) {
 			},
 			Code: 38,
 		},
-		{
-			Key: FeedbackKeyNameIsRequired,
-			Message: &Message{
 
-				Vi: commonVi.FeedbackNameIsRequired,
-			},
-			Code: 39,
-		},
-		{
-			Key: FeedbackKeyRatingIsRequired,
-			Message: &Message{
-
-				Vi: commonVi.FeedbackRatingIsRequired,
-			},
-			Code: 40,
-		},
-		{
-			Key: FeedbackKeyOrderIsRequired,
-			Message: &Message{
-
-				Vi: commonVi.FeedbackOrderIsRequired,
-			},
-			Code: 41,
-		},
-		{
-			Key: FeedbackKeyOrderInvalid,
-			Message: &Message{
-
-				Vi: commonVi.FeedbackOrderInvalid,
-			},
-			Code: 42,
-		},
-		{
-			Key: FeedbackKeyCanNotCreate,
-			Message: &Message{
-
-				Vi: commonVi.FeedbackCanNotCreate,
-			},
-			Code: 43,
-		},
 		{
 			Key: OrderKeyDrinkCanNotFind,
 			Message: &Message{

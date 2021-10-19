@@ -29,8 +29,6 @@ type StaffAdminService interface {
 	GetToken(ctx context.Context, staffID AppID) (string, error)
 	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
 	StaffLogin(ctx context.Context, stafflogin StaffLoginBody) (StaffResponse, error)
-	GetDetailSalary(ctx context.Context, staff StaffRaw) SalaryResponse
-	GetListSalary(ctx context.Context, query CommonQuery) []SalaryResponse
 }
 
 type StaffAppService interface {
@@ -76,8 +74,8 @@ func (u *StaffRaw) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"_id":      u.ID,
 		"username": u.Username,
-		//"password": u.Password,
-		//	"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
+		"phone":    u.Phone,
+		"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
 	return tokenString

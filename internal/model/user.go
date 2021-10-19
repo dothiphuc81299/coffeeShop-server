@@ -45,12 +45,6 @@ type UserRaw struct {
 	UpdatedAt    time.Time `bson:"updatedAt"`
 	Address      string    `bson:"address"`
 	SearchString string    `bson:"searchString"`
-	Position     Position  `bson:"position"`
-}
-
-type Position struct {
-	Lat float64 `bson:"lat" json:"lat"`
-	Ing float64 `bson:"lng" json:"lng"`
 }
 
 // GetAdminResponse ...
@@ -63,7 +57,6 @@ func (u *UserRaw) GetAdminResponse() UserAdminResponse {
 		Avatar:    u.Avatar,
 		CreatedAt: u.CreatedAt,
 		Address:   u.Address,
-		Position:  u.Position,
 	}
 }
 
@@ -72,7 +65,7 @@ func (u *UserRaw) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"_id":      u.ID,
 		"username": u.Username,
-		"password": u.Password,
+		"phone":    u.Phone,
 		"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
