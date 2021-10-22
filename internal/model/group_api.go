@@ -8,17 +8,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type GroupAdminResponse struct {
-}
 
 type QuizGroupCommon struct {
-	ID            primitive.ObjectID   `json:"_id"`
-	Name          string               `json:"name"`
-	Quizzes       []primitive.ObjectID `json:"quizzes"`
-	Active        bool                 `json:"active"`
-	CreatedAt     TimeResponse         `json:"createdAt"`
-	UpdatedAt     TimeResponse         `json:"updatedAt"`
-	ReferenceLink string               `json:"referenceLink"`
+	ID        primitive.ObjectID   `json:"_id"`
+	Name      string               `json:"name"`
+	Quizzes   []primitive.ObjectID `json:"quizzes"`
+	Active    bool                 `json:"active"`
+	CreatedAt TimeResponse         `json:"createdAt"`
+	UpdatedAt TimeResponse         `json:"updatedAt"`
 }
 type QuizGroupBody struct {
 	Name    string   `json:"name"`

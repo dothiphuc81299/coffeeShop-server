@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,9 +18,9 @@ type PackageDAO interface {
 
 // PackageAdminService ....
 type PackageAdminService interface {
-	Create(ctx context.Context, body PackageBody) (PackageAdminResponse, error)
+	Create(ctx context.Context, body PackageBody) error
 	ListAll(ctx context.Context, q CommonQuery) ([]PackageAdminResponse, int64)
-	Update(ctx context.Context, c PackageRaw, body PackageBody) (PackageAdminResponse, error)
+	Update(ctx context.Context, c PackageRaw, body PackageBody) error
 	FindByID(ctx context.Context, id AppID) (Package PackageRaw, err error)
 	GetDetail(ctx context.Context, cate PackageRaw) PackageAdminResponse
 }
@@ -31,4 +32,6 @@ type PackageRaw struct {
 	Reward     float64            `bson:"reward"`
 	NumberQuiz float64            `bson:"numberQuiz"`
 	MinusPoint float64            `bson:"minusPoint"`
+	CreatedAt  time.Time          `bson:"createdAt"`
+	UpdatedAt  time.Time          `bson:"updatedAt"`
 }

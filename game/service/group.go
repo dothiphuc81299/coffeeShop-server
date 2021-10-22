@@ -14,13 +14,15 @@ import (
 
 // GroupAdminService ...
 type GroupAdminService struct {
-	GroupDAO model.GroupDAO
+	GroupDAO    model.GroupDAO
+	QuestionDAO model.QuestionDAO
 }
 
 // NewGroupAdminService ...
 func NewGroupAdminService(d *model.CommonDAO) model.GroupAdminService {
 	return &GroupAdminService{
-		GroupDAO: d.Group,
+		GroupDAO:    d.Group,
+		QuestionDAO: d.Question,
 	}
 }
 
@@ -41,7 +43,7 @@ func (g *GroupAdminService) Create(ctx context.Context, body model.QuizGroupBody
 }
 
 func (g *GroupAdminService) checkQuizExistedByID(ctx context.Context, id primitive.ObjectID) int {
-	total := g.GroupDAO.CountByCondition(ctx, bson.M{"_id": id})
+	total := g.QuestionDAO.CountByCondition(ctx, bson.M{"_id": id})
 	return int(total)
 }
 

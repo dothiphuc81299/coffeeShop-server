@@ -19,6 +19,6 @@ func InitGroupAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g.PUT("/:groupID", h.Update, h.GroupGetByID, validation.GroupBodyValidation)
 
 	// change status
-	g.PATCH("/:groupID", h.ChangeStatus, h.GroupGetByID)
+	g.PATCH("/:groupID/status", h.ChangeStatus, h.GroupGetByID)
 	g.GET("", h.ListAll)
 }

@@ -86,20 +86,6 @@ func (d *QuestionAdminHandler) ListAll(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
-// func (d *QuestionAdminHandler) GetDetail(c echo.Context) error {
-// 	var (
-// 		customCtx = util.EchoGetCustomCtx(c)
-
-// 		question = c.Get("question").(model.QuestionRaw)
-// 	)
-
-// 	data := d.QuestionAdminService.GetDetail(customCtx.GetRequestCtx(), question)
-
-// 	result := model.ResponseAdminData{
-// 		Data: data,
-// 	}
-// 	return customCtx.Response200(result, "")
-// }
 
 func (d *QuestionAdminHandler) QuestionGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -121,3 +107,19 @@ func (d *QuestionAdminHandler) QuestionGetByID(next echo.HandlerFunc) echo.Handl
 		return next(c)
 	}
 }
+
+
+// func (d *QuestionAdminHandler) GetDetail(c echo.Context) error {
+// 	var (
+// 		customCtx = util.EchoGetCustomCtx(c)
+
+// 		question = c.Get("question").(model.QuestionRaw)
+// 	)
+
+// 	data := d.QuestionAdminService.GetDetail(customCtx.GetRequestCtx(), question)
+
+// 	result := model.ResponseAdminData{
+// 		Data: data,
+// 	}
+// 	return customCtx.Response200(result, "")
+// }

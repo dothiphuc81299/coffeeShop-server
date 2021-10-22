@@ -16,9 +16,9 @@ func InitQuestionAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO)
 	g := e.Group("/game/questions")
 	g.POST("", h.Create, validation.QuestionBodyValidation)
 
-	g.PUT("/:questionID", h.Update, h.QuestionGetByID, validation.QuestionBodyValidation)
+	g.PUT("/:questionID", h.Update, h.QuestionGetByID, validation.QuestionValidationBodyUpdate)
 
 	// change status
-	g.PATCH("/:questionID", h.ChangeStatus, h.QuestionGetByID)
+	g.PATCH("/:questionID/status", h.ChangeStatus, h.QuestionGetByID)
 	g.GET("", h.ListAll)
 }

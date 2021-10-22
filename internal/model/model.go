@@ -39,6 +39,8 @@ type AdminService struct {
 	DrinkAnalytic DrinkAnalyticService
 	Question      QuestionAdminService
 	Group         GroupAdminService
+	Package       PackageAdminService
+	PackageGroup  PackageGroupAdminService
 }
 
 type AppService struct {

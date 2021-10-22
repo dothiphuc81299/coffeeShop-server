@@ -46,11 +46,13 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 
 		Event: eventservice.NewEventAdminService(d),
 
-		StaffRole: staffroleservice.NewStaffRoleAdminService(d),
-		Staff:     staffservice.NewStaffAdminService(d),
-		Order:     orderservice.NewOrderAdminService(d),
-		Question:  gameservice.NewQuestionAdminService(d),
-		Group:     gameservice.NewGroupAdminService(d),
+		StaffRole:    staffroleservice.NewStaffRoleAdminService(d),
+		Staff:        staffservice.NewStaffAdminService(d),
+		Order:        orderservice.NewOrderAdminService(d),
+		Question:     gameservice.NewQuestionAdminService(d),
+		Group:        gameservice.NewGroupAdminService(d),
+		Package:      gameservice.NewPackageAdminService(d),
+		PackageGroup: gameservice.NewPackageGroupAdminService(d),
 	}
 }
 
