@@ -47,18 +47,6 @@ func (p *PackageGroupAdminHandler) Update(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
-func (p *PackageGroupAdminHandler) GetPackageGroupByPackageID(c echo.Context) error {
-	var (
-		customCtx = util.EchoGetCustomCtx(c)
-		raw       = c.Get("package").(model.PackageRaw)
-	)
-
-	data := p.PackageGroupAdminService.GetPackageGroupByPackageID(customCtx.GetRequestCtx(), raw.ID)
-	return customCtx.Response200(echo.Map{
-		"result": data,
-	}, "")
-}
-
 func (p *PackageGroupAdminHandler) PackageGroupGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		customCtx := util.EchoGetCustomCtx(c)
@@ -80,3 +68,24 @@ func (p *PackageGroupAdminHandler) PackageGroupGetByID(next echo.HandlerFunc) ec
 		return next(c)
 	}
 }
+
+// func (d *PackageGroupAdminHandler) PackageGetByID(next echo.HandlerFunc) echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		customCtx := util.EchoGetCustomCtx(c)
+// 		id := c.Param("packageID")
+// 		if id == "" {
+// 			return next(c)
+// 		}
+// 		packageID := util.GetAppIDFromHex(id)
+// 		if packageID.IsZero() {
+// 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
+// 		}
+// 		packag, err := d.PackageAdminService.FindByID(customCtx.GetRequestCtx(), packageID)
+// 		if err != nil {
+// 			return customCtx.Response404(nil, locale.CommonKeyNotFound)
+// 		}
+
+// 		c.Set("package", packag)
+// 		return next(c)
+// 	}
+// }

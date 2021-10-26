@@ -10,7 +10,8 @@ import (
 // InitPackageAdmin
 func InitPackageAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	h := &handler.PackageAdminHandler{
-		PackageAdminService: cs.Package,
+		PackageAdminService:      cs.Package,
+		PackageGroupAdminService: cs.PackageGroup,
 	}
 
 	g := e.Group("/game/packages")
@@ -19,4 +20,6 @@ func InitPackageAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) 
 	g.PUT("/:packageID", h.Update, h.PackageGetByID, validation.PackageBodyValidation)
 	g.GET("", h.ListAll)
 	g.GET("/:packageID", h.GetDetail, h.PackageGetByID)
+	//g.GET("/:packageID", h.GetPackageGroupByPackageID,)
+	g.GET("-groups/:packageID", h.GetPackageGroupByPackageID, h.PackageGetByID)
 }

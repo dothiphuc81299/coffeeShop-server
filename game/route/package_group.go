@@ -16,5 +16,4 @@ func InitPackageGroupAdmin(e *echo.Echo, cs *model.AdminService, d *model.Common
 	g := e.Group("/game/package-groups")
 	g.POST("", h.Create, validation.PackageGroupBodyValidation)
 	g.PUT("/:packageGroupID", h.Update, h.PackageGroupGetByID, validation.PackageGroupBodyValidation)
-	g.GET("/:packageID", h.GetPackageGroupByPackageID, h.PackageGroupGetByID)
 }

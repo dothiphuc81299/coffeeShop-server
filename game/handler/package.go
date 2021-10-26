@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
@@ -8,7 +10,8 @@ import (
 )
 
 type PackageAdminHandler struct {
-	PackageAdminService model.PackageAdminService
+	PackageAdminService      model.PackageAdminService
+	PackageGroupAdminService model.PackageGroupAdminService
 }
 
 // Create ...
@@ -77,7 +80,7 @@ func (d *PackageAdminHandler) GetDetail(c echo.Context) error {
 
 	data := d.PackageAdminService.GetDetail(customCtx.GetRequestCtx(), raw)
 	return customCtx.Response200(echo.Map{
-		"category": data,
+		"result": data,
 	}, "")
 }
 
@@ -100,4 +103,16 @@ func (d *PackageAdminHandler) PackageGetByID(next echo.HandlerFunc) echo.Handler
 		c.Set("package", packag)
 		return next(c)
 	}
+}
+
+func (p *PackageAdminHandler) GetPackageGroupByPackageID(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		raw       = c.Get("package").(model.PackageRaw)
+	)
+	fmt.Println("raw", raw.ID)
+	data := p.PackageGroupAdminService.GetPackageGroupByPackageID(customCtx.GetRequestCtx(), raw.ID)
+	return customCtx.Response200(echo.Map{
+		"result": data,
+	}, "")
 }
