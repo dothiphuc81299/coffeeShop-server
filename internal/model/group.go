@@ -27,10 +27,11 @@ type GroupAdminService interface {
 }
 
 type QuizGroupRaw struct {
-	ID        primitive.ObjectID   `bson:"_id"`
-	Name      string               `bson:"name"`
-	Quizzes   []primitive.ObjectID `bson:"quizzes"`
-	Active    bool                 `bson:"active"`
-	CreatedAt time.Time            `bson:"createdAt"`
-	UpdatedAt time.Time            `bson:"updatedAt"`
+	ID            primitive.ObjectID   `bson:"_id"`
+	Name          string               `bson:"name"`
+	Quizzes       []primitive.ObjectID `bson:"quizzes"`
+	Active        bool                 `bson:"active"`
+	CreatedAt     time.Time            `bson:"createdAt"`
+	UpdatedAt     time.Time            `bson:"updatedAt"`
+	TotalQuestion float64              `bson:"totalQuestion"`
 }

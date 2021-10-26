@@ -89,6 +89,8 @@ func (g *GroupAdminService) Update(ctx context.Context, group model.QuizGroupRaw
 	group.Quizzes = payload.Quizzes
 	group.Name = payload.Name
 	group.UpdatedAt = payload.UpdatedAt
+	total := len(payload.Quizzes)
+	group.TotalQuestion = float64(total)
 
 	err := g.GroupDAO.UpdateByID(ctx, group.ID, bson.M{"$set": group})
 

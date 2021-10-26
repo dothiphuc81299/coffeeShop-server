@@ -8,14 +8,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
 type QuizGroupCommon struct {
-	ID        primitive.ObjectID   `json:"_id"`
-	Name      string               `json:"name"`
-	Quizzes   []primitive.ObjectID `json:"quizzes"`
-	Active    bool                 `json:"active"`
-	CreatedAt TimeResponse         `json:"createdAt"`
-	UpdatedAt TimeResponse         `json:"updatedAt"`
+	ID            primitive.ObjectID   `json:"_id"`
+	Name          string               `json:"name"`
+	Quizzes       []primitive.ObjectID `json:"quizzes"`
+	Active        bool                 `json:"active"`
+	CreatedAt     TimeResponse         `json:"createdAt"`
+	UpdatedAt     TimeResponse         `json:"updatedAt"`
+	TotalQuestion float64              `bson:"totalQuestion"`
 }
 type QuizGroupBody struct {
 	Name    string   `json:"name"`
@@ -44,25 +44,27 @@ func (l QuizGroupBody) QuizGroupNewBSON() QuizGroupRaw {
 		id, _ := primitive.ObjectIDFromHex(value)
 		quizzes = append(quizzes, id)
 	}
-
+	totalQuestion := len(quizzes)
 	return QuizGroupRaw{
-		ID:        primitive.NewObjectID(),
-		Name:      l.Name,
-		Quizzes:   quizzes,
-		Active:    l.Active,
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:            primitive.NewObjectID(),
+		Name:          l.Name,
+		Quizzes:       quizzes,
+		Active:        l.Active,
+		TotalQuestion: float64(totalQuestion),
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }
 
 // QuizGroupGetCommon ...
 func QuizGroupGetCommon(l QuizGroupRaw) QuizGroupCommon {
 	return QuizGroupCommon{
-		ID:        l.ID,
-		Active:    l.Active,
-		Quizzes:   l.Quizzes,
-		Name:      l.Name,
-		UpdatedAt: TimeResponse{Time: l.UpdatedAt},
-		CreatedAt: TimeResponse{Time: l.CreatedAt},
+		ID:            l.ID,
+		Active:        l.Active,
+		Quizzes:       l.Quizzes,
+		Name:          l.Name,
+		TotalQuestion: l.TotalQuestion,
+		UpdatedAt:     TimeResponse{Time: l.UpdatedAt},
+		CreatedAt:     TimeResponse{Time: l.CreatedAt},
 	}
 }

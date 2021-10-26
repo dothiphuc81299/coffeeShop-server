@@ -44,9 +44,10 @@ type AdminService struct {
 }
 
 type AppService struct {
-	User  UserAppService
-	Order OrderAppService
-	Staff StaffAppService
+	User        UserAppService
+	Order       OrderAppService
+	Staff       StaffAppService
+	UserPackage UserPackageGroupAppService
 }
 
 // ResponseAppListData ...
