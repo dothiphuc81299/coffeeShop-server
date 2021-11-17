@@ -9,3 +9,13 @@ web: cmd/admin/main.go
 heroku container:push web
 #release image
 heroku container:release web
+
+#how to build heroku 
+b1 : Create one dockerfile 
+b2: Command : docker build .
+b3. From image name, user : docker run -p 5000:5000 -e PORT=5000 <image-name> to run local
+b4 :heroku container:login
+b5: heroku create
+b6 heroku container:push web
+b7 : heroku container:release web
+

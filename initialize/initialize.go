@@ -9,6 +9,7 @@ import (
 	categoryservice "github.com/dothiphuc81299/coffeeShop-server/category/service"
 	drinkDAO "github.com/dothiphuc81299/coffeeShop-server/drink/dao"
 	drinkservice "github.com/dothiphuc81299/coffeeShop-server/drink/service"
+	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	roleDAO "github.com/dothiphuc81299/coffeeShop-server/role/dao"
 
@@ -64,10 +65,10 @@ func InitAppService(d *model.CommonDAO) *model.AppService {
 }
 
 // ConnectDB ..
-func ConnectDB() (*mongo.Database, *model.CommonDAO) {
-	//client, err := mongo.NewClient(options.Client().ApplyURI(dbCfg.URI))
+func ConnectDB(dbCfg config.MongoCfg) (*mongo.Database, *model.CommonDAO) {
+	client, err := mongo.NewClient(options.Client().ApplyURI(dbCfg.URI))
 	//	dbCfg config.MongoCfg
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://coffeeShop:coffeeShop@cluster0.puhkn.mongodb.net/Cluster0?retryWrites=true&w=majority"))
+	//client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://coffeeShop:coffeeShop@cluster0.puhkn.mongodb.net/Cluster0?retryWrites=true&w=majority"))
 
 	if err != nil {
 		fmt.Println(err)
@@ -78,8 +79,8 @@ func ConnectDB() (*mongo.Database, *model.CommonDAO) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//	db := client.Database(dbCfg.Name)
-	db := client.Database("CoffeeShop")
+	db := client.Database(dbCfg.Name)
+	//db := client.Database("CoffeeShop")
 
 	return db, &model.CommonDAO{
 		Drink:    drinkDAO.NewDrinkDAO(db),
