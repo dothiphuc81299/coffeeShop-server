@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -20,6 +19,8 @@ type OrderAppService struct {
 	DrinkAnalyticDAO model.DrinkAnalyticDAO
 }
 
+const POINT = 3000
+
 func NewOrderAppService(d *model.CommonDAO) model.OrderAppService {
 	return &OrderAppService{
 		OrderDAO:         d.Order,
@@ -32,9 +33,8 @@ func NewOrderAppService(d *model.CommonDAO) model.OrderAppService {
 func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order model.OrderBody) (doc model.OrderResponse, err error) {
 	// convert order payload
 	drinks := make([]model.DrinkInfo, 0)
-	drinkAnalytics := make([]model.DrinkAnalyticRaw, 0)
+
 	for _, value := range order.Drink {
-		drinkAnalytic := model.DrinkAnalyticRaw{}
 		drinkID, _ := primitive.ObjectIDFromHex(value.Name)
 		drinkRaw, err := o.DrinkDAO.FindOneByCondition(ctx, bson.M{"_id": drinkID})
 		if err != nil {
@@ -47,18 +47,36 @@ func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order 
 			Quantity: value.Quantity,
 		}
 		doc.TotalPrice += drink.Price * float64(drink.Quantity)
-
-		// append
-		drinkAnalytic.ID = primitive.NewObjectID()
-		drinkAnalytic.Category = drinkRaw.Category
-		drinkAnalytic.Name = drinkRaw.ID
-		drinkAnalytic.TotalDrink = float64(value.Quantity)
-		drinkAnalytic.UpdateAt = time.Now()
-		drinkAnalytic.CreatedAt = time.Now()
-
 		drinks = append(drinks, drink)
-		drinkAnalytics = append(drinkAnalytics, drinkAnalytic)
+	}
 
+	var currentPointUpdate float64
+	if !order.IsPoint {
+		// calculate currentPoint
+		if (doc.TotalPrice >= 30000) && (doc.TotalPrice) <= 50000 {
+			currentPointUpdate = user.CurrentPoint + 1
+			fmt.Println("cal", currentPointUpdate)
+		} else if (doc.TotalPrice > 50000) && (doc.TotalPrice) <= 100000 {
+			currentPointUpdate = user.CurrentPoint + 2
+		} else if doc.TotalPrice > 100000 {
+			currentPointUpdate = user.CurrentPoint + 3
+		}
+	}
+	if order.Point > 0 {
+		if user.CurrentPoint < order.Point {
+			return doc, errors.New("Ban nhap qua so diem tich luy")
+		}
+		missPoint := order.Point * POINT
+
+		if missPoint > doc.TotalPrice {
+			point := missPoint - doc.TotalPrice
+			point = point / POINT
+			currentPointUpdate = point
+			doc.TotalPrice = 0
+		} else {
+			doc.TotalPrice -= missPoint
+			currentPointUpdate = user.CurrentPoint - order.Point
+		}
 	}
 
 	orderPayload := order.NewOrderRaw(user.ID, drinks, doc.TotalPrice)
@@ -68,26 +86,11 @@ func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order 
 		return doc, errors.New(locale.OrderKeyCanNotCreateOrder)
 	}
 
-	// for _, drink := range drinks {
-	// 	a := model.DrinkAnalyticRaw{}
-	// 	a.Name = drink.ID
-	// 	a.TotalDrink = float64(drink.Quantity)
-	// 	a.UpdateAt = time.Now()
-	// 	a.CreatedAt = time.Now()
-	// 	drinkAnalytic = append(drinkAnalytic, a)
-	// }
-	// log.Println("doodod", drinkAnalytic)
-	var docs []interface{}
-	for _, item := range drinkAnalytics {
-		docs = append(docs, item)
+	if err = o.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"currentPoint": currentPointUpdate}}); err != nil {
+		return doc, errors.New("Cap nhat diem that bai")
 	}
-	if len(docs) > 0 {
-		if err := o.DrinkAnalyticDAO.InsertMany(ctx, docs); err != nil {
-			fmt.Println("Insert analytic err: ", err)
-		}
-	}
-	userInfo := user.GetUserInfo()
 
+	userInfo := user.GetUserInfo()
 	res := orderPayload.GetResponse(userInfo, drinks, orderPayload.Status)
 	return res, nil
 

@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
@@ -37,7 +35,7 @@ func (d *GroupAdminHandler) Update(c echo.Context) error {
 		QuizGroup = c.Get("quizGroup").(model.QuizGroupRaw)
 		body      = c.Get("body").(model.QuizGroupBody)
 	)
-	fmt.Println("1")
+
 	err := d.GroupAdminService.Update(customCtx.GetRequestCtx(), QuizGroup, body)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())

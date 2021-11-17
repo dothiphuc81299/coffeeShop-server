@@ -45,18 +45,20 @@ type UserRaw struct {
 	UpdatedAt    time.Time `bson:"updatedAt"`
 	Address      string    `bson:"address"`
 	SearchString string    `bson:"searchString"`
+	CurrentPoint float64   `bson:"currentPoint"`
 }
 
 // GetAdminResponse ...
 func (u *UserRaw) GetAdminResponse() UserAdminResponse {
 	return UserAdminResponse{
-		ID:        u.ID,
-		UserName:  u.Username,
-		Phone:     u.Phone,
-		Active:    u.Active,
-		Avatar:    u.Avatar,
-		CreatedAt: u.CreatedAt,
-		Address:   u.Address,
+		ID:           u.ID,
+		UserName:     u.Username,
+		Phone:        u.Phone,
+		Active:       u.Active,
+		Avatar:       u.Avatar,
+		CreatedAt:    u.CreatedAt,
+		Address:      u.Address,
+		CurrentPoint: u.CurrentPoint,
 	}
 }
 

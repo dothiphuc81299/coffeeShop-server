@@ -21,4 +21,7 @@ func InitQuestionAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO)
 	// change status
 	g.PATCH("/:questionID/status", h.ChangeStatus, h.QuestionGetByID)
 	g.GET("", h.ListAll)
+
+	// get detail quesition
+	g.GET("/:questionID", h.GetDetail, h.QuestionGetByID)
 }

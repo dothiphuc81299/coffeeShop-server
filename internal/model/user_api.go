@@ -33,26 +33,28 @@ type UserUpdateBody struct {
 
 // UserAdminResponse ...
 type UserAdminResponse struct {
-	ID        AppID     `json:"_id"`
-	UserName  string    `json:"username"`
-	Phone     string    `json:"phone"`
-	Active    bool      `json:"active"`
-	Avatar    string    `json:"avatar"`
-	CreatedAt time.Time `json:"createdAt"`
-	Address   string    `json:"address"`
+	ID           AppID     `json:"_id"`
+	UserName     string    `json:"username"`
+	Phone        string    `json:"phone"`
+	Active       bool      `json:"active"`
+	Avatar       string    `json:"avatar"`
+	CreatedAt    time.Time `json:"createdAt"`
+	Address      string    `json:"address"`
+	CurrentPoint float64   `json:"currentPoint"`
 }
 
 type UserLoginResponse struct {
-	ID        AppID     `json:"_id"`
-	Username  string    `json:"username"`
-	Phone     string    `json:"phone"`
-	Active    bool      `json:"active"`
-	Avatar    string    `json:"avatar"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Address   string    `json:"address"`
-	Token     string    `json:"token"`
-	Password  string    `json:"password"`
+	ID           AppID     `json:"_id"`
+	Username     string    `json:"username"`
+	Phone        string    `json:"phone"`
+	Active       bool      `json:"active"`
+	Avatar       string    `json:"avatar"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+	Address      string    `json:"address"`
+	Token        string    `json:"token"`
+	Password     string    `json:"password"`
+	CurrentPoint float64   `json:"currentPoint"`
 }
 
 type UserChangePasswordBody struct {
@@ -115,14 +117,15 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 
 func (u *UserRaw) GetUserLoginInResponse(token string) UserLoginResponse {
 	return UserLoginResponse{
-		ID:        u.ID,
-		Username:  u.Username,
-		Phone:     u.Phone,
-		Address:   u.Address,
-		Avatar:    u.Avatar,
-		CreatedAt: u.CreatedAt,
-		Token:     token,
-		Active:    u.Active,
-		Password:  u.Password,
+		ID:           u.ID,
+		Username:     u.Username,
+		Phone:        u.Phone,
+		Address:      u.Address,
+		Avatar:       u.Avatar,
+		CreatedAt:    u.CreatedAt,
+		Token:        token,
+		Active:       u.Active,
+		Password:     u.Password,
+		CurrentPoint: u.CurrentPoint,
 	}
 }

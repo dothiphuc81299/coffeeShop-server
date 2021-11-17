@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
@@ -25,8 +25,6 @@ func (h *OrderAppHandler) Create(c echo.Context) error {
 	)
 
 	data, err := h.OrderAppService.Create(cc.GetRequestCtx(), user, body)
-	log.Println("data", data)
-	log.Println("err", err)
 
 	if err != nil {
 		return cc.Response400(nil, err.Error())
@@ -82,6 +80,7 @@ func (h *OrderAppHandler) GetList(c echo.Context) error {
 	)
 
 	data, total := h.OrderAppService.GetList(cc.GetRequestCtx(), query, user)
+	fmt.Println("data", data)
 
 	return cc.Response200(echo.Map{
 		"order": data,

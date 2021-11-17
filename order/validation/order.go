@@ -13,10 +13,8 @@ func OrderBodyValidation(next echo.HandlerFunc) echo.HandlerFunc {
 		if err := body.Validate(); err != nil {
 			return util.ValidationError(c, err)
 		}
-		// log.Println("bodt2", body)
-		c.Set("orderBody", body)
 
-		//	log.Println("next", next(c))
+		c.Set("orderBody", body)
 		return next(c)
 
 	}

@@ -11,7 +11,6 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/thoas/go-funk"
 	"go.mongodb.org/mongo-driver/bson"
-
 )
 
 // QuestionAdminService ...
@@ -113,9 +112,9 @@ func (q *QuestionAdminService) FindByID(ctx context.Context, id model.AppID) (Qu
 	return q.QuestionDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 
-// func (q *QuestionAdminService) GetDetail(ctx context.Context, quest model.QuestionRaw) model.QuestionAdminResponse {
-
-// }
+func (q *QuestionAdminService) GetDetail(ctx context.Context, quest model.QuestionRaw) model.QuestionCommon {
+	return model.QuestionGetCommonAPI(quest)
+}
 
 func (q *QuestionAdminService) ChangeStatus(ctx context.Context, quiz model.QuestionRaw) (status bool, err error) {
 	active := !quiz.Active

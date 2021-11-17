@@ -22,7 +22,7 @@ type QuestionAdminService interface {
 	ListAll(ctx context.Context, q CommonQuery) ([]QuestionCommon, int64)
 	Update(ctx context.Context, c QuestionRaw, body QuestionBodyUpdate) error
 	FindByID(ctx context.Context, id AppID) (Question QuestionRaw, err error)
-	//	GetDetail(ctx context.Context, q QuestionRaw) QuestionCommon
+	GetDetail(ctx context.Context, q QuestionRaw) QuestionCommon
 	ChangeStatus(ctx context.Context, q QuestionRaw) (bool, error)
 }
 

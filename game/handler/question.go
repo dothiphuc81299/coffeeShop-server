@@ -5,6 +5,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type QuestionAdminHandler struct {
@@ -73,9 +74,12 @@ func (d *QuestionAdminHandler) ListAll(c echo.Context) error {
 			Active:  c.QueryParam("active"),
 			Limit:   customCtx.GetLimitQuery(),
 			Page:    customCtx.GetPageQuery(),
+			Sort: bson.D{
+				bson.E{
+					"order", 1},
+			},
 		}
 	)
-
 	data, total := d.QuestionAdminService.ListAll(customCtx.GetRequestCtx(), query)
 
 	result := model.ResponseAdminListData{
@@ -85,7 +89,6 @@ func (d *QuestionAdminHandler) ListAll(c echo.Context) error {
 	}
 	return customCtx.Response200(result, "")
 }
-
 
 func (d *QuestionAdminHandler) QuestionGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -108,18 +111,15 @@ func (d *QuestionAdminHandler) QuestionGetByID(next echo.HandlerFunc) echo.Handl
 	}
 }
 
+func (d *QuestionAdminHandler) GetDetail(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		question = c.Get("question").(model.QuestionRaw)
+	)
 
-// func (d *QuestionAdminHandler) GetDetail(c echo.Context) error {
-// 	var (
-// 		customCtx = util.EchoGetCustomCtx(c)
-
-// 		question = c.Get("question").(model.QuestionRaw)
-// 	)
-
-// 	data := d.QuestionAdminService.GetDetail(customCtx.GetRequestCtx(), question)
-
-// 	result := model.ResponseAdminData{
-// 		Data: data,
-// 	}
-// 	return customCtx.Response200(result, "")
-// }
+	data := d.QuestionAdminService.GetDetail(customCtx.GetRequestCtx(), question)
+	result := model.ResponseAdminData{
+		Data: data,
+	}
+	return customCtx.Response200(result, "")
+}

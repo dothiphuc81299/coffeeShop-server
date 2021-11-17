@@ -40,4 +40,6 @@ type OrderRaw struct {
 	CreatedAt  time.Time          `bson:"createdAt"`
 	UpdatedAt  time.Time          `bson:"updatedAt"`
 	Shipper    primitive.ObjectID `bson:"shipper,omitempty"`
+	IsPoint    bool               `bson:"is_point"`
+	Point      float64            `bson:"point"`
 }

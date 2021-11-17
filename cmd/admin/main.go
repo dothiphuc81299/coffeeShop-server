@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/initialize"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
+	//"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/server"
@@ -17,11 +17,12 @@ import (
 
 func init() {
 	locale.LoadProperties()
-	config.Init()
+	//config.Init()
 }
 
 func main() {
-	_, commonDAO := initialize.ConnectDB(config.GetEnv().Mongo)
+	_, commonDAO := initialize.ConnectDB()
+	// _, commonDAO := initialize.ConnectDB(config.GetEnv().Mongo)
 	service := initialize.InitAdminServices(commonDAO)
 	serviceApp := initialize.InitAppService(commonDAO)
 

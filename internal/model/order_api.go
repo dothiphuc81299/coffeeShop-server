@@ -11,7 +11,9 @@ import (
 )
 
 type OrderBody struct {
-	Drink []DrinkUserBody `json:"drink"`
+	Drink   []DrinkUserBody `json:"drink"`
+	IsPoint bool            `json:"is_point"`
+	Point   float64         `json:"point"`
 }
 
 type DrinkUserBody struct {
@@ -24,7 +26,7 @@ type OrderResponse struct {
 	ID         primitive.ObjectID `json:"_id"`
 	User       UserInfo           `json:"user"`
 	Drink      []DrinkInfo        `json:"drink"`
-	Status     string             `json:"status"` //pending,delivery,success
+	Status     string             `json:"status"` //pending,success
 	TotalPrice float64            `json:"totalPrice"`
 	CreatedAt  time.Time          `json:"createdAt"`
 }
@@ -47,7 +49,14 @@ type StatusBody struct {
 }
 
 func (o OrderBody) Validate() error {
-	return validation.Validate(o.Drink)
+	err := validation.Validate(o.Drink, validation.Required.Error("Don hang dang bi trong"))
+	if err != nil {
+		return err
+	}
+
+	return validation.ValidateStruct(&o,
+		validation.Field(&o.Point, validation.Required.When(o.IsPoint).Error("PointISRequired")),
+	)
 }
 
 func (d DrinkUserBody) Validate() error {
@@ -86,6 +95,8 @@ func (o OrderBody) NewOrderRaw(userID primitive.ObjectID, drink []DrinkInfo, tot
 		TotalPrice: totalPrice,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
+		IsPoint:    o.IsPoint,
+		Point:      o.Point,
 	}
 }
 

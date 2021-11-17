@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -62,13 +63,18 @@ func (q *CommonQuery) AssignStatus(cond *bson.M) {
 
 // AssignActive ...
 func (q *CommonQuery) AssignActive(cond *bson.M) {
-	if q.Active != "" {
-		if q.Active == "true" {
-			(*cond)["active"] = true
-		}
-		if q.Active == "false" {
-			(*cond)["active"] = false
-		}
+	// if q.Active != "" {
+	// 	if q.Active == "true" {
+	// 		(*cond)["active"] = true
+	// 	}
+	// 	if q.Active == "false" {
+	// 		(*cond)["active"] = false
+	// 	}
+	// }
+
+	if q.Active != "" && q.Active != "all" {
+		b, _ := strconv.ParseBool(q.Active)
+		(*cond)["active"] = b
 	}
 }
 
