@@ -7,7 +7,6 @@ import (
 	categoryroute "github.com/dothiphuc81299/coffeeShop-server/category/route"
 	middleware "github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	orderroute "github.com/dothiphuc81299/coffeeShop-server/order/route"
-	roleroute "github.com/dothiphuc81299/coffeeShop-server/role/route"
 	userroute "github.com/dothiphuc81299/coffeeShop-server/user/route"
 	"github.com/labstack/echo/v4"
 
@@ -45,7 +44,6 @@ func startAdminHandler(e *echo.Echo, service *model.AdminService, app *model.App
 	drinkroute.InitDrinkAdmin(e, service, d)
 	categoryroute.InitCategoryAdmin(e, service, d)
 	userroute.InitUserAdmin(e, service, d)
-	roleroute.InitRoleAdmin(e, service, d)
 
 	eventroute.InitEventAdmin(e, service, d)
 

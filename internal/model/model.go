@@ -6,7 +6,6 @@ type CommonDAO struct {
 	Category CategoryDAO
 
 	User UserDAO
-	Role RoleDAO
 
 	Order OrderDAO
 
@@ -29,9 +28,7 @@ type AdminService struct {
 	Drink    DrinkAdminService
 	Category CategoryAdminService
 	User     UserAdminService
-	Role     RoleService
-
-	Event EventAdminService
+	Event    EventAdminService
 
 	StaffRole     StaffRoleAdminService
 	Staff         StaffAdminService

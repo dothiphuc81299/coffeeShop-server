@@ -10,11 +10,8 @@ import (
 	drinkDAO "github.com/dothiphuc81299/coffeeShop-server/drink/dao"
 	drinkservice "github.com/dothiphuc81299/coffeeShop-server/drink/service"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	roleDAO "github.com/dothiphuc81299/coffeeShop-server/role/dao"
 
 	gameDAO "github.com/dothiphuc81299/coffeeShop-server/game/dao"
-
-	roleservice "github.com/dothiphuc81299/coffeeShop-server/role/service"
 
 	orderDAO "github.com/dothiphuc81299/coffeeShop-server/order/dao"
 	orderservice "github.com/dothiphuc81299/coffeeShop-server/order/service"
@@ -40,8 +37,6 @@ func InitAdminServices(d *model.CommonDAO) *model.AdminService {
 		Drink:    drinkservice.NewDrinkAdminService(d),
 		Category: categoryservice.NewCategoryAdminService(d),
 		User:     userservice.NewUserAdminService(d),
-
-		Role: roleservice.NewRoleAdminService(d),
 
 		Event: eventservice.NewEventAdminService(d),
 
@@ -86,7 +81,6 @@ func ConnectDB() (*mongo.Database, *model.CommonDAO) {
 		Category: categoryDAO.NewCategoryDAO(db),
 
 		User:  userDAO.NewUserDAO(db),
-		Role:  roleDAO.NewRoleDAO(db),
 		Order: orderDAO.NewOrderDAO(db),
 
 		Event:            eventDAO.NewEventDAO(db),
