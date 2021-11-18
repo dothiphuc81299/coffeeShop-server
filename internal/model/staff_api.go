@@ -89,7 +89,7 @@ func (stf StaffUpdateBodyByIt) Validate() error {
 // Validate ...
 func (stf StaffBody) Validate() error {
 	return validation.ValidateStruct(&stf,
-		validation.Field(&stf.Username),
+		validation.Field(&stf.Username,validation.Required.Error("username is required")),
 		validation.Field(&stf.Phone),
 		validation.Field(&stf.Address),
 		validation.Field(&stf.Role,

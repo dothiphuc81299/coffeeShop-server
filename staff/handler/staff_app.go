@@ -44,6 +44,19 @@ func (h *StaffAppHandler) UpdatePassword(c echo.Context) error {
 	return cc.Response200(echo.Map{}, "")
 }
 
+func (h *StaffAppHandler) GetDetailStaff(c echo.Context) error {
+
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+	data := h.StaffService.GetDetailStaff(cc.GetRequestCtx(), staff)
+
+	return cc.Response200(echo.Map{
+		"data": data,
+	}, "")
+}
+
 func (h *StaffAppHandler) StaffGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var (
@@ -63,3 +76,4 @@ func (h *StaffAppHandler) StaffGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+

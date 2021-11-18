@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/role/handler"
 	"github.com/dothiphuc81299/coffeeShop-server/role/validation"
@@ -16,7 +17,7 @@ func InitRoleAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r := e.Group("/roles")
 
 	// Create
-	r.POST("", h.Create, validation.RoleBodyValidation)
+	r.POST("", h.Create,middleware.CheckPermissionRoot(d), validation.RoleBodyValidation)
 
 	// List
 	r.GET("", h.List)

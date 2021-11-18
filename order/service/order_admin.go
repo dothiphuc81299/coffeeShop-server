@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"sort"
 	"sync"
 	"time"
 
@@ -46,9 +47,7 @@ func (o *OrderAdminService) GetListByStatus(ctx context.Context, query model.Com
 			go func(od model.OrderRaw, i int) {
 				defer wg.Done()
 				user, _ := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": od.User})
-
 				userInfo := user.GetUserInfo()
-
 				temp := od.GetResponse(userInfo, od.Drink, od.Status)
 				res[i] = temp
 
@@ -65,7 +64,7 @@ func (o *OrderAdminService) ChangeStatus(ctx context.Context, order model.OrderR
 	payload := bson.M{
 		"updatedAt": time.Now(),
 		"status":    status.Status,
-		"shipper":   staff.ID,
+		"updatedBy": staff.ID,
 	}
 
 	err = o.OrderDAO.UpdateByID(ctx, order.ID, bson.M{"$set": payload})
@@ -89,4 +88,65 @@ func (o *OrderAdminService) GetDetail(ctx context.Context, order model.OrderRaw)
 
 	res := order.GetResponse(userInfo, order.Drink, order.Status)
 	return res
+}
+
+var tempResutl = make([]model.StatisticByDrink, 0)
+
+func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.CommonQuery) (model.StatisticResponse, error) {
+	var (
+		cond = bson.M{
+			"status": "success",
+		}
+		res = model.StatisticResponse{}
+	)
+
+	query.AssignStartAtAndEndAtByStatistic(&cond)
+
+	orders, err := o.OrderDAO.FindByCondition(ctx, cond, query.GetFindOptionsUsingSort())
+	if err != nil {
+		return model.StatisticResponse{}, err
+	}
+
+	for _, i := range orders {
+		for _, drink := range i.Drink {
+			if !o.checkDuplicate(drink) {
+				dr := model.StatisticByDrink{
+					ID:            drink.ID,
+					Name:          drink.Name,
+					TotalQuantity: float64(drink.Quantity),
+					TotalSale:     float64(drink.Quantity) * drink.Price,
+				}
+				tempResutl = append(tempResutl, dr)
+			}
+		}
+	}
+
+	sort.Slice(tempResutl, func(i, j int) bool {
+		return tempResutl[j].TotalQuantity < tempResutl[i].TotalQuantity
+	})
+	var result = make([]model.StatisticByDrink, 0)
+	result = tempResutl
+	if len(tempResutl) > 3 {
+		result = tempResutl[:3]
+	}
+
+	for _, i := range result {
+		res.TotalQuantity += i.TotalQuantity
+		res.TotalSale += i.TotalSale
+	}
+
+	res.Statistic = result
+
+	return res, nil
+}
+
+func (s *OrderAdminService) checkDuplicate(drink model.DrinkInfo) bool {
+	for k, i := range tempResutl {
+		if i.ID == drink.ID {
+			tempResutl[k].TotalQuantity = tempResutl[k].TotalQuantity + float64(drink.Quantity)
+			tempResutl[k].TotalSale = tempResutl[k].TotalSale + float64(drink.Quantity)*drink.Price
+			return true
+		}
+	}
+	return false
 }

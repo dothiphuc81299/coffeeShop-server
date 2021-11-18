@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -64,4 +65,42 @@ func (w *OrderDAO) UpdateByID(ctx context.Context, id model.AppID, payload inter
 func (w *OrderDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc model.OrderRaw, err error) {
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
+}
+
+// AggregateOrder
+func (w *OrderDAO) AggregateOrder(ctx context.Context, cond interface{}) ([]*model.StatisticByDrink, error) {
+	var (
+		results = make([]*model.StatisticByDrink, 0)
+	)
+	match := bson.M{
+		"$match": cond,
+	}
+
+	project := bson.M{
+		"$project": bson.M{
+			"_id":           1,
+			"totalQuantity": 1,
+		},
+	}
+
+	group := bson.M{
+		"$group": bson.M{
+			"_id": "$drink._id",
+			"totalQuantity": bson.M{
+				"$sum": "$drink.quantity",
+			},
+		},
+	}
+
+	cursor, err := w.Col.Aggregate(ctx, []bson.M{match, project, group})
+	fmt.Println("cur", cursor)
+	if err != nil {
+		fmt.Println("Error : ", err)
+		return results, nil
+	}
+
+	defer cursor.Close(ctx)
+	err = cursor.All(ctx, &results)
+	fmt.Println("results", results)
+	return results, err
 }

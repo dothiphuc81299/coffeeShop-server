@@ -48,6 +48,19 @@ type StatusBody struct {
 	Status string `json:"status"`
 }
 
+type StatisticResponse struct {
+	Statistic     []StatisticByDrink `json:"statistic"`
+	TotalQuantity float64            `json:"totalQuanity"`
+	TotalSale     float64            `json:"totalSale"`
+}
+
+type StatisticByDrink struct {
+	ID            AppID   `bson:"_id" json:"_id"`
+	Name          string  `bson:"name" json:"name"`
+	TotalSale     float64 `bson:"totalSale" json:"totalSale"`
+	TotalQuantity float64 `bson:"totalQuantity" json:"totalQuantity"`
+}
+
 func (o OrderBody) Validate() error {
 	err := validation.Validate(o.Drink, validation.Required.Error("Don hang dang bi trong"))
 	if err != nil {

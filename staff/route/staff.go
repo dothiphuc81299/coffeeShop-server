@@ -1,7 +1,6 @@
 package route
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/staff/handler"
@@ -15,25 +14,15 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 		StaffService: cs.Staff,
 	}
 
+	// only root
 	r := e.Group("/staff")
+	r.POST("", h.Create,  middleware.CheckPermissionRoot(d), validation.StaffBodyValidation)
 	r.GET("/token", h.GetToken)
-	// get detail user
-	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
+	r.GET("", h.ListStaff, middleware.RequireLogin, middleware.CheckPermissionRoot(d))
 
-	r.GET("", h.ListStaff,
-		middleware.RequireLogin,
-		middleware.CheckPermissionRoot(d))
+	r.PUT("/:staffID", h.Update, middleware.CheckPermissionRoot(d), h.StaffGetByID, validation.StaffBodyValidation)
 
-	r.POST("", h.Create, middleware.RequireLogin,
-		middleware.CheckPermissionRoot(d), validation.StaffBodyValidation)
-
-	r.PUT("/:staffID", h.Update,
-		middleware.CheckPermissionRoot(d),
-		h.StaffGetByID, validation.StaffBodyValidation)
-
-	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.RequireLogin,
-		middleware.CheckPermissionRoot(d),
-		h.StaffGetByID)
+	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.RequireLogin,middleware.CheckPermissionRoot(d), h.StaffGetByID)
 
 	r.GET("/:staffID/me", h.GetDetailStaffByAdmin)
 

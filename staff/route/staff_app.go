@@ -17,9 +17,12 @@ func InitStaffApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 
 	// nhan vien cap nhat tai khoan
 	r.PUT("/update", h.Update,
-		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), validation.StaffUpdateBodyByItValidation)
+		middleware.CheckPermission(config.ModelFieldStaff, config.PermissionEdit, d), validation.StaffUpdateBodyByItValidation)
 
 	// change password do nhan vien
 	r.PUT("/me/password", h.UpdatePassword,
-		middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), validation.StaffChangePasswordBodyValidation)
+		middleware.CheckPermission(config.ModelFieldStaff, config.PermissionChangePassword, d), validation.StaffChangePasswordBodyValidation)
+
+	// get detail user
+	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
 }

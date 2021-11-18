@@ -5,6 +5,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -61,6 +62,30 @@ func (h *OrderAdminHandler) GetDetail(c echo.Context) error {
 	return cc.Response200(echo.Map{
 		"order": data,
 	}, "")
+}
+
+func (h *OrderAdminHandler) GetStatistic(c echo.Context) error {
+	var (
+		cc    = util.EchoGetCustomCtx(c)
+		query = model.CommonQuery{
+			Sort: bson.D{
+				bson.E{
+					"order", 1},
+			},
+			StartAt: util.TimeParseISODate(cc.QueryParam("startAt")),
+			EndAt:   util.TimeParseISODate(cc.QueryParam("endAt")),
+		}
+	)
+
+	result, err := h.OrderAdminService.GetStatistic(cc.GetRequestCtx(), query)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	return cc.Response200(echo.Map{
+		"result": result,
+	}, "")
+
 }
 
 // GetByID ...

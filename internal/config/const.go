@@ -61,6 +61,8 @@ const (
 	PermissionView   = "view"
 	PermissionEdit   = "edit"
 	PermissionDelete = "delete"
+	PermissionCreate ="create"
+	PermissionChangePassword ="changePassword"
 
 	PermissionAdmin = "admin"
 )
@@ -78,18 +80,18 @@ var (
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				bson.M{
-					"_id":  "category_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "category_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id":  "category_delete",
-					"name": "Delete",
-				},
+				//bson.M{
+				//	"_id":  "category_view",
+				//	"name": "View",
+				//},
+				//bson.M{
+				//	"_id":  "category_edit",
+				//	"name": "Edit",
+				//},
+				//bson.M{
+				//	"_id":  "category_delete",
+				//	"name": "Delete",
+				//},
 			},
 		},
 
@@ -103,18 +105,18 @@ var (
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				bson.M{
-					"_id":  "drink_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "drink_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id":  "drink_delete",
-					"name": "Delete",
-				},
+				//bson.M{
+				//	"_id":  "drink_view",
+				//	"name": "View",
+				//},
+				//bson.M{
+				//	"_id":  "drink_edit",
+				//	"name": "Edit",
+				//},
+				//bson.M{
+				//	"_id":  "drink_delete",
+				//	"name": "Delete",
+				//},
 			},
 		},
 
@@ -153,14 +155,14 @@ var (
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				bson.M{
-					"_id":  "event_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "event_edit",
-					"name": "Edit",
-				},
+				//bson.M{
+				//	"_id":  "event_view",
+				//	"name": "View",
+				//},
+				//bson.M{
+				//	"_id":  "event_edit",
+				//	"name": "Edit",
+				//},
 			},
 		},
 
@@ -174,14 +176,14 @@ var (
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				bson.M{
-					"_id":  "order_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "order_edit",
-					"name": "Edit",
-				},
+				//bson.M{
+				//	"_id":  "order_view",
+				//	"name": "View",
+				//},
+				//bson.M{
+				//	"_id":  "order_edit",
+				//	"name": "Edit",
+				//},
 			},
 		},
 
@@ -208,17 +210,3 @@ var (
 	}
 )
 
-// const (
-// 	SalaryMonthTypeJanuary   = "thang_1"
-// 	SalaryMonthTypeFebruary  = "thang_2"
-// 	SalaryMonthTypeMarch     = "thang_3"
-// 	SalaryMonthTypeApril     = "thang_4"
-// 	SalaryMonthTypeMay       = "thang_5"
-// 	SalaryMonthTypeJune      = "thang_6"
-// 	SalaryMonthTypeJuly      = "thang_7"
-// 	SalaryMonthTypeAugust    = "thang_8"
-// 	SalaryMonthTypeSeptember = "thang_9"
-// 	SalaryMonthTypeOctober   = "thang_10"
-// 	SalaryMonthTypeNovember  = "thang_11"
-// 	SalaryMonthTypeDecember  = "thang_12"
-// )

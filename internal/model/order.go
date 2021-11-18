@@ -14,6 +14,7 @@ type OrderDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]OrderRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	AggregateOrder(ctx context.Context, cond interface{}) ([]*StatisticByDrink, error)
 }
 
 // OrderService ...
@@ -29,6 +30,7 @@ type OrderAdminService interface {
 	GetListByStatus(ctx context.Context, query CommonQuery) ([]OrderResponse, int64)
 	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
 	GetDetail(ctx context.Context, order OrderRaw) OrderResponse
+	GetStatistic(ctx context.Context, query CommonQuery) (StatisticResponse, error)
 }
 
 type OrderRaw struct {
@@ -39,7 +41,7 @@ type OrderRaw struct {
 	TotalPrice float64            `bson:"totalPrice"`
 	CreatedAt  time.Time          `bson:"createdAt"`
 	UpdatedAt  time.Time          `bson:"updatedAt"`
-	Shipper    primitive.ObjectID `bson:"shipper,omitempty"`
+	UpdatedBy  primitive.ObjectID `bson:"updatedBy,omitempty"`
 	IsPoint    bool               `bson:"is_point"`
 	Point      float64            `bson:"point"`
 }

@@ -59,3 +59,15 @@ func (sfs *StaffAppService) ChangePassword(ctx context.Context, staff model.Staf
 func (sfs *StaffAppService) FindByID(ctx context.Context, ID model.AppID) (model.StaffRaw, error) {
 	return sfs.StaffDAO.FindByID(ctx, ID)
 }
+
+func (sfs *StaffAppService) GetDetailStaff(ctx context.Context, staff model.StaffRaw) model.StaffMeResponse {
+	return model.StaffMeResponse{
+		ID:          staff.ID,
+		Username:    staff.Username,
+		Phone:       staff.Phone,
+		Avatar:      staff.Avatar,
+		Permissions: staff.Permissions,
+		Address:     staff.Address,
+		Token:       staff.GenerateToken(),
+	}
+}

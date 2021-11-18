@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/dothiphuc81299/coffeeShop-server/drink/handler"
 	"github.com/dothiphuc81299/coffeeShop-server/drink/validation"
+	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/labstack/echo/v4"
@@ -15,14 +16,10 @@ func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	}
 
 	g := e.Group("/drink")
-	g.POST("", h.Create, middleware.CheckPermissionRoot(d), validation.DrinkBodyValidation)
-
+	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldDrink,config.PermissionAdmin,d), validation.DrinkBodyValidation)
 	g.GET("", h.GetList)
-
-	g.PUT("/:drinkID", h.Update, middleware.CheckPermissionRoot(d), validation.DrinkBodyValidation, h.DrinkGetByID)
-
-	g.PATCH("/:drinkID/status", h.ChangeStatus, middleware.CheckPermissionRoot(d), h.DrinkGetByID)
-
+	g.PUT("/:drinkID", h.Update, middleware.CheckPermission(config.ModelFieldDrink,config.PermissionAdmin,d), validation.DrinkBodyValidation, h.DrinkGetByID)
+	g.PATCH("/:drinkID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldDrink,config.PermissionAdmin,d), h.DrinkGetByID)
 	g.GET("/:drinkID", h.GetDetail, h.DrinkGetByID)
 
 }
