@@ -17,6 +17,7 @@ type StaffDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]StaffRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	UpdateBycondition(ctx context.Context, cond interface{}, payload interface{}) error
 }
 
 // StaffAdminService ...

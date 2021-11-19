@@ -15,9 +15,9 @@ func InitStaffRoleAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO
 	}
 
 	g := e.Group("/staffRole")
-	g.POST("", h.Create, validation.StaffRoleBodyValidation)
+	g.POST("", h.Create, middleware.CheckPermissionRoot(d), validation.StaffRoleBodyValidation)
 
-	g.PUT("/:roleID", h.Update, h.StaffRoleGetByID, validation.StaffRoleBodyValidation)
+	g.PUT("/:roleID", h.Update, middleware.CheckPermissionRoot(d), h.StaffRoleGetByID, validation.StaffRoleBodyValidation)
 
 	// Get list roles
 	g.GET("", h.ListRoleStaff, middleware.CheckPermissionRoot(d))

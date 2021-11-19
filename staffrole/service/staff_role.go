@@ -14,6 +14,7 @@ import (
 // StaffRoleAdminService ...
 type StaffRoleAdminService struct {
 	StaffRoleDAO model.StaffRoleDAO
+	Staff        model.StaffDAO
 }
 
 // FindByID ...
@@ -37,6 +38,22 @@ func (ss *StaffRoleAdminService) Update(ctx context.Context, data model.StaffRol
 	}
 	data.Name = body.Name
 	data.Permissions = body.Permissions
+
+	// update staff by roleid
+	cond := bson.M{
+		"role": data.ID,
+	}
+
+	payloadStaff := bson.M{
+		"$set": bson.M{
+			"permissions": body.Permissions,
+			"updatedAt":   time.Now(),
+		},
+	}
+	err = ss.Staff.UpdateBycondition(ctx, cond, payloadStaff)
+	if err != nil {
+		return model.StaffRoleAdminResponse{}, errors.New(locale.CommonKeyErrorWhenHandle)
+	}
 	return data.GetResponse(), nil
 }
 
@@ -78,5 +95,8 @@ func (ss *StaffRoleAdminService) Create(ctx context.Context, body model.StaffRol
 
 // NewStaffRoleAdminService ...
 func NewStaffRoleAdminService(srd *model.CommonDAO) model.StaffRoleAdminService {
-	return &StaffRoleAdminService{StaffRoleDAO: srd.StaffRole}
+	return &StaffRoleAdminService{
+		StaffRoleDAO: srd.StaffRole,
+		Staff:        srd.Staff,
+	}
 }

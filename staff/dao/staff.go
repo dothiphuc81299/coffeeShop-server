@@ -67,3 +67,8 @@ func (ud *StaffDAO) UpdateByID(ctx context.Context, id model.AppID, payload inte
 	_, err := ud.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
+
+func (ud *StaffDAO) UpdateBycondition(ctx context.Context, cond interface{}, payload interface{}) error {
+	_, err := ud.Col.UpdateOne(ctx, cond, payload)
+	return err
+}
