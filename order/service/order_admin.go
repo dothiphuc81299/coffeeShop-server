@@ -130,7 +130,7 @@ func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.Common
 		result = tempResutl[:3]
 	}
 
-	for _, i := range result {
+	for _, i := range tempResutl {
 		res.TotalQuantity += i.TotalQuantity
 		res.TotalSale += i.TotalSale
 	}

@@ -19,7 +19,6 @@ func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r.POST("", h.Create, middleware.CheckUser(d), validation.OrderBodyValidation)
 
 	// xem chi tieet don hang
-
 	r.GET("/:orderID/me", h.GetDetail, middleware.CheckUser(d), h.GetByID)
 
 	r.GET("/me", h.GetList, middleware.CheckUser(d))

@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/labstack/echo/v4"
@@ -80,7 +78,6 @@ func (h *OrderAppHandler) GetList(c echo.Context) error {
 	)
 
 	data, total := h.OrderAppService.GetList(cc.GetRequestCtx(), query, user)
-	fmt.Println("data", data)
 
 	return cc.Response200(echo.Map{
 		"order": data,
