@@ -25,10 +25,9 @@ type UserSignUpBody struct {
 
 // UserUpdateBody ...
 type UserUpdateBody struct {
-	Username string            `json:"username"`
-	Phone    string            `json:"phone"`
-	Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
-	Address  string            `json:"address"`
+	Phone string `json:"phone"`
+	// Avatar   *FilePhotoRequest `json:"avatar,omitempty"`
+	Address string `json:"address"`
 }
 
 // UserAdminResponse ...
@@ -84,7 +83,6 @@ func (u UserSignUpBody) Validate() error {
 // Validate ...
 func (u UserUpdateBody) Validate() error {
 	return validation.ValidateStruct(&u,
-		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
 		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
 		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
 	)
@@ -92,9 +90,9 @@ func (u UserUpdateBody) Validate() error {
 
 func (a UserChangePasswordBody) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.Password, validation.Required.Error("password duoc yeu cau")),
-		validation.Field(&a.NewPassword, validation.Required.Error("password duoc yeu cau")),
-		validation.Field(&a.NewPasswordAgain, validation.Required.Error("password duoc yeu cau")),
+		validation.Field(&a.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
+		validation.Field(&a.NewPassword, validation.Required.Error(locale.CommonKeyPasswordRequired)),
+		validation.Field(&a.NewPasswordAgain, validation.Required.Error(locale.CommonKeyPasswordRequired)),
 	)
 }
 
@@ -107,10 +105,11 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 		Password:     u.Password,
 		Active:       true,
 		Phone:        u.Phone,
-		Avatar:       u.Avatar,
+		Avatar:       avt,
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		Address:      u.Address,
+		CurrentPoint: 0,
 		SearchString: format.NonAccentVietnamese(u.Username),
 	}
 }

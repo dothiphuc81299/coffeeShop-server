@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -19,20 +20,21 @@ func NewUserAppService(d *model.CommonDAO) model.UserAppService {
 	}
 }
 
-func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBody) (s string, err error) {
+func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBody) (err error) {
 	payload := body.NewUserRaw()
 
 	// find db
 	count := u.UserDAO.CountByCondition(ctx, bson.M{"username": payload.Username})
 	if count > 0 {
-		return "usernam da ton tai", err
-	}
-	err = u.UserDAO.InsertOne(ctx, payload)
-	if err != nil {
-		return "tao tai khoan that bai", err
+		return errors.New(locale.CommonyKeyUserNameIsExisted)
 	}
 
-	return "tao tai khoan thanh cong", nil
+	err = u.UserDAO.InsertOne(ctx, payload)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBody) (doc model.UserLoginResponse, err error) {
@@ -43,7 +45,7 @@ func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBo
 
 	user, err := u.UserDAO.FindOneByCondition(ctx, cond)
 	if err != nil {
-		return doc, err
+		return doc, errors.New(locale.UserNameOrPasswordIsIncorrect)
 	}
 
 	token := user.GenerateToken()
@@ -51,20 +53,19 @@ func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBo
 	return doc, nil
 }
 
-func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserRaw, body model.UserUpdateBody) (string, error) {
+func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserRaw, body model.UserUpdateBody) error {
 	payload := bson.M{
-		"username": body.Username,
 		"phone":    body.Phone,
 		"address":  body.Address,
-		"avatar":   body.Avatar,
+		// "avatar":   body.Avatar,
 	}
 
 	err := u.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": payload})
 	if err != nil {
-		return "khong the cap nhat tai khoan", err
+		return err
 	}
 
-	return "thanh cong", nil
+	return nil
 }
 
 func (u *UserAppService) GetDetailUser(ctx context.Context, user model.UserRaw) model.UserLoginResponse {
@@ -77,11 +78,11 @@ func (u *UserAppService) GetDetailUser(ctx context.Context, user model.UserRaw) 
 func (u *UserAppService) ChangePassword(ctx context.Context, user model.UserRaw, body model.UserChangePasswordBody) (err error) {
 	res, _ := u.UserDAO.FindOneByCondition(ctx, bson.M{"_id": user.ID})
 	if res.ID.IsZero() {
-		return errors.New("staff khong ton tai")
+		return errors.New(locale.UserIsNotExisted)
 	}
 
 	if body.Password != res.Password || body.NewPassword != body.NewPasswordAgain || body.NewPassword == body.Password {
-		return errors.New("mat khau  khong dung")
+		return errors.New(locale.PasswordIsIncorrect)
 	}
 
 	err = u.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})

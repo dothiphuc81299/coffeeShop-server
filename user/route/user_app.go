@@ -16,18 +16,9 @@ func InitUserApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 
 	r := e.Group("/users")
 
-	// sign up
 	r.POST("/sign-up", h.UserSignUp, validation.UserSignUpBodyValidation)
-
-	// log in
-
 	r.POST("/log-in", h.UserLoginIn, validation.UserLoginBodyValidation)
-
-	// update user
-	r.PUT("/update", h.UserUpdateAccount, middleware.CheckUser(d), validation.UserUpdateBodyValidation)
-
-	// get detail user
 	r.GET("/me", h.GetDetailUser, middleware.CheckUser(d))
-
-	r.PUT("/me/password", h.ChangePassword, middleware.CheckUser(d),validation.UserChangePasswordValidation)
+	r.PUT("/me/update", h.UserUpdateAccount, middleware.CheckUser(d), validation.UserUpdateBodyValidation)
+	r.PUT("/me/password", h.ChangePassword, middleware.CheckUser(d), validation.UserChangePasswordValidation)
 }

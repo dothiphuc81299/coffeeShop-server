@@ -16,13 +16,11 @@ func (u *UserAppHandler) UserSignUp(c echo.Context) error {
 		body = c.Get("body").(model.UserSignUpBody)
 	)
 
-	data, err := u.UserAppService.UserSignUp(cc.GetRequestCtx(), body)
+	err := u.UserAppService.UserSignUp(cc.GetRequestCtx(), body)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
-	return cc.Response200(echo.Map{
-		"data": data,
-	}, "")
+	return cc.Response200(nil, "")
 }
 
 func (u *UserAppHandler) UserLoginIn(c echo.Context) error {
@@ -47,13 +45,11 @@ func (u *UserAppHandler) UserUpdateAccount(c echo.Context) error {
 		user = c.Get("user").(model.UserRaw)
 	)
 
-	data, err := u.UserAppService.UserUpdateAccount(cc.GetRequestCtx(), user, body)
+	err := u.UserAppService.UserUpdateAccount(cc.GetRequestCtx(), user, body)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
-	return cc.Response200(echo.Map{
-		"data": data,
-	}, "")
+	return cc.Response200(nil, "")
 }
 
 func (u *UserAppHandler) GetDetailUser(c echo.Context) error {

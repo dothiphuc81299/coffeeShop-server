@@ -20,9 +20,9 @@ type UserDAO interface {
 
 // UserAppService ...
 type UserAppService interface {
-	UserSignUp(ctx context.Context, body UserSignUpBody) (string, error)
+	UserSignUp(ctx context.Context, body UserSignUpBody) error
 	UserLoginIn(ctx context.Context, body UserLoginBody) (UserLoginResponse, error)
-	UserUpdateAccount(ctx context.Context, user UserRaw, body UserUpdateBody) (string, error)
+	UserUpdateAccount(ctx context.Context, user UserRaw, body UserUpdateBody) error
 	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse
 	ChangePassword(ctx context.Context, user UserRaw, body UserChangePasswordBody) error
 }
@@ -31,6 +31,7 @@ type UserAdminService interface {
 	GetList(ctx context.Context, query CommonQuery) ([]UserAdminResponse, int64)
 	ConfirmAccountActive(ctx context.Context, user UserRaw) (bool, error)
 	FindByID(ctx context.Context, id AppID) (UserRaw, error)
+	GetDetailUser(ctx context.Context, user UserRaw) UserAdminResponse
 }
 
 // UserRaw ...

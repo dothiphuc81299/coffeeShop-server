@@ -53,6 +53,7 @@ const (
 	StaffIsNotExisted             = "StaffIsNotExisted"
 	PasswordIsIncorrect           = "PasswordIsIncorrect"
 	UserNameOrPasswordIsIncorrect = "UserNameOrPasswordIsIncorrect"
+	UserIsNotExisted              = "userIsNotExisted"
 )
 
 type (
@@ -100,6 +101,7 @@ type (
 		StaffIsNotExisted             string `properties:"StaffIsNotExisted"`
 		PasswordIsIncorrect           string `properties:"passwordIsIncorrect"`
 		UserNameOrPasswordIsIncorrect string `properties:"UserNameOrPasswordIsIncorrect"`
+		UserIsNotExisted              string `properties:"UserIsNotExisted"`
 	}
 )
 
@@ -420,6 +422,14 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.UserNameOrPasswordIsIncorrect,
 			},
 			Code: 55,
+		},
+
+		{
+			Key: UserIsNotExisted,
+			Message: &Message{
+				Vi: commonVi.UserIsNotExisted,
+			},
+			Code: 56,
 		},
 	}
 	return response

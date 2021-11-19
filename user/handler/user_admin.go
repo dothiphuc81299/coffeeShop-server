@@ -51,6 +51,19 @@ func (h *UserAdminHandler) ChangeStatus(c echo.Context) error {
 	}, "")
 }
 
+func (h *UserAdminHandler) GetDetailUser(c echo.Context) error {
+	var (
+		cc   = util.EchoGetCustomCtx(c)
+		user = c.Get("user").(model.UserRaw)
+	)
+
+	result := h.UserAdminService.GetDetailUser(cc.GetRequestCtx(), user)
+	return cc.Response200(echo.Map{
+		"data": result,
+	}, "")
+
+}
+
 // UserGetByID ...
 func (d *UserAdminHandler) UserGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
