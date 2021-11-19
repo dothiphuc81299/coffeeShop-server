@@ -205,6 +205,10 @@ var (
 					"_id":  "staff_edit",
 					"name": "Edit",
 				},
+				bson.M{
+					"_id": "staff_changePassword",
+					"name": "ChangePassword",
+				},
 			},
 		},
 	}

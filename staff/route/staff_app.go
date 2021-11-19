@@ -16,13 +16,13 @@ func InitStaffApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r := e.Group("/staff")
 
 	// nhan vien cap nhat tai khoan
-	r.PUT("/update", h.Update,
+	r.PUT("/update", h.Update, middleware.RequireLogin,
 		middleware.CheckPermission(config.ModelFieldStaff, config.PermissionEdit, d), validation.StaffUpdateBodyByItValidation)
 
 	// change password do nhan vien
-	r.PUT("/me/password", h.UpdatePassword,
+	r.PUT("/me/password", h.UpdatePassword, middleware.RequireLogin,
 		middleware.CheckPermission(config.ModelFieldStaff, config.PermissionChangePassword, d), validation.StaffChangePasswordBodyValidation)
 
 	// get detail user
-	r.GET("/me", h.GetDetailStaff, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d))
+	r.GET("/me", h.GetDetailStaff, middleware.RequireLogin, middleware.CheckPermission(config.ModelFieldStaff, config.PermissionView, d))
 }

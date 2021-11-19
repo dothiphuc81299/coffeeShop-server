@@ -46,8 +46,13 @@ const (
 
 	CommonKeyIDMongoInvalid = "CommonIDMongoInvalid"
 
-	CommonNoPermission     = "CommonNoPermission"
-	CommonKeyStaffDeactive = "CommonStaffDeactive"
+	CommonNoPermission            = "CommonNoPermission"
+	CommonKeyStaffDeactive        = "CommonStaffDeactive"
+	CommonyKeyUserNameIsExisted   = "UserNameIsExisted"
+	CommonKeyStaffIsDeleted       = "StaffIsDeleted"
+	StaffIsNotExisted             = "StaffIsNotExisted"
+	PasswordIsIncorrect           = "PasswordIsIncorrect"
+	UserNameOrPasswordIsIncorrect = "UserNameOrPasswordIsIncorrect"
 )
 
 type (
@@ -87,9 +92,14 @@ type (
 		OrderCanNotFindUserByUserID string `properties:"orderCanNotFindUserByUserID"`
 		CategoryCanNotUpdate        string `properties:"categoryCanNotUpdate"`
 
-		CommonIDMongoInvalid string `properties:"commonIDMongoInvalid"`
-		CommonNoPermission   string `properties:"commonNoPermission"`
-		CommonStaffDeactive  string `properties:"commonStaffDeactive"`
+		CommonIDMongoInvalid          string `properties:"commonIDMongoInvalid"`
+		CommonNoPermission            string `properties:"commonNoPermission"`
+		CommonStaffDeactive           string `properties:"commonStaffDeactive"`
+		UserNameIsExisted             string `properties:"userNameIsExisted"`
+		CommonKeyStaffIsDeleted       string `properties:"commonKeyStaffIsDeleted"`
+		StaffIsNotExisted             string `properties:"StaffIsNotExisted"`
+		PasswordIsIncorrect           string `properties:"passwordIsIncorrect"`
+		UserNameOrPasswordIsIncorrect string `properties:"UserNameOrPasswordIsIncorrect"`
 	}
 )
 
@@ -370,6 +380,46 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.CommonStaffDeactive,
 			},
 			Code: 50,
+		},
+
+		{
+			Key: CommonyKeyUserNameIsExisted,
+			Message: &Message{
+				Vi: commonVi.UserNameIsExisted,
+			},
+			Code: 51,
+		},
+
+		{
+			Key: CommonKeyStaffIsDeleted,
+			Message: &Message{
+				Vi: commonVi.CommonKeyStaffIsDeleted,
+			},
+			Code: 52,
+		},
+
+		{
+			Key: StaffIsNotExisted,
+			Message: &Message{
+				Vi: commonVi.StaffIsNotExisted,
+			},
+			Code: 53,
+		},
+
+		{
+			Key: PasswordIsIncorrect,
+			Message: &Message{
+				Vi: commonVi.PasswordIsIncorrect,
+			},
+			Code: 54,
+		},
+
+		{
+			Key: UserNameOrPasswordIsIncorrect,
+			Message: &Message{
+				Vi: commonVi.UserNameOrPasswordIsIncorrect,
+			},
+			Code: 55,
 		},
 	}
 	return response

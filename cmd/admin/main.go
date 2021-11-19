@@ -39,6 +39,7 @@ func main() {
 
 //onst PORT = process.env.PORT || 4000
 
+const avtDefault = "https://banner2.cleanpng.com/20180402/ojw/kisspng-united-states-avatar-organization-information-user-avatar-5ac20804a62b58.8673620215226654766806.jpg"
 func initAccountAdminRoot(d *model.CommonDAO) {
 	ctx := context.Background()
 	// Check role root
@@ -53,7 +54,7 @@ func initAccountAdminRoot(d *model.CommonDAO) {
 			Phone:       "0702654453",
 			Active:      true,
 			Role:        model.AppID{},
-			Avatar:      model.FileDefaultPhoto(),
+			Avatar:    avtDefault,
 			CreatedAt:   now,
 			UpdatedAt:   now,
 			IsRoot:      true,

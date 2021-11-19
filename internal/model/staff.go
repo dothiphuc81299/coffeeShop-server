@@ -24,11 +24,12 @@ type StaffAdminService interface {
 	Create(ctx context.Context, body StaffBody) (StaffGetResponseAdmin, error)
 	ListStaff(ctx context.Context, q CommonQuery) ([]StaffGetResponseAdmin, int64)
 	FindByID(ctx context.Context, id AppID) (StaffRaw, error)
-	Update(ctx context.Context, body StaffBody, raw StaffRaw) (StaffGetResponseAdmin, error)
-	ChangeStatus(ctx context.Context, raw StaffRaw) (bool, error)
+	UpdateRole(ctx context.Context, body StaffUpdateRoleBody, raw StaffRaw) (error)
+	ChangeStatus(ctx context.Context, raw StaffRaw) ( error)
 	GetToken(ctx context.Context, staffID AppID) (string, error)
 	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
 	StaffLogin(ctx context.Context, stafflogin StaffLoginBody) (StaffResponse, error)
+	GetStaffByID(ctx context.Context,id AppID) (StaffGetResponseAdmin)
 }
 
 type StaffAppService interface {
@@ -40,31 +41,35 @@ type StaffAppService interface {
 
 // StaffRaw ...
 type StaffRaw struct {
-	ID          AppID      `bson:"_id"`
-	Username    string     `bson:"username"`
-	Password    string     `bson:"password"`
-	Address     string     `bson:"address"`
-	Phone       string     `bson:"phone"`
-	Active      bool       `bson:"active"`
-	Role        AppID      `bson:"role,omitempty"`
-	Avatar      *FilePhoto `bson:"avatar,omitempty"`
-	CreatedAt   time.Time  `bson:"createdAt"`
-	UpdatedAt   time.Time  `bson:"updatedAt"`
-	IsRoot      bool       `bson:"isRoot"`
-	Permissions []string   `bson:"permissions"`
+	ID       AppID  `bson:"_id"`
+	Username string `bson:"username"`
+	Password string `bson:"password"`
+	Address  string `bson:"address"`
+	Phone    string `bson:"phone"`
+	Active   bool   `bson:"active"`
+	Role     AppID  `bson:"role,omitempty"`
+	//Avatar      *FilePhoto `bson:"avatar,omitempty"`
+	Avatar      string    `bson:"avatar,omitempty"`
+	CreatedAt   time.Time `bson:"createdAt"`
+	UpdatedAt   time.Time `bson:"updatedAt"`
+	IsRoot      bool      `bson:"isRoot"`
+	Permissions []string  `bson:"permissions"`
 }
 
 // GetAdminResponse ...
 func (u *StaffRaw) GetStaffResponseAdmin() StaffGetResponseAdmin {
 	return StaffGetResponseAdmin{
-		ID:          u.ID,
-		Username:    u.Username,
-		Phone:       u.Phone,
-		Active:      u.Active,
-		Role:        u.Role,
-		Avatar:      u.Avatar.GetResponseData(),
+		ID:       u.ID,
+		Username: u.Username,
+		Phone:    u.Phone,
+		Active:   u.Active,
+		Role:     u.Role,
+		//Avatar:      u.Avatar.GetResponseData(),
+		Avatar: u.Avatar,
 		IsRoot:      u.IsRoot,
-		CreatedAt:   u.CreatedAt,
+		CreatedAt:   TimeResponse{
+			Time: u.CreatedAt,
+		},
 		Address:     u.Address,
 		Permissions: u.Permissions,
 	}
@@ -90,6 +95,7 @@ func (u *StaffRaw) GetStaffResponse(token string) StaffResponse {
 		Address:     u.Address,
 		Token:       token,
 		Permissions: u.Permissions,
-		Avatar:      u.Avatar.GetResponseData(),
+		//Avatar:      u.Avatar.GetResponseData(),
+		Avatar: u.Avatar,
 	}
 }

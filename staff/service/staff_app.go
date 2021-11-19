@@ -25,7 +25,6 @@ func NewStaffAppService(d *model.CommonDAO) model.StaffAppService {
 // Update ...
 func (sfs *StaffAppService) Update(ctx context.Context, body model.StaffUpdateBodyByIt, data model.StaffRaw) (model.StaffGetResponseAdmin, error) {
 	payload := bson.M{
-		"username":  body.Username,
 		"address":   body.Address,
 		"phone":     body.Phone,
 		"updatedAt": time.Now(),
@@ -38,21 +37,21 @@ func (sfs *StaffAppService) Update(ctx context.Context, body model.StaffUpdateBo
 	return data.GetStaffResponseAdmin(), nil
 }
 
-func (sfs *StaffAppService) ChangePassword(ctx context.Context, staff model.StaffRaw, body model.PasswordBody) (err error) {
+func (sfs *StaffAppService) ChangePassword(ctx context.Context, staff model.StaffRaw, body model.PasswordBody) error {
 	res, _ := sfs.StaffDAO.FindOneByCondition(ctx, bson.M{"_id": staff.ID})
 	if res.ID.IsZero() {
-		return errors.New("staff khong ton tai")
+		return errors.New(locale.CommonKeyStaffIsDeleted)
 	}
 
 	if body.Password != res.Password || body.NewPassword != body.NewPasswordAgain || body.NewPassword == body.Password {
-		return errors.New("mat khau  khong dung")
+		return errors.New(locale.PasswordIsIncorrect)
 	}
 
-	err = sfs.StaffDAO.UpdateByID(ctx, staff.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
+	err := sfs.StaffDAO.UpdateByID(ctx, staff.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
 	if err != nil {
-		return
+		return err
 	}
-	return
+	return nil
 }
 
 // FindByID ...

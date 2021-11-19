@@ -11,13 +11,14 @@ import (
 
 // StaffMeResponse ...
 type StaffMeResponse struct {
-	ID          AppID      `json:"_id"`
-	Username    string     `json:"username"`
-	Token       string     `json:"token"`
-	Address     string     `json:"address"`
-	Phone       string     `json:"phone"`
-	Avatar      *FilePhoto `json:"avatar"`
-	Permissions []string   `json:"permissions"`
+	ID       AppID  `json:"_id"`
+	Username string `json:"username"`
+	Token    string `json:"token"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	//Avatar      *FilePhoto `json:"avatar"`
+	Avatar      string   `json:"avatar"`
+	Permissions []string `json:"permissions"`
 }
 
 type StaffInfo struct {
@@ -29,27 +30,29 @@ type StaffInfo struct {
 
 // StaffGetResponseAdmin ...
 type StaffGetResponseAdmin struct {
-	ID          AppID      `json:"_id"`
-	Username    string     `json:"username"`
-	Address     string     `json:"address"`
-	Phone       string     `json:"phone"`
-	Avatar      *FilePhoto `json:"avatar"`
-	Permissions []string   `json:"permissions"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	Active      bool       `json:"active"`
-	Role        AppID      `json:"role"`
-	IsRoot      bool       `json:"isRoot"`
+	ID       AppID  `json:"_id"`
+	Username string `json:"username"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	//Avatar      *FilePhoto `json:"avatar"`
+	Avatar      string       `json:"avatar"`
+	Permissions []string     `json:"permissions"`
+	CreatedAt   TimeResponse `json:"createdAt"`
+	Active      bool         `json:"active"`
+	Role        AppID        `json:"role"`
+	IsRoot      bool         `json:"isRoot"`
 }
 
 // StaffResponse ...
 type StaffResponse struct {
-	ID          AppID      `json:"_id"`
-	Username    string     `json:"username"`
-	Address     string     `json:"address"`
-	Phone       string     `json:"phone"`
-	Avatar      *FilePhoto `json:"avatar"`
-	Permissions []string   `json:"permissions"`
-	Token       string     `json:"token"`
+	ID       AppID  `json:"_id"`
+	Username string `json:"username"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	//Avatar      *FilePhoto `json:"avatar"`
+	Avatar      string   `json:"avatar"`
+	Permissions []string `json:"permissions"`
+	Token       string   `json:"token"`
 }
 
 // StaffBody ...
@@ -61,10 +64,19 @@ type StaffBody struct {
 	Password string `json:"password"`
 }
 
+type StaffUpdateRoleBody struct {
+	Role string `json:"role"`
+}
+
+func (s StaffUpdateRoleBody) Validate() error {
+	return validation.ValidateStruct(&s,
+		validation.Field(&s.Role, is.MongoID.Error(locale.CommonKeyIDMongoInvalid)),
+	)
+}
+
 type StaffUpdateBodyByIt struct {
-	Username string `json:"username"`
-	Phone    string `json:"phone"`
-	Address  string `json:"address"`
+	Phone   string `json:"phone"`
+	Address string `json:"address"`
 }
 
 type StaffLoginBody struct {
@@ -80,20 +92,20 @@ type PasswordBody struct {
 
 func (stf StaffUpdateBodyByIt) Validate() error {
 	return validation.ValidateStruct(&stf,
-		validation.Field(&stf.Username),
-		validation.Field(&stf.Phone),
-		validation.Field(&stf.Address),
+		validation.Field(&stf.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
+		validation.Field(&stf.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
 	)
 }
 
 // Validate ...
 func (stf StaffBody) Validate() error {
 	return validation.ValidateStruct(&stf,
-		validation.Field(&stf.Username,validation.Required.Error("username is required")),
+		validation.Field(&stf.Username, validation.Required.Error("username is required")),
 		validation.Field(&stf.Phone),
 		validation.Field(&stf.Address),
+		validation.Field(&stf.Password, validation.Required.Error("Password is required")),
 		validation.Field(&stf.Role,
-			is.MongoID.Error(locale.CommonKeyIDMongoInvalid)),
+			is.MongoID.Error(locale.CommonKeyIDMongoInvalid), validation.Required.Error("Role is Required")),
 	)
 }
 
@@ -113,6 +125,8 @@ func (a PasswordBody) Validate() error {
 	)
 }
 
+const avt = "https://banner2.cleanpng.com/20180402/ojw/kisspng-united-states-avatar-organization-information-user-avatar-5ac20804a62b58.8673620215226654766806.jpg"
+
 // StaffNewBSON ...
 func (stf *StaffBody) StaffNewBSON(permissions []string) StaffRaw {
 	roleID, _ := primitive.ObjectIDFromHex(stf.Role)
@@ -124,6 +138,7 @@ func (stf *StaffBody) StaffNewBSON(permissions []string) StaffRaw {
 		Username:    stf.Username,
 		Phone:       stf.Phone,
 		Address:     stf.Address,
+		Avatar:      avt,
 		Role:        roleID,
 		CreatedAt:   now,
 		UpdatedAt:   now,

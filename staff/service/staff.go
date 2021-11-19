@@ -40,7 +40,7 @@ func (sfs *StaffAdminService) GetToken(ctx context.Context, staffID model.AppID)
 }
 
 // ChangeStatus ...
-func (sfs *StaffAdminService) ChangeStatus(ctx context.Context, data model.StaffRaw) (active bool, err error) {
+func (sfs *StaffAdminService) ChangeStatus(ctx context.Context, data model.StaffRaw) ( err error) {
 	payload := bson.M{
 		"$set": bson.M{
 			"active":    !data.Active,
@@ -49,37 +49,35 @@ func (sfs *StaffAdminService) ChangeStatus(ctx context.Context, data model.Staff
 	}
 	err = sfs.StaffDAO.UpdateByID(ctx, data.ID, payload)
 	if err != nil {
-		return active, errors.New(locale.CommonKeyErrorWhenHandle)
+		return  errors.New(locale.CommonKeyErrorWhenHandle)
 	}
-	data.Active = !data.Active
-
 	// Remove session by staff id
 	go sfs.SessionDAO.RemoveByCondition(context.Background(), bson.M{"staff": data.ID})
 
-	return data.Active, nil
+	return  nil
 
 }
 
-// Update ...
-func (sfs *StaffAdminService) Update(ctx context.Context, body model.StaffBody, data model.StaffRaw) (model.StaffGetResponseAdmin, error) {
+// UpdateRole ...
+func (sfs *StaffAdminService) UpdateRole(ctx context.Context, body model.StaffUpdateRoleBody, data model.StaffRaw) (error) {
 	roleID, _ := primitive.ObjectIDFromHex(body.Role)
-	staffRole, _ := sfs.StaffRole.FindByID(ctx, roleID)
-
-	doc := body.StaffNewBSON(staffRole.Permissions)
-
-	// assign
-	data.Address = doc.Address
-	data.Permissions = doc.Permissions
-	data.Username = doc.Username
-	data.Phone = doc.Phone
-	data.Role = doc.Role
-	err := sfs.StaffDAO.UpdateByID(ctx, data.ID, bson.M{"$set": data})
+	staffRole, err:= sfs.StaffRole.FindByID(ctx, roleID)
 	if err != nil {
-		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonKeyErrorWhenHandle)
+		return  err
 	}
 
-	return data.GetStaffResponseAdmin(), nil
+	if staffRole.Name == "" {
+		return  errors.New("StaffRole Is Invalid")
+	}
+	// assign
+	data.Role = roleID
+	err = sfs.StaffDAO.UpdateByID(ctx, data.ID, bson.M{"$set": data})
+	if err != nil {
+		return errors.New(locale.CommonKeyErrorWhenHandle)
+	}
+	return  nil
 }
+
 
 // FindByID ...
 func (sfs *StaffAdminService) FindByID(ctx context.Context, ID model.AppID) (model.StaffRaw, error) {
@@ -91,7 +89,7 @@ func (sfs *StaffAdminService) Create(ctx context.Context, body model.StaffBody) 
 	// Check username staff existed
 	isExisted := sfs.checkUserExisted(ctx, body.Username)
 	if isExisted {
-		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonKeyPhoneExisted)
+		return model.StaffGetResponseAdmin{}, errors.New(locale.CommonyKeyUserNameIsExisted)
 	}
 
 	roleID, _ := primitive.ObjectIDFromHex(body.Role)
@@ -115,13 +113,15 @@ func (sfs *StaffAdminService) checkUserExisted(ctx context.Context, username str
 // ListStaff ...
 func (sfs *StaffAdminService) ListStaff(ctx context.Context, q model.CommonQuery) ([]model.StaffGetResponseAdmin, int64) {
 	var (
-		wg    sync.WaitGroup
-		res   = make([]model.StaffGetResponseAdmin, 0)
-		cond  = bson.M{}
+		wg   sync.WaitGroup
+		res  = make([]model.StaffGetResponseAdmin, 0)
+		cond = bson.M{
+			"isRoot": false,
+		}
 		total int64
 	)
 	q.AssignActive(&cond)
-	q.AssignKeyword(&cond)
+	q.AssignUsername(&cond)
 
 	wg.Add(2)
 	go func() {
@@ -160,7 +160,10 @@ func (sfs *StaffAdminService) StaffLogin(ctx context.Context, body model.StaffLo
 
 	staff, err := sfs.StaffDAO.FindOneByCondition(ctx, cond)
 	if err != nil {
-		return model.StaffResponse{}, err
+		return model.StaffResponse{}, errors.New(locale.UserNameOrPasswordIsIncorrect)
+	} 
+	if !staff.Active {
+		return model.StaffResponse{},errors.New(locale.CommonKeyStaffIsDeleted)
 	}
 	token, err := sfs.GetToken(ctx, staff.ID)
 	if err != nil {
@@ -170,18 +173,12 @@ func (sfs *StaffAdminService) StaffLogin(ctx context.Context, body model.StaffLo
 	return doc, nil
 }
 
-func (sfs *StaffAdminService) getMonthNow(cond bson.M, date string) {
-	now := time.Now()
-	y, m, _ := now.Date()
-
-	from := time.Date(y, m, 1, 0, 0, 0, 0, now.Location())
-	to := time.Date(y, m, 1, 0, 0, 0, 0, now.Location())
-	to = util.TimeStartOfDayInHCM(to)
-	from = util.TimeStartOfDayInHCM(from)
-	cond[date] = bson.M{
-		"$gte": from,
-		"$lt":  to,
+func (sfs *StaffAdminService) GetStaffByID(ctx context.Context, id model.AppID) model.StaffGetResponseAdmin {
+	staff, err := sfs.FindByID(ctx, id)
+	if err != nil {
+		return model.StaffGetResponseAdmin{}
 	}
+	return  staff.GetStaffResponseAdmin()
 }
 
 // NewStaffAdminService ...

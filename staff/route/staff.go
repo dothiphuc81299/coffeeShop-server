@@ -17,15 +17,12 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	// only root
 	r := e.Group("/staff")
 	r.POST("", h.Create,  middleware.CheckPermissionRoot(d), validation.StaffBodyValidation)
+	r.GET("", h.ListStaff,middleware.CheckPermissionRoot(d))
+	r.GET("/:staffID", h.GetStaffByID,middleware.CheckPermissionRoot(d))
 	r.GET("/token", h.GetToken)
-	r.GET("", h.ListStaff, middleware.RequireLogin, middleware.CheckPermissionRoot(d))
-
-	r.PUT("/:staffID", h.Update, middleware.CheckPermissionRoot(d), h.StaffGetByID, validation.StaffBodyValidation)
-
-	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.RequireLogin,middleware.CheckPermissionRoot(d), h.StaffGetByID)
-
-	r.GET("/:staffID/me", h.GetDetailStaffByAdmin)
-
+	r.PATCH("/:staffID/status", h.ChangeStatus, middleware.CheckPermissionRoot(d), h.StaffGetByID)
+	r.PUT("/:staffID", h.UpdateRole, middleware.CheckPermissionRoot(d), h.StaffGetByID, validation.StaffUpdateRoleBodyValidation)
+	
 	r.POST("/log-in", h.StaffLogin, validation.StaffLoginBodyValidation)
 
 }

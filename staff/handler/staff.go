@@ -27,7 +27,7 @@ func (h *StaffAdminHandler) ListStaff(c echo.Context) error {
 			bson.E{Key: "createdAt", Value: -1},
 		},
 		Active:  c.QueryParam("active"),
-		Keyword: c.QueryParam("keyword"),
+		Username: c.QueryParam("username"),
 	}
 
 	staffs, total := h.StaffService.ListStaff(ctx, q)
@@ -57,21 +57,19 @@ func (h *StaffAdminHandler) Create(c echo.Context) error {
 }
 
 // Update ...
-func (h *StaffAdminHandler) Update(c echo.Context) error {
+func (h *StaffAdminHandler) UpdateRole(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body  = c.Get("body").(model.StaffBody)
+		body  = c.Get("body").(model.StaffUpdateRoleBody)
 		staff = c.Get("staff").(model.StaffRaw)
 	)
 
-	data, err := h.StaffService.Update(cc.GetRequestCtx(), body, staff)
+	 err := h.StaffService.UpdateRole(cc.GetRequestCtx(), body, staff)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 
-	return cc.Response200(echo.Map{
-		"staff": data,
-	}, "")
+	return cc.Response200(nil, "")
 }
 
 // ChangeStatus ...
@@ -81,14 +79,12 @@ func (h *StaffAdminHandler) ChangeStatus(c echo.Context) error {
 		staff = c.Get("staff").(model.StaffRaw)
 	)
 
-	data, err := h.StaffService.ChangeStatus(cc.GetRequestCtx(), staff)
+	err := h.StaffService.ChangeStatus(cc.GetRequestCtx(), staff)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 
-	return cc.Response200(echo.Map{
-		"active": data,
-	}, "")
+	return cc.Response200("", "")
 }
 
 // GetToken ...
@@ -140,13 +136,17 @@ func (h *StaffAdminHandler) GetDetailStaff(c echo.Context) error {
 	}, "")
 }
 
-func (h *StaffAdminHandler) GetDetailStaffByAdmin(c echo.Context) error {
+func (h *StaffAdminHandler) GetStaffByID(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		staff = c.Get("staff").(model.StaffRaw)
+		staffIDString = cc.Param("staffID")
 	)
+	staffID, err := primitive.ObjectIDFromHex(staffIDString)
+	if staffID.IsZero() || err != nil {
+		return cc.Response404(nil, locale.CommonKeyNotFound)
+	}
 
-	data := h.StaffService.GetDetailStaff(cc.GetRequestCtx(), staff)
+	data := h.StaffService.GetStaffByID(cc.GetRequestCtx(), staffID)
 
 	return cc.Response200(echo.Map{
 		"data": data,

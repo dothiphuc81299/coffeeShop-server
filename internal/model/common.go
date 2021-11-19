@@ -34,6 +34,7 @@ type CommonQuery struct {
 	EndAt    time.Time
 	Category string
 	Month    string
+	Username string
 }
 
 func (q *CommonQuery) GetFindOptions() *options.FindOptions {
@@ -54,6 +55,14 @@ func (q *CommonQuery) AssignKeyword(cond *bson.M) {
 		(*cond)["searchString"] = format.SearchString(strings.Trim(q.Keyword, " "))
 	}
 }
+
+func (q *CommonQuery) AssignUsername(cond *bson.M) {
+	if q.Username != "" {
+		q.Username = format.NonAccentVietnamese(q.Username)
+		(*cond)["username"] = format.SearchString(strings.Trim(q.Username, " "))
+	}
+}
+
 
 func (q *CommonQuery) AssignStatus(cond *bson.M) {
 	if q.Status != "" {
