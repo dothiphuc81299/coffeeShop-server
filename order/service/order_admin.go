@@ -2,15 +2,16 @@ package service
 
 import (
 	"context"
+	"errors"
 	"sort"
 	"sync"
 	"time"
 
+	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-const delivery = "delivery"
 const success = "success"
 
 type OrderAdminService struct {
@@ -73,6 +74,74 @@ func (o *OrderAdminService) ChangeStatus(ctx context.Context, order model.OrderR
 	}
 
 	return status.Status, err
+}
+
+func (o *OrderAdminService) UpdateOrderSuccess(ctx context.Context, order model.OrderRaw, staff model.StaffRaw) error {
+	if order.Status != "pending" {
+		return errors.New(locale.OrderStatusCanNotUpdate)
+	}
+	payload := bson.M{
+		"updatedAt": time.Now(),
+		"status":    "success",
+		"updatedBy": staff.ID,
+	}
+
+	err := o.OrderDAO.UpdateByID(ctx, order.ID, bson.M{"$set": payload})
+	if err != nil {
+		return err
+	}
+
+	//get user
+	user, err := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": order.User})
+	if err != nil {
+		return err
+	}
+	var currentPointUpdate float64
+	if !order.IsPoint {
+		// calculate currentPoint
+		if (order.TotalPrice >= 30000) && (order.TotalPrice) <= 50000 {
+			currentPointUpdate = user.CurrentPoint + 1
+		} else if (order.TotalPrice > 50000) && (order.TotalPrice) <= 100000 {
+			currentPointUpdate = user.CurrentPoint + 2
+		} else if order.TotalPrice > 100000 {
+			currentPointUpdate = user.CurrentPoint + 3
+		}
+	}
+	if err = o.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"currentPoint": currentPointUpdate}}); err != nil {
+		return errors.New(locale.UpdatePointFailed)
+	}
+
+	return nil
+}
+
+func (o *OrderAdminService) CancelOrder(ctx context.Context, order model.OrderRaw, staff model.StaffRaw) error {
+	if order.Status != "pending" {
+		return errors.New(locale.OrderStatusCanNotUpdate)
+	}
+	payload := bson.M{
+		"updatedAt": time.Now(),
+		"status":    "cancel",
+		"updatedBy": staff.ID,
+	}
+
+	err := o.OrderDAO.UpdateByID(ctx, order.ID, bson.M{"$set": payload})
+	if err != nil {
+		return err
+	}
+	//get user
+	user, err := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": order.User})
+	if err != nil {
+		return err
+	}
+
+	if order.IsPoint && order.Point > 0 {
+		currentPointUpdate := user.CurrentPoint + order.Point
+		if err = o.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"currentPoint": currentPointUpdate}}); err != nil {
+			return errors.New(locale.UpdatePointFailed)
+		}
+	}
+
+	return nil
 }
 
 func (o *OrderAdminService) FindByID(ctx context.Context, id model.AppID) (model.OrderRaw, error) {

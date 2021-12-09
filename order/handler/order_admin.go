@@ -21,6 +21,9 @@ func (h *OrderAdminHandler) GetListByStatus(c echo.Context) error {
 			Status: c.QueryParam("status"),
 			Limit:  cc.GetLimitQuery(),
 			Page:   cc.GetPageQuery(),
+			Sort: bson.D{
+				{"createdAt",-1},
+			},
 		}
 	)
 
@@ -49,6 +52,36 @@ func (h *OrderAdminHandler) ChangeStatus(c echo.Context) error {
 	return cc.Response200(echo.Map{
 		"status": data,
 	}, "")
+}
+
+func (h *OrderAdminHandler) UpdateOrderSuccess(c echo.Context) error {
+	var (
+		cc    = util.EchoGetCustomCtx(c)
+		order = c.Get("order").(model.OrderRaw)
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+
+	err := h.OrderAdminService.UpdateOrderSuccess(cc.GetRequestCtx(), order, staff)
+
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(nil, "")
+}
+
+func (h *OrderAdminHandler) CancelOrder(c echo.Context) error {
+	var (
+		cc    = util.EchoGetCustomCtx(c)
+		order = c.Get("order").(model.OrderRaw)
+		staff = c.Get("staff").(model.StaffRaw)
+	)
+
+	err := h.OrderAdminService.CancelOrder(cc.GetRequestCtx(), order, staff)
+
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(nil, "")
 }
 
 func (h *OrderAdminHandler) GetDetail(c echo.Context) error {

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/initialize"
@@ -32,10 +31,10 @@ func main() {
 	// Init account admin root
 	initAccountAdminRoot(commonDAO)
 
-	port := os.Getenv("PORT")
+	// port := os.Getenv("PORT")
 
-	e.Logger.Fatal(e.Start(":" + port))
-	//e.Logger.Fatal(e.Start(":" + "8082"))
+	// e.Logger.Fatal(e.Start(":" + port))
+	e.Logger.Fatal(e.Start(":" + "8082"))
 }
 
 //onst PORT = process.env.PORT || 4000

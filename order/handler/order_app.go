@@ -4,6 +4,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -16,6 +17,7 @@ type OrderAppHandler struct {
 
 // Update ...
 func (h *OrderAppHandler) Create(c echo.Context) error {
+
 	var (
 		cc   = util.EchoGetCustomCtx(c)
 		body = c.Get("orderBody").(model.OrderBody)
@@ -23,7 +25,6 @@ func (h *OrderAppHandler) Create(c echo.Context) error {
 	)
 
 	data, err := h.OrderAppService.Create(cc.GetRequestCtx(), user, body)
-
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -74,6 +75,9 @@ func (h *OrderAppHandler) GetList(c echo.Context) error {
 			Status: c.QueryParam("status"),
 			Limit:  cc.GetLimitQuery(),
 			Page:   cc.GetPageQuery(),
+			Sort: bson.D{
+				{"createdAt", -1},
+			},
 		}
 	)
 
@@ -83,4 +87,19 @@ func (h *OrderAppHandler) GetList(c echo.Context) error {
 		"order": data,
 		"total": total,
 	}, "")
+}
+
+func (h *OrderAppHandler) RejectOrder(c echo.Context) error {
+	var (
+		cc    = util.EchoGetCustomCtx(c)
+		order = cc.Get("order").(model.OrderRaw)
+		user  = c.Get("user").(model.UserRaw)
+	)
+
+	err := h.OrderAppService.RejectOrder(cc.GetRequestCtx(), user, order)
+
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(nil, "")
 }

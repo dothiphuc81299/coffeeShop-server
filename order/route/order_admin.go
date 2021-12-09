@@ -22,4 +22,7 @@ func InitOrderAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r.GET("/:orderID", h.GetDetail, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionView, d), h.GetByID)
 	r.GET("/statistic", h.GetStatistic, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionView, d))
 
+	r.PUT("/:orderID/success", h.UpdateOrderSuccess, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID)
+	r.PUT("/:orderID/cancel", h.CancelOrder, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID)
+
 }

@@ -54,6 +54,13 @@ const (
 	PasswordIsIncorrect           = "PasswordIsIncorrect"
 	UserNameOrPasswordIsIncorrect = "UserNameOrPasswordIsIncorrect"
 	UserIsNotExisted              = "userIsNotExisted"
+	CurrentPointIsNotEnough       = "current point is not enough"
+	UpdatePointFailed             = "update point failed"
+	OrderIsEmpty                  = "orderIsEmpty"
+	PointIsRequired               = "pointIsRequired"
+	OrderCanNotCancel             = "orderNotCancel"
+	OrderStatusIsInvalid          = "OrderStatusIsInvalid"
+	OrderStatusCanNotUpdate       = "order status can not update"
 )
 
 type (
@@ -102,6 +109,12 @@ type (
 		PasswordIsIncorrect           string `properties:"passwordIsIncorrect"`
 		UserNameOrPasswordIsIncorrect string `properties:"UserNameOrPasswordIsIncorrect"`
 		UserIsNotExisted              string `properties:"UserIsNotExisted"`
+		CurrentPointIsNotEnough       string `properties:"CurrentPointIsNotEnough"`
+		UpdatePointFailed             string `properties:"UpdatePointFailed"`
+		OrderIsEmpty                  string `properties:"OrderIsEmpty"`
+		OrderCanNotCancel             string `properties:"OrderCanNotCancel"`
+		OrderStatusIsInvalid          string `properties:"OrderStatusIsInvalid"`
+		OrderStatusCanNotUpdate       string `properties:"OrderStatusCanNotUpdate"`
 	}
 )
 
@@ -430,6 +443,52 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.UserIsNotExisted,
 			},
 			Code: 56,
+		},
+		{
+			Key: CurrentPointIsNotEnough,
+			Message: &Message{
+				Vi: commonVi.CurrentPointIsNotEnough,
+			},
+			Code: 57,
+		},
+
+		{
+			Key: UpdatePointFailed,
+			Message: &Message{
+				Vi: commonVi.UpdatePointFailed,
+			},
+			Code: 58,
+		},
+
+		{
+			Key: OrderIsEmpty,
+			Message: &Message{
+				Vi: commonVi.OrderIsEmpty,
+			},
+			Code: 59,
+		},
+
+		{
+			Key: OrderCanNotCancel,
+			Message: &Message{
+				Vi: commonVi.OrderCanNotCancel,
+			},
+			Code: 60,
+		},
+
+		{
+			Key: OrderStatusIsInvalid,
+			Message: &Message{
+				Vi: commonVi.OrderStatusIsInvalid,
+			},
+			Code: 61,
+		},
+		{
+			Key: OrderStatusCanNotUpdate,
+			Message: &Message{
+				Vi: commonVi.OrderStatusCanNotUpdate,
+			},
+			Code: 62,
 		},
 	}
 	return response

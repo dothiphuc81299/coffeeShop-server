@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"sync"
+	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -33,7 +33,6 @@ func NewOrderAppService(d *model.CommonDAO) model.OrderAppService {
 func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order model.OrderBody) (doc model.OrderResponse, err error) {
 	// convert order payload
 	drinks := make([]model.DrinkInfo, 0)
-
 	for _, value := range order.Drink {
 		drinkID, _ := primitive.ObjectIDFromHex(value.Name)
 		drinkRaw, err := o.DrinkDAO.FindOneByCondition(ctx, bson.M{"_id": drinkID})
@@ -49,29 +48,29 @@ func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order 
 		doc.TotalPrice += drink.Price * float64(drink.Quantity)
 		drinks = append(drinks, drink)
 	}
-
 	var currentPointUpdate float64
-	if !order.IsPoint {
-		// calculate currentPoint
-		if (doc.TotalPrice >= 30000) && (doc.TotalPrice) <= 50000 {
-			currentPointUpdate = user.CurrentPoint + 1
-			fmt.Println("cal", currentPointUpdate)
-		} else if (doc.TotalPrice > 50000) && (doc.TotalPrice) <= 100000 {
-			currentPointUpdate = user.CurrentPoint + 2
-		} else if doc.TotalPrice > 100000 {
-			currentPointUpdate = user.CurrentPoint + 3
-		}
-	}
+	// if !order.IsPoint {
+	// 	// calculate currentPoint
+	// 	if (doc.TotalPrice >= 30000) && (doc.TotalPrice) <= 50000 {
+	// 		currentPointUpdate = user.CurrentPoint + 1
+	// 	} else if (doc.TotalPrice > 50000) && (doc.TotalPrice) <= 100000 {
+	// 		currentPointUpdate = user.CurrentPoint + 2
+	// 	} else if doc.TotalPrice > 100000 {
+	// 		currentPointUpdate = user.CurrentPoint + 3
+	// 	}
+	// }
 	if order.Point > 0 {
 		if user.CurrentPoint < order.Point {
-			return doc, errors.New("Ban nhap qua so diem tich luy")
+			return doc, errors.New(locale.CurrentPointIsNotEnough)
 		}
 		missPoint := order.Point * POINT
 
 		if missPoint > doc.TotalPrice {
 			point := missPoint - doc.TotalPrice
 			point = point / POINT
-			currentPointUpdate = point
+			///	currentPointUpdate = point
+			currentPointUpdate = user.CurrentPoint - order.Point + point
+			order.Point = order.Point - point
 			doc.TotalPrice = 0
 		} else {
 			doc.TotalPrice -= missPoint
@@ -87,7 +86,7 @@ func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order 
 	}
 
 	if err = o.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"currentPoint": currentPointUpdate}}); err != nil {
-		return doc, errors.New("Cap nhat diem that bai")
+		return doc, errors.New(locale.UpdatePointFailed)
 	}
 
 	userInfo := user.GetUserInfo()
@@ -145,4 +144,36 @@ func (o *OrderAppService) GetList(ctx context.Context, query model.CommonQuery, 
 
 	}
 	return res, total
+}
+
+func (o *OrderAppService) RejectOrder(ctx context.Context, user model.UserRaw, order model.OrderRaw) error {
+	now := time.Now()
+	createdAt := order.CreatedAt
+	then := createdAt.Add(time.Duration(+2) * time.Minute)
+
+	if now.After(then) || order.Status != "pending" {
+		return errors.New(locale.OrderCanNotCancel)
+	}
+
+	payload := bson.M{
+		"updatedAt": time.Now(),
+		"status":    "cancel",
+		"updatedBy": user.ID,
+	}
+
+	err := o.OrderDAO.UpdateByID(ctx, order.ID, bson.M{"$set": payload})
+	if err != nil {
+		return errors.New(locale.CommonKeyErrorWhenHandle)
+	}
+
+	// check lai diem
+	currentPointUpdate := user.CurrentPoint + order.Point
+	if order.IsPoint && order.Point > 0 {
+		if err = o.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": bson.M{"currentPoint": currentPointUpdate}}); err != nil {
+			return errors.New(locale.UpdatePointFailed)
+		}
+	}
+
+	return nil
+
 }

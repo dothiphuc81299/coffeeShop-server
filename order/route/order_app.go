@@ -22,4 +22,6 @@ func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r.GET("/:orderID/me", h.GetDetail, middleware.CheckUser(d), h.GetByID)
 
 	r.GET("/me", h.GetList, middleware.CheckUser(d))
+
+	r.PUT("/:orderID/reject",h.RejectOrder,middleware.CheckUser(d),h.GetByID)
 }

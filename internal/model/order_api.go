@@ -62,13 +62,13 @@ type StatisticByDrink struct {
 }
 
 func (o OrderBody) Validate() error {
-	err := validation.Validate(o.Drink, validation.Required.Error("Don hang dang bi trong"))
+	err := validation.Validate(o.Drink, validation.Required.Error(locale.OrderIsEmpty))
 	if err != nil {
 		return err
 	}
 
 	return validation.ValidateStruct(&o,
-		validation.Field(&o.Point, validation.Required.When(o.IsPoint).Error("PointISRequired")),
+		validation.Field(&o.Point, validation.Required.When(o.IsPoint).Error(locale.PointIsRequired)),
 	)
 }
 
@@ -83,7 +83,7 @@ func (d DrinkUserBody) Validate() error {
 func (s StatusBody) Validate() error {
 	return validation.ValidateStruct(&s,
 		validation.Field(&s.Status,
-			validation.In("delivery", "success").Error("trang thai khong hop le[delivery,success"),
+			validation.In("cancel", "success").Error(locale.OrderStatusIsInvalid),
 			validation.Required.Error("trang thai don hang duoc yeu cau")))
 }
 

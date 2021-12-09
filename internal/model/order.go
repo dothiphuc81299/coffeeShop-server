@@ -23,10 +23,13 @@ type OrderAppService interface {
 	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
 	GetList(ctx context.Context, query CommonQuery, user UserRaw) ([]OrderResponse, int64)
 	GetDetail(ctx context.Context, order OrderRaw) OrderResponse
+	RejectOrder(ctx context.Context, user UserRaw, order OrderRaw) error
 }
 
 type OrderAdminService interface {
 	ChangeStatus(ctx context.Context, order OrderRaw, status StatusBody, staff StaffRaw) (string, error)
+	UpdateOrderSuccess(ctx context.Context, order OrderRaw, staff StaffRaw) error
+	CancelOrder(ctx context.Context, order OrderRaw, staff StaffRaw) error
 	GetListByStatus(ctx context.Context, query CommonQuery) ([]OrderResponse, int64)
 	FindByID(ctx context.Context, id AppID) (OrderRaw, error)
 	GetDetail(ctx context.Context, order OrderRaw) OrderResponse

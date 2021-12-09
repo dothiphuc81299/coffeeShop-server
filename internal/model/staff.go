@@ -82,7 +82,7 @@ func (u *StaffRaw) GenerateToken() string {
 		"_id":      u.ID,
 		"username": u.Username,
 		"phone":    u.Phone,
-		"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
+	//	"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
 	return tokenString
