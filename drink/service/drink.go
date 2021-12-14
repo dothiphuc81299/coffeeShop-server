@@ -69,9 +69,9 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 		for _, value := range drinks {
 			go func(abc model.DrinkRaw) {
 				defer wg.Done()
-				cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": value.Category})
+				cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": abc.Category})
 				catTemp := model.CategoryGetInfo(cat)
-				temp := value.DrinkGetAdminResponse(catTemp)
+				temp := abc.DrinkGetAdminResponse(catTemp)
 				res = append(res, temp)
 			}(value)
 

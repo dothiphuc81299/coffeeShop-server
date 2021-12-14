@@ -61,3 +61,8 @@ func (w *CategoryDAO) FindOneByCondition(ctx context.Context, cond interface{}) 
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }
+
+func (w *CategoryDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}

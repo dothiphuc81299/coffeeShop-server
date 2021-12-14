@@ -31,9 +31,9 @@ func main() {
 	// Init account admin root
 	initAccountAdminRoot(commonDAO)
 
-	// port := os.Getenv("PORT")
+	//port := os.Getenv("PORT")
 
-	// e.Logger.Fatal(e.Start(":" + port))
+	//e.Logger.Fatal(e.Start(":" + port))
 	e.Logger.Fatal(e.Start(":" + "8082"))
 }
 

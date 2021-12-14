@@ -16,9 +16,11 @@ func InitCategoryAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO)
 	}
 
 	g := e.Group("/category")
-	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView,d), validation.CategoryBodyValidation)
-	g.PUT("/:categoryID", h.Update, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionEdit,d), h.CategoryGetByID, validation.CategoryBodyValidation)
+	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, d), validation.CategoryBodyValidation)
+	g.PUT("/:categoryID", h.Update, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionEdit, d), h.CategoryGetByID, validation.CategoryBodyValidation)
 
 	g.GET("", h.ListAll)
 	g.GET("/:categoryID", h.GetDetail, h.CategoryGetByID)
+
+	g.DELETE("/:categoryID", h.DeleteCategory, h.CategoryGetByID, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionDelete, d))
 }

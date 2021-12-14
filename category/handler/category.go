@@ -85,6 +85,19 @@ func (d *CategoryAdminHandler) GetDetail(c echo.Context) error {
 
 }
 
+func (d *CategoryAdminHandler) DeleteCategory(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		category  = c.Get("category").(model.CategoryRaw)
+	)
+
+	err := d.CategoryAdminService.DeleteCategory(customCtx.GetRequestCtx(), category)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+	return customCtx.Response200(nil, "")
+}
+
 // CategoryGetByID ...
 func (d *CategoryAdminHandler) CategoryGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {

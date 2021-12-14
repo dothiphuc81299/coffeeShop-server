@@ -63,7 +63,6 @@ func (q *CommonQuery) AssignUsername(cond *bson.M) {
 	}
 }
 
-
 func (q *CommonQuery) AssignStatus(cond *bson.M) {
 	if q.Status != "" {
 		(*cond)["status"] = q.Status
@@ -160,6 +159,17 @@ type ResponseAdminData struct {
 
 // GetFindOptsUsingPage ...
 func (q *CommonQuery) GetFindOptsUsingPage() *options.FindOptions {
+	opts := options.Find()
+	if q.Limit > 0 {
+		opts.SetLimit(q.Limit).SetSkip((q.Page) * q.Limit)
+	}
+	if q.Sort != nil {
+		opts.SetSort(q.Sort)
+	}
+	return opts
+}
+
+func (q *CommonQuery) GetFindOptsUsingPageOne() *options.FindOptions {
 	opts := options.Find()
 	if q.Limit > 0 {
 		opts.SetLimit(q.Limit).SetSkip((q.Page - 1) * q.Limit)

@@ -56,7 +56,7 @@ func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery)
 
 	go func() {
 		defer wg.Done()
-		categories, _ := d.CategoryDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
+		categories, _ := d.CategoryDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
 		for _, value := range categories {
 			temp := value.CategoryGetAdminResponse()
 			res = append(res, temp)
@@ -69,6 +69,11 @@ func (d *CategoryAdminService) ListAll(ctx context.Context, q model.CommonQuery)
 
 func (d *CategoryAdminService) GetDetail(ctx context.Context, cate model.CategoryRaw) model.CategoryAdminResponse {
 	return cate.CategoryGetAdminResponse()
+}
+
+func (d *CategoryAdminService) DeleteCategory(ctx context.Context, cate model.CategoryRaw) error {
+	err := d.CategoryDAO.DeleteByID(ctx, cate.ID)
+	return err
 }
 
 // Update ....

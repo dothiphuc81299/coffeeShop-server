@@ -14,6 +14,7 @@ type CategoryDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]CategoryRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	DeleteByID(ctx context.Context, id AppID) error
 }
 
 // CategoryAdminService ....
@@ -23,6 +24,8 @@ type CategoryAdminService interface {
 	Update(ctx context.Context, c CategoryRaw, body CategoryBody) (CategoryAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (Category CategoryRaw, err error)
 	GetDetail(ctx context.Context, cate CategoryRaw) CategoryAdminResponse
+
+	DeleteCategory(ctx context.Context, cate CategoryRaw) error
 }
 
 // CategoryRaw ....
