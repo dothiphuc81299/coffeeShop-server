@@ -1,7 +1,6 @@
 package route
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/staff/handler"
@@ -16,13 +15,11 @@ func InitStaffApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r := e.Group("/staff")
 
 	// nhan vien cap nhat tai khoan
-	r.PUT("/update", h.Update, middleware.RequireLogin,
-		middleware.CheckPermission(config.ModelFieldStaff, config.PermissionEdit, d), validation.StaffUpdateBodyByItValidation)
+	r.PUT("/update", h.Update, middleware.CheckStaff(d), validation.StaffUpdateBodyByItValidation)
 
 	// change password do nhan vien
-	r.PUT("/me/password", h.UpdatePassword, middleware.RequireLogin,
-		middleware.CheckPermission(config.ModelFieldStaff, config.PermissionChangePassword, d), validation.StaffChangePasswordBodyValidation)
+	r.PUT("/me/password", h.UpdatePassword, middleware.CheckStaff(d), validation.StaffChangePasswordBodyValidation)
 
-	// get detail user
-	r.GET("/me", h.GetDetailStaff, middleware.RequireLogin, middleware.CheckPermission(config.ModelFieldStaff, config.PermissionView, d))
+	// get detail staff
+	r.GET("/me", h.GetDetailStaff, middleware.CheckStaff(d))
 }
