@@ -102,7 +102,19 @@ func (d *DrinkAdminHandler) GetDetail(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
+func (d *DrinkAdminHandler) DeleteDrink(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		drink     = c.Get("drink").(model.DrinkRaw)
+	)
 
+	err := d.DrinkAdminService.DeleteDrink(customCtx.GetRequestCtx(), drink)
+
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+	return customCtx.Response200(nil, "")
+}
 
 // DrinkGetByID ...
 func (d *DrinkAdminHandler) DrinkGetByID(next echo.HandlerFunc) echo.HandlerFunc {

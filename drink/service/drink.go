@@ -63,7 +63,7 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 	q.AssignCategory(&cond)
 
 	total = d.DrinkDAO.CountByCondition(ctx, cond)
-	drinks, _ := d.DrinkDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
+	drinks, _ := d.DrinkDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
 	if len(drinks) > 0 {
 		wg.Add(len(drinks))
 		for _, value := range drinks {
@@ -129,4 +129,8 @@ func (d *DrinkAdminService) GetDetail(ctx context.Context, drink model.DrinkRaw)
 	catTemp := model.CategoryGetInfo(cat)
 	temp := drink.DrinkGetAdminResponse(catTemp)
 	return temp
+}
+
+func (d *DrinkAdminService) DeleteDrink(ctx context.Context, drink model.DrinkRaw) error {
+	return d.DrinkDAO.DeleteByID(ctx, drink.ID)
 }

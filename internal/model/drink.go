@@ -14,6 +14,7 @@ type DrinkDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]DrinkRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	DeleteByID(ctx context.Context, id AppID) error
 }
 
 // DrinkAdminService ...
@@ -24,6 +25,7 @@ type DrinkAdminService interface {
 	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool, error)
 	FindByID(ctx context.Context, id AppID) (Drink DrinkRaw, err error)
 	GetDetail(ctx context.Context, drink DrinkRaw) DrinkAdminResponse
+	DeleteDrink(ctx context.Context, drink DrinkRaw) error
 }
 
 // DrinkRaw ...

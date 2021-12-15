@@ -16,10 +16,10 @@ func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	}
 
 	g := e.Group("/drink")
-	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldDrink,config.PermissionAdmin,d), validation.DrinkBodyValidation)
+	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionAdmin, d), validation.DrinkBodyValidation)
 	g.GET("", h.GetList)
-	g.PUT("/:drinkID", h.Update, middleware.CheckPermission(config.ModelFieldDrink,config.PermissionAdmin,d), validation.DrinkBodyValidation, h.DrinkGetByID)
-	g.PATCH("/:drinkID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldDrink,config.PermissionAdmin,d), h.DrinkGetByID)
+	g.PUT("/:drinkID", h.Update, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionAdmin, d), validation.DrinkBodyValidation, h.DrinkGetByID)
+	g.PATCH("/:drinkID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionAdmin, d), h.DrinkGetByID)
 	g.GET("/:drinkID", h.GetDetail, h.DrinkGetByID)
-
+	g.DELETE("/:drinkID", h.DeleteDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionAdmin, d), h.DrinkGetByID)
 }

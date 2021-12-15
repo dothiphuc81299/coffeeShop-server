@@ -61,3 +61,8 @@ func (w *DrinkDAO) FindOneByCondition(ctx context.Context, cond interface{}) (do
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }
+
+func (w *DrinkDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}
