@@ -104,3 +104,8 @@ func (d *EventAdminService) ChangeStatus(ctx context.Context, event model.EventR
 	return active, nil
 
 }
+
+func (d *EventAdminService) DeleteEvent(ctx context.Context, c model.EventRaw) error {
+	err := d.EventDAO.DeleteByID(ctx, c.ID)
+	return err
+}

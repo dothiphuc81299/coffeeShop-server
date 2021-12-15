@@ -16,12 +16,13 @@ func InitEventAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	}
 
 	g := e.Group("/event")
-	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldEvent,config.PermissionAdmin,d), validation.EventBodyValidation)
+	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionAdmin, d), validation.EventBodyValidation)
 
-	g.PUT("/:eventID", h.Update, middleware.CheckPermission(config.ModelFieldEvent,config.PermissionAdmin,d), h.EventGetByID, validation.EventBodyValidation)
+	g.PUT("/:eventID", h.Update, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionAdmin, d), h.EventGetByID, validation.EventBodyValidation)
 
 	g.GET("", h.ListAll)
 	g.GET("/:eventID", h.GetDetail, h.EventGetByID)
 
-	g.PATCH("/:eventID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldEvent,config.PermissionAdmin,d), h.EventGetByID)
+	g.PATCH("/:eventID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionAdmin, d), h.EventGetByID)
+	g.DELETE("/:eventID", h.DeleteEvent, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionAdmin, d), h.EventGetByID)
 }

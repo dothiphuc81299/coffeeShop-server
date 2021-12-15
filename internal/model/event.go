@@ -14,6 +14,7 @@ type EventDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]EventRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	DeleteByID(ctx context.Context, id AppID) error
 }
 
 // EventAdminService ....
@@ -24,6 +25,7 @@ type EventAdminService interface {
 	FindByID(ctx context.Context, id AppID) (Event EventRaw, err error)
 	ChangeStatus(ctx context.Context, c EventRaw) (bool, error)
 	GetDetail(ctx context.Context, c EventRaw) EventAdminResponse
+	DeleteEvent(ctx context.Context, c EventRaw) error
 }
 
 // EventRaw ....

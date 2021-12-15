@@ -104,6 +104,20 @@ func (d *EventAdminHandler) GetDetail(c echo.Context) error {
 	}, "")
 }
 
+func (d *EventAdminHandler) DeleteEvent(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		event     = customCtx.Get("Event").(model.EventRaw)
+	)
+
+	err := d.EventAdminService.DeleteEvent(customCtx.GetRequestCtx(), event)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	return customCtx.Response200(nil, "")
+}
+
 // EventGetByID ...
 func (d *EventAdminHandler) EventGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
