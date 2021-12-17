@@ -15,6 +15,7 @@ type StaffRoleDAO interface {
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	InsertOne(ctx context.Context, u *StaffRoleRaw) error
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	DeleteByID(ctx context.Context, id AppID) error
 }
 
 // StaffRoleAdminService represent staff roles service
@@ -23,6 +24,7 @@ type StaffRoleAdminService interface {
 	Create(ctx context.Context, body StaffRoleBody) (StaffRoleAdminResponse, error)
 	Update(ctx context.Context, data StaffRoleRaw, body StaffRoleBody) (StaffRoleAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (StaffRoleRaw, error)
+	Delete(ctx context.Context, data StaffRoleRaw) error
 }
 
 // StaffRoleRaw ...

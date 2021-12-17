@@ -72,3 +72,9 @@ func (ud *StaffDAO) UpdateBycondition(ctx context.Context, cond interface{}, pay
 	_, err := ud.Col.UpdateOne(ctx, cond, payload)
 	return err
 }
+
+
+func (w *StaffDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}

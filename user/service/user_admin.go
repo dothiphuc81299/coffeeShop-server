@@ -26,7 +26,7 @@ func (us *UserAdminService) GetList(ctx context.Context, q model.CommonQuery) ([
 	q.AssignActive(&cond)
 	q.AssignKeyword(&cond)
 	total = us.UserDAO.CountByCondition(ctx, cond)
-	docs, _ := us.UserDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
+	docs, _ := us.UserDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
 	if len(docs) > 0 {
 		wg.Add(len(docs))
 		result = make([]model.UserAdminResponse, len(docs))

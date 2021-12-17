@@ -73,13 +73,13 @@ func (h *StaffAdminHandler) UpdateRole(c echo.Context) error {
 }
 
 // ChangeStatus ...
-func (h *StaffAdminHandler) ChangeStatus(c echo.Context) error {
+func (h *StaffAdminHandler) DeleteStaff(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
 		staff = c.Get("staff").(model.StaffRaw)
 	)
 
-	err := h.StaffService.ChangeStatus(cc.GetRequestCtx(), staff)
+	err := h.StaffService.DeleteStaff(cc.GetRequestCtx(), staff)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}

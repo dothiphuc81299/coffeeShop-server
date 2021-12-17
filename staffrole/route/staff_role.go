@@ -20,8 +20,11 @@ func InitStaffRoleAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO
 	g.PUT("/:roleID", h.Update, middleware.CheckPermissionRoot(d), h.StaffRoleGetByID, validation.StaffRoleBodyValidation)
 
 	// Get list roles
-	g.GET("", h.ListRoleStaff, middleware.CheckPermissionRoot(d))
+	g.GET("", h.ListRoleStaff)
 
 	// get List permission
-	g.GET("/permissions", h.GetListPermission, middleware.CheckPermissionRoot(d))
+	g.GET("/permissions", h.GetListPermission)
+
+	// delete role
+	g.DELETE("/:roleID", h.Delete, middleware.CheckPermissionRoot(d), h.StaffRoleGetByID)
 }

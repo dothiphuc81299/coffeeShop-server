@@ -69,6 +69,8 @@ func (q *CommonQuery) AssignStatus(cond *bson.M) {
 	}
 }
 
+
+
 // AssignActive ...
 func (q *CommonQuery) AssignActive(cond *bson.M) {
 	// if q.Active != "" {

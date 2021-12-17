@@ -30,14 +30,17 @@ func NewOrderAdminService(d *model.CommonDAO) model.OrderAdminService {
 
 func (o *OrderAdminService) GetListByStatus(ctx context.Context, query model.CommonQuery) ([]model.OrderResponse, int64) {
 	var (
-		cond  = bson.M{}
-		total int64
-		wg    sync.WaitGroup
-		res   = make([]model.OrderResponse, 0)
+		cond     = bson.M{}
+		total    int64
+		wg       sync.WaitGroup
+		res      = make([]model.OrderResponse, 0)
+		condUser = bson.M{}
 	)
 
 	// assign
 	query.AssignStatus(&cond)
+	query.AssignUsername(&condUser)
+
 	total = o.OrderDAO.CountByCondition(ctx, cond)
 	orders, _ := o.OrderDAO.FindByCondition(ctx, cond, query.GetFindOptsUsingPageOne())
 
@@ -47,6 +50,7 @@ func (o *OrderAdminService) GetListByStatus(ctx context.Context, query model.Com
 		for index, order := range orders {
 			go func(od model.OrderRaw, i int) {
 				defer wg.Done()
+				
 				user, _ := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": od.User})
 				userInfo := user.GetUserInfo()
 				temp := od.GetResponse(userInfo, od.Drink, od.Status)

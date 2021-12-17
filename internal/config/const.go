@@ -130,18 +130,18 @@ var (
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				bson.M{
-					"_id":  "user_view",
-					"name": "View",
-				},
-				bson.M{
-					"_id":  "user_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id":  "user_delete",
-					"name": "Delete",
-				},
+				// bson.M{
+				// 	"_id":  "user_view",
+				// 	"name": "View",
+				// },
+				// bson.M{
+				// 	"_id":  "user_edit",
+				// 	"name": "Edit",
+				// },
+				// bson.M{
+				// 	"_id":  "user_delete",
+				// 	"name": "Delete",
+				// },
 			},
 		},
 

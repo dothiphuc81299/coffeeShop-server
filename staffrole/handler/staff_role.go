@@ -76,6 +76,18 @@ func (h *StaffRoleAdminHandler) GetListPermission(c echo.Context) error {
 	}, "")
 }
 
+func (h *StaffRoleAdminHandler) Delete(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		role = c.Get("role").(model.StaffRoleRaw)
+	)
+	err := h.StaffRoleAdminService.Delete(cc.GetRequestCtx(), role)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(nil, "")
+}
+
 func (h *StaffRoleAdminHandler) StaffRoleGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var (

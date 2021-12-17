@@ -22,6 +22,10 @@ func (ss *StaffRoleAdminService) FindByID(ctx context.Context, id model.AppID) (
 	return ss.StaffRoleDAO.FindByID(ctx, id)
 }
 
+func (ss *StaffRoleAdminService) Delete(ctx context.Context, data model.StaffRoleRaw) error {
+	return ss.StaffRoleDAO.DeleteByID(ctx, data.ID)
+}
+
 // Update ...
 func (ss *StaffRoleAdminService) Update(ctx context.Context, data model.StaffRoleRaw, body model.StaffRoleBody) (model.StaffRoleAdminResponse, error) {
 	payload := bson.M{

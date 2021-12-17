@@ -67,3 +67,8 @@ func (ud *StaffRoleDAO) UpdateByID(ctx context.Context, id model.AppID, payload 
 	_, err := ud.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
+
+func (w *StaffRoleDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}

@@ -40,14 +40,9 @@ func (sfs *StaffAdminService) GetToken(ctx context.Context, staffID model.AppID)
 }
 
 // ChangeStatus ...
-func (sfs *StaffAdminService) ChangeStatus(ctx context.Context, data model.StaffRaw) ( err error) {
-	payload := bson.M{
-		"$set": bson.M{
-			"active":    !data.Active,
-			"updatedAt": time.Now(),
-		},
-	}
-	err = sfs.StaffDAO.UpdateByID(ctx, data.ID, payload)
+func (sfs *StaffAdminService) DeleteStaff(ctx context.Context, data model.StaffRaw) ( err error) {
+
+	err = sfs.StaffDAO.DeleteByID(ctx, data.ID)
 	if err != nil {
 		return  errors.New(locale.CommonKeyErrorWhenHandle)
 	}

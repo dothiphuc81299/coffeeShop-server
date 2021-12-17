@@ -17,7 +17,7 @@ func InitUserAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	r := e.Group("/users")
 
 	// Change status
-	// r.PATCH("/:userID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldUser, config.PermissionEdit, d), h.UserGetByID)
-	r.GET("/list", h.List, middleware.CheckPermission(config.ModelFieldUser, config.PermissionView, d), middleware.CheckPermissionRoot(d))
-	r.GET("/:userID", h.GetDetailUser, middleware.CheckPermission(config.ModelFieldUser, config.PermissionView, d), h.UserGetByID)
+	r.PATCH("/:userID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldUser, config.PermissionAdmin, d), h.UserGetByID)
+	r.GET("/list", h.List)
+	r.GET("/:userID", h.GetDetailUser, h.UserGetByID)
 }

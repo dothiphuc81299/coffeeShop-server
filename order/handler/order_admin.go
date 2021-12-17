@@ -18,11 +18,12 @@ func (h *OrderAdminHandler) GetListByStatus(c echo.Context) error {
 	var (
 		cc    = util.EchoGetCustomCtx(c)
 		query = model.CommonQuery{
-			Status: c.QueryParam("status"),
-			Limit:  cc.GetLimitQuery(),
-			Page:   cc.GetPageQuery(),
+			Status:   c.QueryParam("status"),
+			Limit:    cc.GetLimitQuery(),
+			Page:     cc.GetPageQuery(),
+			Username: cc.QueryParam("username"),
 			Sort: bson.D{
-				{"createdAt",-1},
+				{"createdAt", -1},
 			},
 		}
 	)
