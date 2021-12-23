@@ -50,7 +50,7 @@ func (o *OrderAdminService) GetListByStatus(ctx context.Context, query model.Com
 		for index, order := range orders {
 			go func(od model.OrderRaw, i int) {
 				defer wg.Done()
-				
+
 				user, _ := o.UserDAO.FindOneByCondition(ctx, bson.M{"_id": od.User})
 				userInfo := user.GetUserInfo()
 				temp := od.GetResponse(userInfo, od.Drink, od.Status)
@@ -66,6 +66,9 @@ func (o *OrderAdminService) GetListByStatus(ctx context.Context, query model.Com
 }
 
 func (o *OrderAdminService) ChangeStatus(ctx context.Context, order model.OrderRaw, status model.StatusBody, staff model.StaffRaw) (res string, err error) {
+	if order.Status != "pending" {
+		return "", errors.New(locale.OrderStatusIsInvalid)
+	}
 	payload := bson.M{
 		"updatedAt": time.Now(),
 		"status":    status.Status,

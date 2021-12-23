@@ -138,6 +138,7 @@ func (stf *StaffBody) StaffNewBSON(permissions []string) StaffRaw {
 		Username:    stf.Username,
 		Phone:       stf.Phone,
 		Address:     stf.Address,
+		Active:      true,
 		Avatar:      avt,
 		Role:        roleID,
 		CreatedAt:   now,
