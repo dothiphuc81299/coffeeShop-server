@@ -61,6 +61,9 @@ const (
 	OrderCanNotCancel             = "orderNotCancel"
 	OrderStatusIsInvalid          = "OrderStatusIsInvalid"
 	OrderStatusCanNotUpdate       = "order status can not update"
+	CommonKeyEmailInvalid         = "emailInvalid"
+	CommonKeyEmailIsRequired      = "emailIsRequired"
+	CommonyKeyEmailIsExisted      = "EmailIsExisted"
 )
 
 type (

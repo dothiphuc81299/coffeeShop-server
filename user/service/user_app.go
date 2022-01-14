@@ -29,11 +29,17 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 		return errors.New(locale.CommonyKeyUserNameIsExisted)
 	}
 
+	countEmail := u.UserDAO.CountByCondition(ctx, bson.M{"email": payload.Email})
+	if countEmail > 0 {
+		return errors.New(locale.CommonyKeyEmailIsExisted)
+	}
+
 	err = u.UserDAO.InsertOne(ctx, payload)
 	if err != nil {
 		return err
 	}
 
+	// save 
 	return nil
 }
 
@@ -55,8 +61,8 @@ func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBo
 
 func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserRaw, body model.UserUpdateBody) error {
 	payload := bson.M{
-		"phone":    body.Phone,
-		"address":  body.Address,
+		"phone":   body.Phone,
+		"address": body.Address,
 		// "avatar":   body.Avatar,
 	}
 

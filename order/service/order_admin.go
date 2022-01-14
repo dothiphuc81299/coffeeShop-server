@@ -202,8 +202,8 @@ func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.Common
 	})
 	var result = make([]model.StatisticByDrink, 0)
 	result = tempResutl
-	if len(tempResutl) > 3 {
-		result = tempResutl[:3]
+	if len(tempResutl) > 4 {
+		result = tempResutl[:4]
 	}
 
 	for _, i := range tempResutl {

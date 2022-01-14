@@ -5,6 +5,7 @@ import (
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/format"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
+	"github.com/go-ozzo/ozzo-validation/is"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
@@ -21,6 +22,7 @@ type UserSignUpBody struct {
 	Phone    string `json:"phone"`
 	Avatar   string `json:"avatar,omitempty"`
 	Address  string `json:"address"`
+	Email    string `json:"email"`
 }
 
 // UserUpdateBody ...
@@ -40,12 +42,14 @@ type UserAdminResponse struct {
 	CreatedAt    time.Time `json:"createdAt"`
 	Address      string    `json:"address"`
 	CurrentPoint float64   `json:"currentPoint"`
+	Email        string    `json:"email"`
 }
 
 type UserLoginResponse struct {
 	ID           AppID     `json:"_id"`
 	Username     string    `json:"username"`
 	Phone        string    `json:"phone"`
+	Email        string    `json:"email"`
 	Active       bool      `json:"active"`
 	Avatar       string    `json:"avatar"`
 	CreatedAt    time.Time `json:"createdAt"`
@@ -72,12 +76,18 @@ func (alg UserLoginBody) Validate() error {
 
 // Validate ...
 func (u UserSignUpBody) Validate() error {
-	return validation.ValidateStruct(&u,
+	err := validation.ValidateStruct(&u,
 		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
 		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
 		validation.Field(&u.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
 		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
-	)
+		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Validate ...
@@ -103,6 +113,7 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 		ID:           NewAppID(),
 		Username:     u.Username,
 		Password:     u.Password,
+		Email:        u.Email,
 		Active:       true,
 		Phone:        u.Phone,
 		Avatar:       avt,
@@ -119,6 +130,7 @@ func (u *UserRaw) GetUserLoginInResponse(token string) UserLoginResponse {
 		ID:           u.ID,
 		Username:     u.Username,
 		Phone:        u.Phone,
+		Email:        u.Email,
 		Address:      u.Address,
 		Avatar:       u.Avatar,
 		CreatedAt:    u.CreatedAt,

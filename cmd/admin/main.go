@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/initialize"
@@ -12,6 +11,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/server"
+	redisapp "github.com/dothiphuc81299/coffeeShop-server/redis"
 	"github.com/logrusorgru/aurora"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,6 +19,7 @@ import (
 
 func init() {
 	locale.LoadProperties()
+	redisapp.Connect("localhost:6379", "")
 	//	config.Init()
 }
 
@@ -31,11 +32,11 @@ func main() {
 	e := server.StartAdmin(service, serviceApp, commonDAO)
 	// Init account admin root
 	initAccountAdminRoot(commonDAO)
+	
+	//port := os.Getenv("PORT")
 
-	port := os.Getenv("PORT")
-
-	e.Logger.Fatal(e.Start(":" + port))
-	//e.Logger.Fatal(e.Start(":" + "8082"))
+	//e.Logger.Fatal(e.Start(":" + port))
+	e.Logger.Fatal(e.Start(":" + "8082"))
 }
 
 //onst PORT = process.env.PORT || 4000

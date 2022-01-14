@@ -47,6 +47,7 @@ type UserRaw struct {
 	Address      string    `bson:"address"`
 	SearchString string    `bson:"searchString"`
 	CurrentPoint float64   `bson:"currentPoint"`
+	Email        string    `bson:"email"`
 }
 
 // GetAdminResponse ...
@@ -60,6 +61,7 @@ func (u *UserRaw) GetAdminResponse() UserAdminResponse {
 		CreatedAt:    u.CreatedAt,
 		Address:      u.Address,
 		CurrentPoint: u.CurrentPoint,
+		Email:        u.Email,
 	}
 }
 
@@ -69,7 +71,7 @@ func (u *UserRaw) GenerateToken() string {
 		"_id":      u.ID,
 		"username": u.Username,
 		"phone":    u.Phone,
-	//	"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
+		//	"exp":      time.Now().Local().Add(time.Second * 15552000).Unix(), // 6 months
 	})
 	tokenString, _ := token.SignedString([]byte(config.GetEnv().AuthSecret))
 	return tokenString
