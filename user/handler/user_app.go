@@ -23,6 +23,18 @@ func (u *UserAppHandler) UserSignUp(c echo.Context) error {
 	return cc.Response200(nil, "")
 }
 
+func (u *UserAppHandler) SendEmail(c echo.Context) error {
+	cc := util.EchoGetCustomCtx(c)
+	var (
+		body = c.Get("body").(model.UserSendEmailBody)
+	)
+
+	err := u.UserAppService.SendEmail(cc.GetRequestCtx(), body)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	return cc.Response200(nil, "")
+}
 func (u *UserAppHandler) UserLoginIn(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (

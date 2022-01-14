@@ -25,6 +25,7 @@ type UserAppService interface {
 	UserUpdateAccount(ctx context.Context, user UserRaw, body UserUpdateBody) error
 	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse
 	ChangePassword(ctx context.Context, user UserRaw, body UserChangePasswordBody) error
+	SendEmail(ctx context.Context, mail UserSendEmailBody) error
 }
 
 type UserAdminService interface {

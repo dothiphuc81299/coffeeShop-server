@@ -63,3 +63,17 @@ func UserChangePasswordValidation(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
+func SendEmail(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var body model.UserSendEmailBody
+		c.Bind(&body)
+
+		if err := body.Validate(); err != nil {
+			return util.ValidationError(c, err)
+		}
+
+		c.Set("body", body)
+		return next(c)
+	}
+}

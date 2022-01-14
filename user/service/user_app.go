@@ -2,10 +2,14 @@ package service
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
+	redisapp "github.com/dothiphuc81299/coffeeShop-server/redis"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -39,8 +43,43 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 		return err
 	}
 
-	// save 
+	// save
 	return nil
+}
+
+func (u *UserAppService) SendEmail(ctx context.Context, mail model.UserSendEmailBody) error {
+	code, _ := GenerateOTP(6)
+	err := redisapp.SetKeyValue(code, mail.Email, 24*time.Hour)
+	if err != nil {
+		return err
+	}
+	fmt.Println(err)
+	mailw := mail.Email
+	args := &model.UserVerifyEmail{
+		Email: mailw,
+		Code:  code,
+	}
+	u.SendVerifyMemberEmail(args)
+
+	return nil
+
+}
+
+const otpChars = "1234567890"
+
+func GenerateOTP(length int) (string, error) {
+	buffer := make([]byte, length)
+	_, err := rand.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+
+	otpCharsLength := len(otpChars)
+	for i := 0; i < length; i++ {
+		buffer[i] = otpChars[int(buffer[i])%otpCharsLength]
+	}
+
+	return string(buffer), nil
 }
 
 func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBody) (doc model.UserLoginResponse, err error) {

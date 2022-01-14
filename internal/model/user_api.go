@@ -25,6 +25,10 @@ type UserSignUpBody struct {
 	Email    string `json:"email"`
 }
 
+type UserSendEmailBody struct {
+	Email string `json:"email"`
+}
+
 // UserUpdateBody ...
 type UserUpdateBody struct {
 	Phone string `json:"phone"`
@@ -66,6 +70,21 @@ type UserChangePasswordBody struct {
 	NewPasswordAgain string `json:"newPasswordAgain"`
 }
 
+type UserVerifyEmail struct {
+	Email string `json:"email"`
+	Code  string `json:"code"`
+}
+
+type Message struct {
+	To            []string
+	From          string
+	Template      string
+	Subject       string
+	Body          string
+	Data          map[string]interface{}
+	EmbeddedFiles []string
+}
+
 // Validate ...
 func (alg UserLoginBody) Validate() error {
 	return validation.ValidateStruct(&alg,
@@ -104,6 +123,16 @@ func (a UserChangePasswordBody) Validate() error {
 		validation.Field(&a.NewPassword, validation.Required.Error(locale.CommonKeyPasswordRequired)),
 		validation.Field(&a.NewPasswordAgain, validation.Required.Error(locale.CommonKeyPasswordRequired)),
 	)
+}
+
+func (u UserSendEmailBody) Validate() error {
+	err := validation.ValidateStruct(&u,
+		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)))
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // NewUserRaw																																													 ...
