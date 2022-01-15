@@ -80,16 +80,12 @@ func (d *EventAdminHandler) ChangeStatus(c echo.Context) error {
 		Event     = c.Get("Event").(model.EventRaw)
 	)
 
-	data, err := d.EventAdminService.ChangeStatus(customCtx.GetRequestCtx(), Event)
+	err := d.EventAdminService.ChangeStatus(customCtx.GetRequestCtx(), Event)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	result := model.ResponseAdminData{
-		Data: data,
-	}
-
-	return customCtx.Response200(result, "")
+	return customCtx.Response200(nil, "")
 }
 
 func (d *EventAdminHandler) GetDetail(c echo.Context) error {

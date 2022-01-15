@@ -1,9 +1,14 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"fmt"
+	"log"
+	"net/smtp"
 	"sync"
+	"text/template"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -13,12 +18,14 @@ import (
 // EventAdminService ...
 type EventAdminService struct {
 	EventDAO model.EventDAO
+	User     model.UserDAO
 }
 
 // NewEventAdminService ...
 func NewEventAdminService(d *model.CommonDAO) model.EventAdminService {
 	return &EventAdminService{
 		EventDAO: d.Event,
+		User:     d.User,
 	}
 }
 
@@ -88,21 +95,79 @@ func (d *EventAdminService) FindByID(ctx context.Context, id model.AppID) (event
 	return d.EventDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 
-func (d *EventAdminService) ChangeStatus(ctx context.Context, event model.EventRaw) (status bool, err error) {
-	active := !event.Active
+func (d *EventAdminService) ChangeStatus(ctx context.Context, event model.EventRaw) (err error) {
+
+	//check trang thai hien tai cua event
+	if event.Active {
+		return fmt.Errorf("Trang thai da active")
+	}
 
 	payload := bson.M{
 		"$set": bson.M{
-			"active": active,
+			"active": true,
 		},
 	}
 
 	err = d.EventDAO.UpdateByID(ctx, event.ID, payload)
 	if err != nil {
-		return status, errors.New(locale.EventKeyCanNotUpdate)
+		return errors.New(locale.EventKeyCanNotUpdate)
 	}
-	return active, nil
+	cond := bson.M{}
+	var to = make([]string, 0)
+	// get email
+	users, err := d.User.FindByCondition(ctx, cond)
+	if err != nil {
+		return fmt.Errorf("Da xay ra loi")
+	}
+	for _, users := range users {
+		to = append(to, users.Email)
+	}
+	fmt.Println("to", to)
 
+	// send email cho ng dung
+	d.sendEmailForUser(event, to)
+
+	return nil
+
+}
+
+func (d *EventAdminService) sendEmailForUser(event model.EventRaw, to []string) {
+	from := "nopromise1999@gmail.com"
+	pass := "nitranhngao@81299@"
+
+	// to := []string{
+	// 	args.Email,
+	// }
+
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	// Authentication.
+	auth := smtp.PlainAuth("", from, pass, smtpHost)
+
+	t, err := template.ParseFiles("template_event.html")
+
+	if err != nil {
+		log.Printf(" error: %s", err)
+	}
+	var body bytes.Buffer
+
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: [CoffeeShop] Event \n%s\n\n", mimeHeaders)))
+	t.Execute(&body, struct {
+		Name string
+		Desc string
+	}{
+		Name: event.Name,
+		Desc: event.Desc,
+	})
+
+	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
+	fmt.Println(err)
+	if err != nil {
+		log.Printf("smtp error: %s", err)
+		return
+	}
 }
 
 func (d *EventAdminService) DeleteEvent(ctx context.Context, c model.EventRaw) error {

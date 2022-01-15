@@ -34,7 +34,7 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 		return errors.New(locale.CommonyKeyUserNameIsExisted)
 	}
 
-	countEmail := u.UserDAO.CountByCondition(ctx, bson.M{"email": payload.Email})
+	countEmail := u.UserDAO.CountByCondition(ctx, bson.M{"email": payload.Email, "active": true})
 	if countEmail > 0 {
 		return errors.New(locale.CommonyKeyEmailIsExisted)
 	}

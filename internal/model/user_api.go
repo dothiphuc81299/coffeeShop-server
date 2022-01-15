@@ -158,7 +158,7 @@ func (u *UserSignUpBody) NewUserRaw() UserRaw {
 		Username:     u.Username,
 		Password:     u.Password,
 		Email:        u.Email,
-		Active:       true,
+		Active:       false,
 		Phone:        u.Phone,
 		Avatar:       avt,
 		CreatedAt:    now,
