@@ -16,6 +16,7 @@ type UserDAO interface {
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]UserRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	UpdateByCondition(ctx context.Context, cond, payload interface{}) error
 }
 
 // UserAppService ...
@@ -26,6 +27,7 @@ type UserAppService interface {
 	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse
 	ChangePassword(ctx context.Context, user UserRaw, body UserChangePasswordBody) error
 	SendEmail(ctx context.Context, mail UserSendEmailBody) error
+	VerifyEmail(ctx context.Context, mail VerifyEmailBody) error
 }
 
 type UserAdminService interface {

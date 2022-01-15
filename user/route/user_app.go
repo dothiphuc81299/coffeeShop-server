@@ -23,4 +23,5 @@ func InitUserApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
 	r.PUT("/me/password", h.ChangePassword, middleware.CheckUser(d), validation.UserChangePasswordValidation)
 
 	r.POST("/send-email", h.SendEmail, validation.SendEmail)
+	r.POST("/verify-email", h.VerifyEmail, validation.VerifyEmail)
 }

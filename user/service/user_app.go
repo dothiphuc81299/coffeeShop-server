@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"crypto/rand"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -82,6 +83,35 @@ func GenerateOTP(length int) (string, error) {
 	return string(buffer), nil
 }
 
+func (u *UserAppService) VerifyEmail(ctx context.Context, args model.VerifyEmailBody) error {
+	result := redisapp.GetValueByKey(args.Code)
+	var res string
+	if result == "" {
+		return fmt.Errorf("code not found")
+	}
+	if err := json.Unmarshal([]byte(result), &res); err != nil {
+		return err
+	}
+
+	if res != args.Email {
+		fmt.Println("ok")
+		return fmt.Errorf("Email Khong hop le")
+	}
+
+	// update active user
+	err := u.UserDAO.UpdateByCondition(ctx, bson.M{"email": args.Email}, bson.M{"$set": bson.M{"active": true}})
+	if err != nil {
+		return err
+	}
+
+	err = redisapp.DelKey(args.Code)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
 func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBody) (doc model.UserLoginResponse, err error) {
 	cond := bson.M{
 		"username": body.Username,
@@ -105,7 +135,7 @@ func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserR
 		// "avatar":   body.Avatar,
 	}
 
-	err := u.UserDAO.UpdateByID(ctx, user.ID, bson.M{"$set": payload})
+	err := u.UserDAO.UpdateByCondition(ctx, user.ID, bson.M{"$set": payload})
 	if err != nil {
 		return err
 	}

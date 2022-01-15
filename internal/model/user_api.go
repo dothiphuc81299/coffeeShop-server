@@ -29,6 +29,11 @@ type UserSendEmailBody struct {
 	Email string `json:"email"`
 }
 
+type VerifyEmailBody struct {
+	Email string `json:"email"`
+	Code  string `json:"code"`
+}
+
 // UserUpdateBody ...
 type UserUpdateBody struct {
 	Phone string `json:"phone"`
@@ -129,6 +134,16 @@ func (u UserSendEmailBody) Validate() error {
 	err := validation.ValidateStruct(&u,
 		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)))
 
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u VerifyEmailBody) Validate() error {
+	err := validation.ValidateStruct(&u,
+		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)),
+		validation.Field(&u.Code, validation.Required.Error(locale.CodeIsRequired)))
 	if err != nil {
 		return err
 	}

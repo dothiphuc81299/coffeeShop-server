@@ -64,6 +64,7 @@ const (
 	CommonKeyEmailInvalid         = "emailInvalid"
 	CommonKeyEmailIsRequired      = "emailIsRequired"
 	CommonyKeyEmailIsExisted      = "EmailIsExisted"
+	CodeIsRequired                = "codeIsRequired"
 )
 
 type (
@@ -118,6 +119,7 @@ type (
 		OrderCanNotCancel             string `properties:"OrderCanNotCancel"`
 		OrderStatusIsInvalid          string `properties:"OrderStatusIsInvalid"`
 		OrderStatusCanNotUpdate       string `properties:"OrderStatusCanNotUpdate"`
+		CodeIsRequired                string `properties:"CodeIsRequired"`
 	}
 )
 
@@ -492,6 +494,14 @@ func commonLoadLocales() (response []Locale) {
 				Vi: commonVi.OrderStatusCanNotUpdate,
 			},
 			Code: 62,
+		},
+
+		{
+			Key: CodeIsRequired,
+			Message: &Message{
+				Vi: commonVi.CodeIsRequired,
+			},
+			Code: 63,
 		},
 	}
 	return response

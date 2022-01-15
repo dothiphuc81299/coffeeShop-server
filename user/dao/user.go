@@ -61,3 +61,8 @@ func (w *UserDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc
 	err = w.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }
+
+func (w *UserDAO) UpdateByCondition(ctx context.Context, cond, payload interface{}) error {
+	_, err := w.Col.UpdateOne(ctx, cond, payload)
+	return err
+}
