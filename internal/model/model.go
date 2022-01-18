@@ -21,6 +21,7 @@ type CommonDAO struct {
 	Package          PackageDAO
 	UserPackageGroup UserPackageGroupDAO
 	PackageGroup     PackageGroupDAO
+	CodeDAO          CodedRegisterDAO
 }
 
 // AdminService ....

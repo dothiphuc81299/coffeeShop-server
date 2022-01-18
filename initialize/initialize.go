@@ -80,8 +80,9 @@ func ConnectDB() (*mongo.Database, *model.CommonDAO) {
 		Drink:    drinkDAO.NewDrinkDAO(db),
 		Category: categoryDAO.NewCategoryDAO(db),
 
-		User:  userDAO.NewUserDAO(db),
-		Order: orderDAO.NewOrderDAO(db),
+		User:    userDAO.NewUserDAO(db),
+		CodeDAO: userDAO.NewCodedRegisterDAO(db),
+		Order:   orderDAO.NewOrderDAO(db),
 
 		Event:            eventDAO.NewEventDAO(db),
 		Staff:            staffDAO.NewStaffDAO(db),

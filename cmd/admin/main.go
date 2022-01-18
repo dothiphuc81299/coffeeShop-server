@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"os"
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/initialize"
@@ -11,7 +13,6 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/server"
-	redisapp "github.com/dothiphuc81299/coffeeShop-server/redis"
 	"github.com/logrusorgru/aurora"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,8 +20,24 @@ import (
 
 func init() {
 	locale.LoadProperties()
-	redisapp.Connect("localhost:6379", "")
+	//env :=ENV["REDIS_"]
+	//uri := os.Getenv("REDIS_PROVIDER")
+	// uri = URI.parse(ENV["REDIS_PROVIDER"])
+	///fmt.Println("uri", uri)
+	//uri, pass := ParseRedistogoUrl()
+	//redisapp.Connect(uri, "")
 	//	config.Init()
+}
+
+func ParseRedistogoUrl() (string, string) {
+	redisUrl := os.Getenv("REDIS_URL")
+	redisInfo, _ := url.Parse(redisUrl)
+	server := redisInfo.Host
+	password := ""
+	if redisInfo.User != nil {
+		password, _ = redisInfo.User.Password()
+	}
+	return server, password
 }
 
 func main() {
@@ -32,11 +49,11 @@ func main() {
 	e := server.StartAdmin(service, serviceApp, commonDAO)
 	// Init account admin root
 	initAccountAdminRoot(commonDAO)
-	
-	//port := os.Getenv("PORT")
 
-	//e.Logger.Fatal(e.Start(":" + port))
-	e.Logger.Fatal(e.Start(":" + "8082"))
+	port := os.Getenv("PORT")
+
+	e.Logger.Fatal(e.Start(":" + port))
+	//e.Logger.Fatal(e.Start(":" + "8082"))
 }
 
 //onst PORT = process.env.PORT || 4000

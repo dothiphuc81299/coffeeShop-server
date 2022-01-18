@@ -8,7 +8,7 @@ web: cmd/admin/main.go
 # how to push heroku
 heroku container:push web
 #release image
-heroku container:release web
+    heroku container:release web
 
 #how to build heroku 
 b1 : Create one dockerfile 

@@ -23,7 +23,7 @@ func Connect(uri, pwd string) {
 		Password: pwd,
 		DB:       0, // use default DB
 	})
-
+	
 	// Test
 	_, err := store.Ping(ctx).Result()
 

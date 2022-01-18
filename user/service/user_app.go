@@ -3,25 +3,24 @@ package service
 import (
 	"context"
 	"crypto/rand"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	redisapp "github.com/dothiphuc81299/coffeeShop-server/redis"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 type UserAppService struct {
 	UserDAO model.UserDAO
+	CodeDAO model.CodedRegisterDAO
 }
 
 // NewUserAppService ...
 func NewUserAppService(d *model.CommonDAO) model.UserAppService {
 	return &UserAppService{
 		UserDAO: d.User,
+		CodeDAO: d.CodeDAO,
 	}
 }
 
@@ -50,7 +49,15 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 
 func (u *UserAppService) SendEmail(ctx context.Context, mail model.UserSendEmailBody) error {
 	code, _ := GenerateOTP(6)
-	err := redisapp.SetKeyValue(code, mail.Email, 24*time.Hour)
+	//err := redisapp.SetKeyValue(code, mail.Email, 24*time.Hour)
+
+	argsCode := model.CodedRegisterRaw{
+		Id:    model.NewAppID(),
+		Email: mail.Email,
+		Code:  code,
+	}
+	err := u.CodeDAO.InsertOne(ctx, argsCode)
+
 	if err != nil {
 		return err
 	}
@@ -84,27 +91,37 @@ func GenerateOTP(length int) (string, error) {
 }
 
 func (u *UserAppService) VerifyEmail(ctx context.Context, args model.VerifyEmailBody) error {
-	result := redisapp.GetValueByKey(args.Code)
-	var res string
-	if result == "" {
-		return fmt.Errorf("code not found")
-	}
-	if err := json.Unmarshal([]byte(result), &res); err != nil {
-		return err
-	}
+	// result := redisapp.GetValueByKey(args.Code)
+	// var res string
+	// if result == "" {
+	// 	return fmt.Errorf("code not found")
+	// }
+	// if err := json.Unmarshal([]byte(result), &res); err != nil {
+	// 	return err
+	// }
 
-	if res != args.Email {
-		fmt.Println("ok")
-		return fmt.Errorf("Email Khong hop le")
-	}
+	// if res != args.Email {
+	// 	fmt.Println("ok")
+	// 	return fmt.Errorf("Email Khong hop le")
+	// }
 
-	// update active user
-	err := u.UserDAO.UpdateByCondition(ctx, bson.M{"email": args.Email}, bson.M{"$set": bson.M{"active": true}})
+	result, err := u.CodeDAO.FindOneByCondition(ctx, bson.M{"code": args.Code})
 	if err != nil {
 		return err
 	}
 
-	err = redisapp.DelKey(args.Code)
+	if result.Email != args.Code {
+		return fmt.Errorf(" Khong hop le")
+	}
+
+	// update active user
+	err = u.UserDAO.UpdateByCondition(ctx, bson.M{"email": args.Email}, bson.M{"$set": bson.M{"active": true}})
+	if err != nil {
+		return err
+	}
+
+	// err = redisapp.DelKey(args.Code)
+	err = u.CodeDAO.DeleteOne(ctx, args.Email)
 	if err != nil {
 		return err
 	}
