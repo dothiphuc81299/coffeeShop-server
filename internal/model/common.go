@@ -69,8 +69,6 @@ func (q *CommonQuery) AssignStatus(cond *bson.M) {
 	}
 }
 
-
-
 // AssignActive ...
 func (q *CommonQuery) AssignActive(cond *bson.M) {
 	// if q.Active != "" {
@@ -128,14 +126,49 @@ func (q *CommonQuery) AssignStartAtAndEndAtForDrink(cond *bson.M) {
 }
 
 func (q *CommonQuery) AssignStartAtAndEndAtByStatistic(cond *bson.M) {
-	if !q.StartAt.IsZero() && !q.EndAt.IsZero() {
-		q.StartAt = util.TimeStartOfDayInHCM(q.StartAt.AddDate(0, 0, 1))
-		q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
-		(*cond)["createdAt"] = bson.M{
-			"$gte": q.StartAt,
-			"$lte": q.EndAt,
-		}
+	if q.StartAt.IsZero() && !q.EndAt.IsZero() {
+		q.StartAt = q.BeginningOfMonth(q.EndAt)
 	}
+
+	if q.EndAt.IsZero() && !q.StartAt.IsZero() {
+		q.EndAt = q.EndOfMonth(q.StartAt)
+	}
+
+	if q.StartAt.IsZero() && q.EndAt.IsZero() {
+		q.StartAt, q.EndAt = q.GetThisMonthNow()
+	}
+
+	// q.StartAt = util.TimeStartOfDayInHCM(q.StartAt)
+	// q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
+	(*cond)["createdAt"] = bson.M{
+		"$gte": q.StartAt,
+		"$lte": q.EndAt,
+	}
+}
+
+func (q *CommonQuery) GetThisMonthNow() (time.Time, time.Time) {
+	now := time.Now()
+	currentYear, currentMonth, _ := now.Date()
+	currentLocation := now.Location()
+
+	firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
+	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
+
+	return firstOfMonth, lastOfMonth
+}
+
+func (q *CommonQuery) BeginningOfMonth(date time.Time) time.Time {
+	now := time.Now()
+	dDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, now.UTC().Location())
+	firstDay := dDate.AddDate(0, 0, -date.Day()+1)
+	return firstDay
+}
+
+func (q *CommonQuery) EndOfMonth(date time.Time) time.Time {
+	now := time.Now()
+	dDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, now.UTC().Location())
+	lastDay := dDate.AddDate(0, 1, -dDate.Day()+1).Add(time.Nanosecond * -1)
+	return lastDay
 }
 
 func (q *CommonQuery) AssignCategory(cond *bson.M) {
@@ -164,7 +197,7 @@ func (q *CommonQuery) GetFindOptsUsingPage() *options.FindOptions {
 	opts := options.Find()
 	if q.Limit > 0 {
 		opts.SetLimit(q.Limit).SetSkip((q.Page) * q.Limit)
-	}	
+	}
 	if q.Sort != nil {
 		opts.SetSort(q.Sort)
 	}

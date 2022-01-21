@@ -28,10 +28,10 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 	payload := body.NewUserRaw()
 
 	// find db
-	count := u.UserDAO.CountByCondition(ctx, bson.M{"username": payload.Username})
-	if count > 0 {
-		return errors.New(locale.CommonyKeyUserNameIsExisted)
-	}
+	// count := u.UserDAO.CountByCondition(ctx, bson.M{"username": payload.Username})
+	// if count > 0 {
+	// 	return errors.New(locale.CommonyKeyUserNameIsExisted)
+	// }
 
 	countEmail := u.UserDAO.CountByCondition(ctx, bson.M{"email": payload.Email, "active": true})
 	if countEmail > 0 {
@@ -43,7 +43,11 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 		return err
 	}
 
-	// save
+	// send email
+	u.SendEmail(ctx, model.UserSendEmailBody{
+		Email: body.Email,
+	})
+
 	return nil
 }
 
@@ -105,12 +109,13 @@ func (u *UserAppService) VerifyEmail(ctx context.Context, args model.VerifyEmail
 	// 	return fmt.Errorf("Email Khong hop le")
 	// }
 
-	result, err := u.CodeDAO.FindOneByCondition(ctx, bson.M{"code": args.Code})
+	result, err := u.CodeDAO.FindOneByCondition(ctx, bson.M{"email": args.Email})
+	fmt.Println("result", result)
 	if err != nil {
 		return err
 	}
 
-	if result.Email != args.Code {
+	if result.Code != args.Code {
 		return fmt.Errorf(" Khong hop le")
 	}
 

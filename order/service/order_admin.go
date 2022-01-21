@@ -166,8 +166,6 @@ func (o *OrderAdminService) GetDetail(ctx context.Context, order model.OrderRaw)
 	return res
 }
 
-var tempResutl = make([]model.StatisticByDrink, 0)
-
 func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.CommonQuery) (model.StatisticResponse, error) {
 	var (
 		cond = bson.M{
@@ -179,13 +177,15 @@ func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.Common
 	query.AssignStartAtAndEndAtByStatistic(&cond)
 
 	orders, err := o.OrderDAO.FindByCondition(ctx, cond, query.GetFindOptionsUsingSort())
+
 	if err != nil {
 		return model.StatisticResponse{}, err
 	}
+	var tempResutl = make([]model.StatisticByDrink, 0)
 
 	for _, i := range orders {
 		for _, drink := range i.Drink {
-			if !o.checkDuplicate(drink) {
+			if !o.checkDuplicate(drink, tempResutl) {
 				dr := model.StatisticByDrink{
 					ID:            drink.ID,
 					Name:          drink.Name,
@@ -200,6 +200,7 @@ func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.Common
 	sort.Slice(tempResutl, func(i, j int) bool {
 		return tempResutl[j].TotalQuantity < tempResutl[i].TotalQuantity
 	})
+
 	var result = make([]model.StatisticByDrink, 0)
 	result = tempResutl
 	if len(tempResutl) > 4 {
@@ -216,7 +217,7 @@ func (o *OrderAdminService) GetStatistic(ctx context.Context, query model.Common
 	return res, nil
 }
 
-func (s *OrderAdminService) checkDuplicate(drink model.DrinkInfo) bool {
+func (s *OrderAdminService) checkDuplicate(drink model.DrinkInfo, tempResutl []model.StatisticByDrink) bool {
 	for k, i := range tempResutl {
 		if i.ID == drink.ID {
 			tempResutl[k].TotalQuantity = tempResutl[k].TotalQuantity + float64(drink.Quantity)

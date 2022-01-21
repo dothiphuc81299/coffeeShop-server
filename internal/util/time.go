@@ -18,14 +18,17 @@ func TimeParseISODate(value string) time.Time {
 
 // TimeStartOfDayInHCM ...
 func TimeStartOfDayInHCM(t time.Time) time.Time {
-	l, _ := time.LoadLocation(timezoneHCM)
+	now := time.Now()
+	l := now.Location()
 	y, m, d := t.In(l).Date()
 	return time.Date(y, m, d, 0, 0, 0, 0, l).UTC()
 }
 
 // TimeEndOfDayHCM ...
 func TimeEndOfDayHCM(t time.Time) time.Time {
-	l, _ := time.LoadLocation(timezoneHCM)
+	//l, _ := time.LoadLocation(timezoneHCM)
+	now := time.Now()
+	l := now.Location()
 	y, m, d := t.In(l).Date()
 	return time.Date(y, m, d, 23, 59, 59, 0, l).UTC()
 }
