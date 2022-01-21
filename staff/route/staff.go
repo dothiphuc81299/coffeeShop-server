@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/staff/handler"
@@ -17,7 +18,7 @@ func InitStaffAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	// only root
 	r := e.Group("/staff")
 	r.POST("", h.Create, middleware.CheckPermissionRoot(d), validation.StaffBodyValidation)
-	r.GET("", h.ListStaff)
+	r.GET("", h.ListStaff, middleware.CheckPermission(config.ModelFieldStaff, config.PermissionView, d))
 	r.GET("/:staffID", h.GetStaffByID, middleware.CheckPermissionRoot(d))
 	r.GET("/token", h.GetToken)
 	// r.PATCH("/:staffID/status", h.ChangeStatus, middleware.CheckPermissionRoot(d), h.StaffGetByID)

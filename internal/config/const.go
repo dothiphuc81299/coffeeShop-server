@@ -58,11 +58,13 @@ const (
 	ModelFieldOrder = "order"
 	ModelFieldStaff = "staff"
 
+	ModelFieldStatistic = "statistic"
+	ModelFieldRole      = "role"
+
 	PermissionView   = "view"
 	PermissionEdit   = "edit"
 	PermissionDelete = "delete"
-	PermissionCreate ="create"
-	PermissionChangePassword ="changePassword"
+	PermissionCreate = "create"
 
 	PermissionAdmin = "admin"
 )
@@ -73,96 +75,58 @@ var (
 		// 1. Category
 		bson.M{
 			"_id":  "category",
-			"name": "category",
+			"name": "Category",
 			"permissions": []interface{}{
 				bson.M{
 					"_id":     "category_admin",
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				//bson.M{
-				//	"_id":  "category_view",
-				//	"name": "View",
-				//},
-				//bson.M{
-				//	"_id":  "category_edit",
-				//	"name": "Edit",
-				//},
-				//bson.M{
-				//	"_id":  "category_delete",
-				//	"name": "Delete",
-				//},
+				bson.M{
+					"_id":  "category_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "category_edit",
+					"name": "Edit",
+				},
+				bson.M{
+					"_id":  "category_delete",
+					"name": "Delete",
+				},
+				bson.M{
+					"_id":  "category_create",
+					"name": "create",
+				},
 			},
 		},
 
 		// 2. drinks
 		bson.M{
 			"_id":  "drinks",
-			"name": "drinks",
+			"name": "Drinks",
 			"permissions": []interface{}{
 				bson.M{
 					"_id":     "drink_admin",
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				//bson.M{
-				//	"_id":  "drink_view",
-				//	"name": "View",
-				//},
-				//bson.M{
-				//	"_id":  "drink_edit",
-				//	"name": "Edit",
-				//},
-				//bson.M{
-				//	"_id":  "drink_delete",
-				//	"name": "Delete",
-				//},
-			},
-		},
-
-		// 5.User
-		bson.M{
-			"_id":  "users",
-			"name": "Users",
-			"permissions": []interface{}{
 				bson.M{
-					"_id":     "user_admin",
-					"name":    "Admin",
-					"isAdmin": true,
+					"_id":  "drink_view",
+					"name": "View",
 				},
-				// bson.M{
-				// 	"_id":  "user_view",
-				// 	"name": "View",
-				// },
-				// bson.M{
-				// 	"_id":  "user_edit",
-				// 	"name": "Edit",
-				// },
-				// bson.M{
-				// 	"_id":  "user_delete",
-				// 	"name": "Delete",
-				// },
-			},
-		},
-
-		//6. Event
-		bson.M{
-			"_id":  "events",
-			"name": "Events",
-			"permissions": []interface{}{
 				bson.M{
-					"_id":     "event_admin",
-					"name":    "Admin",
-					"isAdmin": true,
+					"_id":  "drink_edit",
+					"name": "Edit",
 				},
-				//bson.M{
-				//	"_id":  "event_view",
-				//	"name": "View",
-				//},
-				//bson.M{
-				//	"_id":  "event_edit",
-				//	"name": "Edit",
-				//},
+				bson.M{
+					"_id":  "drink_delete",
+					"name": "Delete",
+				},
+				bson.M{
+					"_id":  "drink_create",
+					"name": "Create",
+				},
 			},
 		},
 
@@ -176,41 +140,105 @@ var (
 					"name":    "Admin",
 					"isAdmin": true,
 				},
-				//bson.M{
-				//	"_id":  "order_view",
-				//	"name": "View",
-				//},
-				//bson.M{
-				//	"_id":  "order_edit",
-				//	"name": "Edit",
-				//},
+				bson.M{
+					"_id":  "order_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "order_edit",
+					"name": "Edit",
+				},
+			},
+		},
+
+		//6. Event
+		bson.M{
+			"_id":  "events",
+			"name": "Events",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "event_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				bson.M{
+					"_id":  "event_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "event_edit",
+					"name": "Edit",
+				},
+				bson.M{
+					"_id":  "event_create",
+					"name": "Create",
+				},
+
+				bson.M{
+					"_id":  "event_delete",
+					"name": "Delete",
+				},
+			},
+		},
+		// 5.User
+		bson.M{
+			"_id":  "users",
+			"name": "Users",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "user_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				bson.M{
+					"_id":  "user_view",
+					"name": "View",
+				},
+				bson.M{
+					"_id":  "user_edit",
+					"name": "Edit",
+				},
+			},
+		},
+
+		// 7.Statistic
+		bson.M{
+			"_id":  "statistic",
+			"name": "Statistic",
+			"permissions": []interface{}{
+				bson.M{
+					"_id":     "statistic_admin",
+					"name":    "Admin",
+					"isAdmin": true,
+				},
+				
 			},
 		},
 
 		// 7.Staff
 		bson.M{
 			"_id":  "staff",
-			"name": "staff",
+			"name": "Staff",
 			"permissions": []interface{}{
-				bson.M{
-					"_id":     "staff_admin",
-					"name":    "Admin",
-					"isAdmin": true,
-				},
 				bson.M{
 					"_id":  "staff_view",
 					"name": "View",
 				},
+				
+			},
+		},
+
+		// 7.Staff
+		bson.M{
+			"_id":  "role",
+			"name": "Role",
+			"permissions": []interface{}{
+			
 				bson.M{
-					"_id":  "staff_edit",
-					"name": "Edit",
-				},
-				bson.M{
-					"_id": "staff_changePassword",
-					"name": "ChangePassword",
+					"_id":  "role_view",
+					"name": "View",
 				},
 			},
 		},
 	}
 )
-
