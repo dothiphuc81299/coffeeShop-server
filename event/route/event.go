@@ -24,5 +24,6 @@ func InitEventAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
 	g.GET("/:eventID", h.GetDetail, h.EventGetByID)
 
 	g.PATCH("/:eventID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionEdit, d), h.EventGetByID)
+	g.PUT("/:eventID/send-email", h.SendEmail, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionEdit, d), h.EventGetByID)
 	g.DELETE("/:eventID", h.DeleteEvent, middleware.CheckPermission(config.ModelFieldEvent, config.PermissionDelete, d), h.EventGetByID)
 }

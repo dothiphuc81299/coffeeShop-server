@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
@@ -58,6 +59,7 @@ func CheckPermission(model string, fieldPermission string, d *model.CommonDAO) e
 			// Check session
 			token := util.Base64EncodeToString(strings.Split(cc.GetHeaderKey(config.HeaderAuthorization), " ")[1])
 			sessionTotal := d.Session.CountByCondition(ctx, bson.M{"staff": userID, "token": token})
+			fmt.Println("sesssionToen", sessionTotal)
 			if sessionTotal <= 0 {
 				return cc.Response401(nil, "token het han")
 			}
@@ -76,8 +78,9 @@ func CheckPermission(model string, fieldPermission string, d *model.CommonDAO) e
 					},
 				},
 			}
-
+			fmt.Println("cond",cond)
 			staff, err := d.Staff.FindOneByCondition(ctx, cond)
+			fmt.Println(staff)
 			if err != nil || staff.ID.IsZero() {
 				return cc.Response401(nil, locale.CommonNoPermission)
 			}

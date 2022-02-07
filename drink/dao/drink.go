@@ -66,3 +66,9 @@ func (w *DrinkDAO) DeleteByID(ctx context.Context, id model.AppID) error {
 	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
 	return err
 }
+
+
+func (w *DrinkDAO) DeleteByCategoryID(ctx context.Context,categoryID model.AppID) error {
+	_, err := w.Col.DeleteOne(ctx, bson.M{"category": categoryID})
+	return err
+}

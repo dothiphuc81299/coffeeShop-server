@@ -97,14 +97,14 @@ func (d *EventAdminService) FindByID(ctx context.Context, id model.AppID) (event
 
 func (d *EventAdminService) ChangeStatus(ctx context.Context, event model.EventRaw) (err error) {
 
-	//check trang thai hien tai cua event
-	if event.Active {
-		return fmt.Errorf("Trang thai da active")
-	}
+	// //check trang thai hien tai cua event
+	// if event.Active {
+	// 	return fmt.Errorf("Trang thai da active")
+	// }
 
 	payload := bson.M{
 		"$set": bson.M{
-			"active": true,
+			"active": !event.Active,
 		},
 	}
 
@@ -112,6 +112,26 @@ func (d *EventAdminService) ChangeStatus(ctx context.Context, event model.EventR
 	if err != nil {
 		return errors.New(locale.EventKeyCanNotUpdate)
 	}
+	// cond := bson.M{}
+	// var to = make([]string, 0)
+	// // get email
+	// users, err := d.User.FindByCondition(ctx, cond)
+	// if err != nil {
+	// 	return fmt.Errorf("Da xay ra loi")
+	// }
+	// for _, users := range users {
+	// 	to = append(to, users.Email)
+	// }
+	// fmt.Println("to", to)
+
+	// // send email cho ng dung
+	// d.sendEmailForUser(event, to)
+
+	return nil
+
+}
+
+func (d *EventAdminService) SendEmail(ctx context.Context, event model.EventRaw) (err error) {
 	cond := bson.M{}
 	var to = make([]string, 0)
 	// get email
@@ -122,13 +142,9 @@ func (d *EventAdminService) ChangeStatus(ctx context.Context, event model.EventR
 	for _, users := range users {
 		to = append(to, users.Email)
 	}
-	fmt.Println("to", to)
-
 	// send email cho ng dung
 	d.sendEmailForUser(event, to)
-
 	return nil
-
 }
 
 func (d *EventAdminService) sendEmailForUser(event model.EventRaw, to []string) {

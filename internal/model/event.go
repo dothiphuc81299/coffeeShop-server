@@ -26,6 +26,7 @@ type EventAdminService interface {
 	ChangeStatus(ctx context.Context, c EventRaw) error
 	GetDetail(ctx context.Context, c EventRaw) EventAdminResponse
 	DeleteEvent(ctx context.Context, c EventRaw) error
+	SendEmail(ctx context.Context, c EventRaw) error
 }
 
 // EventRaw ....

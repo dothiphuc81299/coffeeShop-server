@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
@@ -39,7 +40,7 @@ func (d *EventAdminHandler) Update(c echo.Context) error {
 		EventBody = c.Get("EventBody").(model.EventBody)
 		Event     = c.Get("Event").(model.EventRaw)
 	)
-
+	fmt.Println(1)
 	data, err := d.EventAdminService.Update(customCtx.GetRequestCtx(), Event, EventBody)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
@@ -81,6 +82,20 @@ func (d *EventAdminHandler) ChangeStatus(c echo.Context) error {
 	)
 
 	err := d.EventAdminService.ChangeStatus(customCtx.GetRequestCtx(), Event)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	return customCtx.Response200(nil, "")
+}
+
+func (d *EventAdminHandler) SendEmail(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+		Event     = c.Get("Event").(model.EventRaw)
+	)
+
+	err := d.EventAdminService.SendEmail(customCtx.GetRequestCtx(), Event)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}

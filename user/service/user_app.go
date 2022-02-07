@@ -24,7 +24,7 @@ func NewUserAppService(d *model.CommonDAO) model.UserAppService {
 	}
 }
 
-func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBody) (err error) {
+func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBody) (email string, err error) {
 	payload := body.NewUserRaw()
 
 	// find db
@@ -35,12 +35,12 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 
 	countEmail := u.UserDAO.CountByCondition(ctx, bson.M{"email": payload.Email, "active": true})
 	if countEmail > 0 {
-		return errors.New(locale.CommonyKeyEmailIsExisted)
+		return "", errors.New(locale.CommonyKeyEmailIsExisted)
 	}
 
 	err = u.UserDAO.InsertOne(ctx, payload)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// send email
@@ -48,7 +48,7 @@ func (u *UserAppService) UserSignUp(ctx context.Context, body model.UserSignUpBo
 		Email: body.Email,
 	})
 
-	return nil
+	return payload.Email, nil
 }
 
 func (u *UserAppService) SendEmail(ctx context.Context, mail model.UserSendEmailBody) error {
@@ -138,6 +138,7 @@ func (u *UserAppService) UserLoginIn(ctx context.Context, body model.UserLoginBo
 	cond := bson.M{
 		"username": body.Username,
 		"password": body.Password,
+		"active":   true,
 	}
 
 	user, err := u.UserDAO.FindOneByCondition(ctx, cond)
@@ -157,7 +158,7 @@ func (u *UserAppService) UserUpdateAccount(ctx context.Context, user model.UserR
 		// "avatar":   body.Avatar,
 	}
 
-	err := u.UserDAO.UpdateByCondition(ctx, user.ID, bson.M{"$set": payload})
+	err := u.UserDAO.UpdateByCondition(ctx, bson.M{"_id": user.ID}, bson.M{"$set": payload})
 	if err != nil {
 		return err
 	}

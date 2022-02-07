@@ -21,6 +21,8 @@ func (s *UserAppService) SendVerifyMemberEmail(args *model.UserVerifyEmail) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 
+	
+
 	// Authentication.
 	auth := smtp.PlainAuth("", from, pass, smtpHost)
 

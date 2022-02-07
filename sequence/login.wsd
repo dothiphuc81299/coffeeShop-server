@@ -1,0 +1,18 @@
+@startuml
+actor ngườiDùng
+participant "màn hình đăng nhập" as A
+participant "cơ sở dữ liệu" as B
+
+
+ngườiDùng -> A : 1.Nhập tài khoản mật khẩu
+
+activate A
+A -> B : 2.Truy v CSDL
+
+B --> A : 3. Loi xac thuc tai khoan hoac mat khau khong dung 
+deactivate A
+
+B --> ngườiDùng : 4. Dang nhap thanh cong. Hien thi cua so chuong trinh
+
+
+@enduml

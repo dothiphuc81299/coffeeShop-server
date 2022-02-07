@@ -13,12 +13,14 @@ import (
 // CategoryAdminService ...
 type CategoryAdminService struct {
 	CategoryDAO model.CategoryDAO
+	DrinkDAO    model.DrinkDAO
 }
 
 // NewCategoryAdminService ...
 func NewCategoryAdminService(d *model.CommonDAO) model.CategoryAdminService {
 	return &CategoryAdminService{
 		CategoryDAO: d.Category,
+		DrinkDAO:    d.Drink,
 	}
 }
 
@@ -72,8 +74,15 @@ func (d *CategoryAdminService) GetDetail(ctx context.Context, cate model.Categor
 }
 
 func (d *CategoryAdminService) DeleteCategory(ctx context.Context, cate model.CategoryRaw) error {
-	err := d.CategoryDAO.DeleteByID(ctx, cate.ID)
-	return err
+	if err := d.CategoryDAO.DeleteByID(ctx, cate.ID); err != nil {
+		return err
+	}
+
+	// delete menu by category id
+	if err := d.DrinkDAO.DeleteByCategoryID(ctx, cate.ID); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Update ....

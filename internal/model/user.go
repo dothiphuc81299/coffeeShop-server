@@ -21,7 +21,7 @@ type UserDAO interface {
 
 // UserAppService ...
 type UserAppService interface {
-	UserSignUp(ctx context.Context, body UserSignUpBody) error
+	UserSignUp(ctx context.Context, body UserSignUpBody) (string,error)
 	UserLoginIn(ctx context.Context, body UserLoginBody) (UserLoginResponse, error)
 	UserUpdateAccount(ctx context.Context, user UserRaw, body UserUpdateBody) error
 	GetDetailUser(ctx context.Context, user UserRaw) UserLoginResponse

@@ -66,18 +66,20 @@ func (d *DrinkAdminService) ListAll(ctx context.Context, q model.CommonQuery) ([
 	drinks, _ := d.DrinkDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
 	if len(drinks) > 0 {
 		wg.Add(len(drinks))
-		for _, value := range drinks {
-			go func(abc model.DrinkRaw) {
+		res = make([]model.DrinkAdminResponse, len(drinks))
+		for index, value := range drinks {
+			go func(abc model.DrinkRaw, i int) {
 				defer wg.Done()
 				cat, _ := d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": abc.Category})
 				catTemp := model.CategoryGetInfo(cat)
 				temp := abc.DrinkGetAdminResponse(catTemp)
-				res = append(res, temp)
-			}(value)
+				res[i] = temp
+			}(value, index)
 
 		}
+
+		wg.Wait()
 	}
-	wg.Wait()
 
 	return res, total
 }

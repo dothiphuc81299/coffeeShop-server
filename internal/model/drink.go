@@ -15,6 +15,7 @@ type DrinkDAO interface {
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
 	DeleteByID(ctx context.Context, id AppID) error
+	DeleteByCategoryID(ctx context.Context, categoryID AppID) error
 }
 
 // DrinkAdminService ...
