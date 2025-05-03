@@ -62,7 +62,9 @@ func InitAppService(d *model.CommonDAO) *model.AppService {
 func ConnectDB() (*mongo.Database, *model.CommonDAO) {
 	//client, err := mongo.NewClient(options.Client().ApplyURI(dbCfg.URI))
 	//	dbCfg config.MongoCfg
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://coffeeShop:coffeeShop@cluster0.puhkn.mongodb.net/Cluster0?retryWrites=true&w=majority"))
+	url := "mongodb+srv://phucdt1280:dXM7ZrooZOSYWN2a@cluster0.6scequi.mongodb.net/"
+	//"mongodb+srv://coffeeShop:coffeeShop@cluster0.puhkn.mongodb.net/Cluster0?retryWrites=true&w=majority"
+	client, err := mongo.NewClient(options.Client().ApplyURI(url))
 
 	if err != nil {
 		fmt.Println(err)

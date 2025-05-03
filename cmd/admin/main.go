@@ -67,7 +67,7 @@ func initAccountAdminRoot(d *model.CommonDAO) {
 	if total <= 0 {
 		now := time.Now()
 		// Init Account root
-		doc := model.StaffRaw{
+		doc := model.Staff{
 			ID:          primitive.NewObjectID(),
 			Username:    "admin",
 			Password:    "123456",

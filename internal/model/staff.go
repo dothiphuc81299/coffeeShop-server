@@ -11,10 +11,10 @@ import (
 
 // StaffDAO ...
 type StaffDAO interface {
-	FindOneByCondition(ctx context.Context, cond interface{}) (StaffRaw, error)
-	InsertOne(ctx context.Context, u StaffRaw) error
-	FindByID(ctx context.Context, id AppID) (StaffRaw, error)
-	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]StaffRaw, error)
+	FindOneByCondition(ctx context.Context, cond interface{}) (Staff, error)
+	InsertOne(ctx context.Context, u Staff) error
+	FindByID(ctx context.Context, id AppID) (Staff, error)
+	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]Staff, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
 	UpdateBycondition(ctx context.Context, cond interface{}, payload interface{}) error
@@ -23,26 +23,26 @@ type StaffDAO interface {
 
 // StaffAdminService ...
 type StaffAdminService interface {
-	Create(ctx context.Context, body StaffBody) (StaffGetResponseAdmin, error)
+	Create(ctx context.Context, body CreateStaffCommand) (StaffGetResponseAdmin, error)
 	ListStaff(ctx context.Context, q CommonQuery) ([]StaffGetResponseAdmin, int64)
-	FindByID(ctx context.Context, id AppID) (StaffRaw, error)
-	UpdateRole(ctx context.Context, body StaffUpdateRoleBody, raw StaffRaw) error
-	DeleteStaff(ctx context.Context, raw StaffRaw) error
+	FindByID(ctx context.Context, id AppID) (Staff, error)
+	UpdateRole(ctx context.Context, body UpdateStaffRoleCommand, raw Staff) error
+	DeleteStaff(ctx context.Context, raw Staff) error
 	GetToken(ctx context.Context, staffID AppID) (string, error)
-	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
-	StaffLogin(ctx context.Context, stafflogin StaffLoginBody) (StaffResponse, error)
+	GetDetailStaff(ctx context.Context, staff Staff) StaffMeResponse
+	LoginStaff(ctx context.Context, LoginStaff LoginStaffCommand) (StaffResponse, error)
 	GetStaffByID(ctx context.Context, id AppID) StaffGetResponseAdmin
 }
 
 type StaffAppService interface {
-	Update(ctx context.Context, body StaffUpdateBodyByIt, raw StaffRaw) (StaffGetResponseAdmin, error)
-	ChangePassword(ctx context.Context, staff StaffRaw, body PasswordBody) error
-	FindByID(ctx context.Context, id AppID) (StaffRaw, error)
-	GetDetailStaff(ctx context.Context, staff StaffRaw) StaffMeResponse
+	Update(ctx context.Context, body UpdateStaffCommand, raw Staff) (StaffGetResponseAdmin, error)
+	ChangePassword(ctx context.Context, staff Staff, body PasswordBody) error
+	FindByID(ctx context.Context, id AppID) (Staff, error)
+	GetDetailStaff(ctx context.Context, staff Staff) StaffMeResponse
 }
 
-// StaffRaw ...
-type StaffRaw struct {
+// Staff ...
+type Staff struct {
 	ID       AppID  `bson:"_id"`
 	Username string `bson:"username"`
 	Password string `bson:"password"`
@@ -59,7 +59,7 @@ type StaffRaw struct {
 }
 
 // GetAdminResponse ...
-func (u *StaffRaw) GetStaffResponseAdmin() StaffGetResponseAdmin {
+func (u *Staff) GetStaffResponseAdmin() StaffGetResponseAdmin {
 	return StaffGetResponseAdmin{
 		ID:       u.ID,
 		Username: u.Username,
@@ -78,7 +78,7 @@ func (u *StaffRaw) GetStaffResponseAdmin() StaffGetResponseAdmin {
 }
 
 // GenerateToken generate token for authentication
-func (u *StaffRaw) GenerateToken() string {
+func (u *Staff) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"_id":      u.ID,
 		"username": u.Username,
@@ -89,7 +89,7 @@ func (u *StaffRaw) GenerateToken() string {
 	return tokenString
 }
 
-func (u *StaffRaw) GetStaffResponse(token string) StaffResponse {
+func (u *Staff) GetStaffResponse(token string) StaffResponse {
 	return StaffResponse{
 		ID:          u.ID,
 		Username:    u.Username,

@@ -21,8 +21,8 @@ type StaffRoleDAO interface {
 // StaffRoleAdminService represent staff roles service
 type StaffRoleAdminService interface {
 	ListStaffRole(ctx context.Context, q CommonQuery) ([]StaffRoleAdminResponse, int64)
-	Create(ctx context.Context, body StaffRoleBody) (StaffRoleAdminResponse, error)
-	Update(ctx context.Context, data StaffRoleRaw, body StaffRoleBody) (StaffRoleAdminResponse, error)
+	Create(ctx context.Context, body CreateStaffRoleCommand) (StaffRoleAdminResponse, error)
+	Update(ctx context.Context, data StaffRoleRaw, body CreateStaffRoleCommand) (StaffRoleAdminResponse, error)
 	FindByID(ctx context.Context, id AppID) (StaffRoleRaw, error)
 	Delete(ctx context.Context, data StaffRoleRaw) error
 }
