@@ -20,15 +20,11 @@ type Store interface {
 }
 
 type Service interface {
-	Create(ctx context.Context, body *CreateStaffCommand) error
+	Create(ctx context.Context, body CreateStaffCommand) error
 	ListStaff(ctx context.Context, q query.CommonQuery) (*SearchStaffResult, int64)
-	FindByID(ctx context.Context, id primitive.ObjectID) (Staff, error)
-	DeleteStaff(ctx context.Context, raw Staff) error
-	GetToken(ctx context.Context, staffID primitive.ObjectID) (string, error)
-	GetDetailStaff(ctx context.Context, staff Staff) *Staff
-	LoginStaff(ctx context.Context, LoginStaff LoginStaffCommand) (LoginStaffResult, error)
-	GetStaffByID(ctx context.Context, id primitive.ObjectID) Staff
-
+	LoginStaff(ctx context.Context, LoginStaff LoginStaffCommand) (*StaffResponse, error)
+	GetStaffByID(ctx context.Context, id primitive.ObjectID) (Staff, error)
+	UpdateRole(ctx context.Context, body UpdateStaffRoleCommand, data Staff) error
 	Update(ctx context.Context, body UpdateStaffCommand, raw Staff) error
 	ChangePassword(ctx context.Context, staff Staff, body PasswordBody) error
 }

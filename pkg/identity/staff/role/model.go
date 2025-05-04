@@ -1,10 +1,15 @@
 package role
 
 import (
+	"errors"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+var (
+	ErrCanNotUpdate = errors.New("Can not update")
 )
 
 type StaffRoleRaw struct {
@@ -18,15 +23,6 @@ type StaffRoleRaw struct {
 type CreateStaffRoleCommand struct {
 	Name        string   `json:"name"`
 	Permissions []string `json:"permissions"`
-}
-
-type UpdateStaffRoleCommand struct {
-	Role string `json:"role"`
-}
-
-func (s UpdateStaffRoleCommand) Validate() error {
-	return validation.ValidateStruct(&s,
-		validation.Field(&s.Role, validation.Required))
 }
 
 func (sr *CreateStaffRoleCommand) Validate() error {

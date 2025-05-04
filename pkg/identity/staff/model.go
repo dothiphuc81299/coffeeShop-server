@@ -4,14 +4,18 @@ import (
 	"errors"
 	"time"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var (
-	ErrStaffExisted = errors.New("Staff existed")
+	ErrStaffExisted                  = errors.New("Staff existed")
+	ErrStaffNotFound                 = errors.New("Staff not found")
+	ErrPasswordInvalid               = errors.New("Password invalid")
+	ErrUserNameOrPasswordIsIncorrect = errors.New("User name or password is incorrect")
+	ErrStaffIsDeleted                = errors.New("Staff is deleted")
+	ErrCanNotUpdateRole              = errors.New("Can not update role")
 )
 
 type Staff struct {
@@ -53,15 +57,32 @@ type PasswordBody struct {
 }
 
 type SearchStaffResult struct {
-	Staffs  []*Staff `json:"staffs"`
-	Total   int64    `json:"total"`
-	Page    int64    `json:"page"`
-	PerPage int64    `json:"perPage"`
+	Staffs  []Staff `json:"staffs"`
+	Total   int64   `json:"total"`
+	Page    int64   `json:"page"`
+	PerPage int64   `json:"perPage"`
 }
 
 type LoginStaffResult struct {
 }
 
+type StaffResponse struct {
+	ID          primitive.ObjectID `json:"_id"`
+	Username    string             `json:"username"`
+	Address     string             `json:"address"`
+	Phone       string             `json:"phone"`
+	Permissions []string           `json:"permissions"`
+	Token       string             `json:"token"`
+}
+
+type UpdateStaffRoleCommand struct {
+	Role string `json:"role"`
+}
+
+func (s UpdateStaffRoleCommand) Validate() error {
+	return validation.ValidateStruct(&s,
+		validation.Field(&s.Role, validation.Required))
+}
 func (stf UpdateStaffCommand) Validate() error {
 	return validation.ValidateStruct(&stf,
 		validation.Field(&stf.Phone, validation.Required),
@@ -76,7 +97,7 @@ func (stf CreateStaffCommand) Validate() error {
 		validation.Field(&stf.Address),
 		validation.Field(&stf.Password, validation.Required),
 		validation.Field(&stf.Role,
-			is.MongoID.Error(locale.CommonKeyIDMongoInvalid), validation.Required),
+			is.MongoID.Error("MongoID invalid"), validation.Required),
 	)
 }
 

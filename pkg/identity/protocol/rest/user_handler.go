@@ -2,8 +2,9 @@ package rest
 
 import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
+
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
+
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/user"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
@@ -109,11 +110,11 @@ func (s *Server) UserGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		userID := util.GetAppIDFromHex(id)
 		if userID.IsZero() {
-			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
+			return customCtx.Response400(nil, "bad request")
 		}
 		user, err := s.Dependences.UserSrv.FindByID(customCtx.GetRequestCtx(), userID)
 		if err != nil {
-			return customCtx.Response404(nil, locale.CommonKeyNotFound)
+			return customCtx.Response404(nil, "not found")
 		}
 
 		c.Set("user", user)

@@ -3,7 +3,7 @@ package roleimpl
 import (
 	"context"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -29,17 +29,17 @@ func (ud *store) CountByCondition(ctx context.Context, cond interface{}) int64 {
 	return total
 }
 
-func (ud *store) FindOneByCondition(ctx context.Context, cond interface{}) (u model.StaffRoleRaw, err error) {
+func (ud *store) FindOneByCondition(ctx context.Context, cond interface{}) (u role.StaffRoleRaw, err error) {
 	err = ud.Col.FindOne(ctx, cond).Decode(&u)
 	return u, err
 }
 
-func (ud *store) FindByID(ctx context.Context, id primitive.ObjectID) (model.StaffRoleRaw, error) {
+func (ud *store) FindByID(ctx context.Context, id primitive.ObjectID) (role.StaffRoleRaw, error) {
 	cond := bson.M{"_id": id}
 	return ud.FindOneByCondition(ctx, cond)
 }
 
-func (ud *store) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.StaffRoleRaw, err error) {
+func (ud *store) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []role.StaffRoleRaw, err error) {
 	cursor, err := ud.Col.Find(ctx, cond, opts...)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (ud *store) FindByCondition(ctx context.Context, cond interface{}, opts ...
 	return docs, nil
 }
 
-func (ud *store) InsertOne(ctx context.Context, u *model.StaffRoleRaw) error {
+func (ud *store) InsertOne(ctx context.Context, u *role.StaffRoleRaw) error {
 	_, err := ud.Col.InsertOne(ctx, u)
 	return err
 }
