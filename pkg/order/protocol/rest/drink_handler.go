@@ -1,67 +1,55 @@
-package rest 
-
+package rest
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/drink/handler"
-	"github.com/dothiphuc81299/coffeeShop-server/drink/validation"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	"github.com/labstack/echo/v4"
-)
-
-// InitDrinkAdmin ...
-func InitDrinkAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
-	h := &handler.DrinkAdminHandler{
-		DrinkAdminService: cs.Drink,
-	}
-
-	g := e.Group("/drink")
-	g.POST("", h.Create, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionDelete, d), validation.DrinkBodyValidation)
-	g.GET("", h.Search)
-	g.PUT("/:drinkID", h.Update, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionEdit, d), validation.DrinkBodyValidation, h.DrinkGetByID)
-	g.PATCH("/:drinkID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionEdit, d), h.DrinkGetByID)
-	g.GET("/:drinkID", h.GetDetail, h.DrinkGetByID)
-	g.DELETE("/:drinkID", h.DeleteDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionDelete, d), h.DrinkGetByID)
-}
-
-package handler
-
-import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// DrinkAdminHandler ...
-type DrinkAdminHandler struct {
-	DrinkAdminService model.DrinkAdminService
+func (s *Server) NewDrinkHandler(e *echo.Echo) {
+	g := e.Group("/api/drink")
+
+	g.POST("/", s.createDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionDelete, token.Staff))
+	g.GET("/", s.searchDrinks)
+	g.PUT("/:drinkID", s.updateDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionEdit, token.Staff))
+	g.PATCH("/:drinkID/status", s.ChangeDrinkStatus, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionEdit, token.Staff))
+	g.GET("/:drinkID", s.getDrinkByID)
+	g.DELETE("/:drinkID", s.DeleteDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionDelete, token.Staff))
 }
 
-// Create ...
-func (d *DrinkAdminHandler) Create(c echo.Context) error {
+func (s *Server) createDrink(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		drinkBody = c.Get("drinkBody").(model.DrinkBody)
+		cmd       drink.DrinkBody
 	)
 
-	data, err := d.DrinkAdminService.Create(customCtx.GetRequestCtx(), drinkBody)
+	err := c.Bind(&cmd)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	result := model.ResponseAdminData{
-		Data: data,
+	if err := cmd.Validate(); err != nil {
+		return customCtx.Response400(nil, err.Error())
 	}
-	return customCtx.Response200(result, "")
+
+	err = s.Dependences.DrinkSrv.Create(customCtx.GetRequestCtx(), cmd)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	return customCtx.Response200("", "")
 }
 
-func (d *DrinkAdminHandler) Search(c echo.Context) error {
+func (s *Server) searchDrinks(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		query     = model.CommonQuery{
+		q         = query.CommonQuery{
 			Keyword:  c.QueryParam("keyword"),
 			Active:   c.QueryParam("active"),
 			Category: c.QueryParam("category"),
@@ -73,98 +61,100 @@ func (d *DrinkAdminHandler) Search(c echo.Context) error {
 		}
 	)
 
-	data, total := d.DrinkAdminService.ListAll(customCtx.GetRequestCtx(), query)
+	data, total := s.Dependences.DrinkSrv.ListAll(customCtx.GetRequestCtx(), q)
 
 	result := model.ResponseAdminListData{
 		Data:         data,
 		Total:        total,
-		LimitPerPage: query.Limit,
+		LimitPerPage: q.Limit,
 	}
 	return customCtx.Response200(result, "")
 }
 
-func (d *DrinkAdminHandler) Update(c echo.Context) error {
+func (s *Server) updateDrink(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		drinkBody = c.Get("drinkBody").(model.DrinkBody)
-		drink     = c.Get("drink").(model.DrinkRaw)
+		cmd       drink.DrinkBody
 	)
 
-	data, err := d.DrinkAdminService.Update(customCtx.GetRequestCtx(), drink, drinkBody)
+	err := c.Bind(&cmd)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	result := model.ResponseAdminData{
-		Data: data,
+	params := c.Param("drinkID")
+	if params == "" {
+		return customCtx.Response400(nil, "drinkID is required")
 	}
-	return customCtx.Response200(result, "")
-}
 
-func (d *DrinkAdminHandler) ChangeStatus(c echo.Context) error {
-	var (
-		customCtx = util.EchoGetCustomCtx(c)
-		drink     = c.Get("drink").(model.DrinkRaw)
-	)
+	drinkID := util.GetObjectIDFromHex(params)
 
-	data, err := d.DrinkAdminService.ChangeStatus(customCtx.GetRequestCtx(), drink)
+	if err := cmd.Validate(); err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	err = s.Dependences.DrinkSrv.Update(customCtx.GetRequestCtx(), drinkID, cmd)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	result := model.ResponseAdminData{
-		Data: data,
-	}
-	return customCtx.Response200(result, "")
+	return customCtx.Response200("", "")
 }
 
-func (d *DrinkAdminHandler) GetDetail(c echo.Context) error {
+func (s *Server) ChangeDrinkStatus(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-
-		drink = c.Get("drink").(model.DrinkRaw)
 	)
 
-	data := d.DrinkAdminService.GetDetail(customCtx.GetRequestCtx(), drink)
-
-	result := model.ResponseAdminData{
-		Data: data,
+	param := c.Param("drinkID")
+	if param == "" {
+		return customCtx.Response400(nil, "drinkID is required")
 	}
-	return customCtx.Response200(result, "")
+	drinkID := util.GetObjectIDFromHex(param)
+
+	data, err := s.Dependences.DrinkSrv.ChangeStatus(customCtx.GetRequestCtx(), drinkID)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	return customCtx.Response200(data, "")
 }
 
-func (d *DrinkAdminHandler) DeleteDrink(c echo.Context) error {
+func (s *Server) DeleteDrink(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		drink     = c.Get("drink").(model.DrinkRaw)
 	)
 
-	err := d.DrinkAdminService.DeleteDrink(customCtx.GetRequestCtx(), drink)
+	param := c.Param("drinkID")
+	if param == "" {
+		return customCtx.Response400(nil, "drinkID is required")
+	}
+	drinkID := util.GetObjectIDFromHex(param)
 
+	err := s.Dependences.DrinkSrv.DeleteDrink(customCtx.GetRequestCtx(), drinkID)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 	return customCtx.Response200(nil, "")
 }
 
-// DrinkGetByID ...
-func (d *DrinkAdminHandler) DrinkGetByID(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		customCtx := util.EchoGetCustomCtx(c)
-		id := c.Param("drinkID")
-		if id == "" {
-			return next(c)
-		}
-		drinkID := util.GetAppIDFromHex(id)
-		if drinkID.IsZero() {
-			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
-		}
-		drink, err := d.DrinkAdminService.FindByID(customCtx.GetRequestCtx(), drinkID)
-		if err != nil {
-			return customCtx.Response404(nil, locale.CommonKeyNotFound)
-		}
+func (s *Server) getDrinkByID(c echo.Context) error {
+	var (
+		customCtx = util.EchoGetCustomCtx(c)
+	)
 
-		c.Set("drink", drink)
-		return next(c)
+	param := c.Param("drinkID")
+	if param == "" {
+		return customCtx.Response400(nil, "drinkID is required")
 	}
+	drinkID := util.GetObjectIDFromHex(param)
+
+	data, err := s.Dependences.DrinkSrv.FindByID(customCtx.GetRequestCtx(), drinkID)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	return customCtx.Response200(echo.Map{
+		"drink": data,
+	}, "")
 }

@@ -1,4 +1,4 @@
- package dao
+package dao
 
 // import (
 // 	"context"
@@ -38,7 +38,7 @@
 // }
 
 // // FindByID ...
-// func (ud *StaffRoleDAO) FindByID(ctx context.Context, id model.AppID) (model.StaffRoleRaw, error) {
+// func (ud *StaffRoleDAO) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.StaffRoleRaw, error) {
 // 	cond := bson.M{"_id": id}
 // 	return ud.FindOneByCondition(ctx, cond)
 // }
@@ -63,12 +63,12 @@
 // }
 
 // // UpdateByID ...
-// func (ud *StaffRoleDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+// func (ud *StaffRoleDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 // 	_, err := ud.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 // 	return err
 // }
 
-// func (w *StaffRoleDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+// func (w *StaffRoleDAO) DeleteByID(ctx context.Context, id model.primitive.ObjectID) error {
 // 	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
 // 	return err
 // }

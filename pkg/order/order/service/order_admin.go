@@ -151,7 +151,7 @@ func (o *OrderAdminService) CancelOrder(ctx context.Context, order model.OrderRa
 	return nil
 }
 
-func (o *OrderAdminService) FindByID(ctx context.Context, id model.AppID) (model.OrderRaw, error) {
+func (o *OrderAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.OrderRaw, error) {
 	return o.OrderDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 

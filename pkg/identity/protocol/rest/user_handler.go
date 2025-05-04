@@ -108,7 +108,7 @@ func (s *Server) UserGetByID(next echo.HandlerFunc) echo.HandlerFunc {
 		if id == "" {
 			return next(c)
 		}
-		userID := util.GetAppIDFromHex(id)
+		userID := util.GetObjectIDFromHex(id)
 		if userID.IsZero() {
 			return customCtx.Response400(nil, "bad request")
 		}

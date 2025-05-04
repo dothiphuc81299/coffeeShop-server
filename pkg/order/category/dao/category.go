@@ -1,4 +1,4 @@
- package dao
+package dao
 
 // import (
 // 	"context"
@@ -51,7 +51,7 @@
 // }
 
 // // UpdateByID ...
-// func (w *CategoryDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+// func (w *CategoryDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 // 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 // 	return err
 // }
@@ -62,7 +62,7 @@
 // 	return
 // }
 
-// func (w *CategoryDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+// func (w *CategoryDAO) DeleteByID(ctx context.Context, id model.primitive.ObjectID) error {
 // 	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
 // 	return err
 // }

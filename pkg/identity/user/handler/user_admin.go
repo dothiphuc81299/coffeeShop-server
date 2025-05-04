@@ -63,7 +63,7 @@ package handler
 // 		if id == "" {
 // 			return next(c)
 // 		}
-// 		userID := util.GetAppIDFromHex(id)
+// 		userID := util.Getprimitive.ObjectIDFromHex(id)
 // 		if userID.IsZero() {
 // 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 // 		}

@@ -1,4 +1,4 @@
- package handler
+package handler
 
 // import (
 // 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
@@ -128,7 +128,7 @@
 // 		if id == "" {
 // 			return next(c)
 // 		}
-// 		drinkID := util.GetAppIDFromHex(id)
+// 		drinkID := util.Getprimitive.ObjectIDFromHex(id)
 // 		if drinkID.IsZero() {
 // 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 // 		}

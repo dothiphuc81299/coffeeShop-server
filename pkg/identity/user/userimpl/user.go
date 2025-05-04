@@ -3,10 +3,8 @@ package userimpl
 import (
 	"context"
 	"crypto/rand"
-	"errors"
 	"fmt"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/code"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/user"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
@@ -15,26 +13,26 @@ import (
 )
 
 type service struct {
-	UserDAO user.UserDAO
-	CodeDAO code.CodedRegisterDAO
+	store     *store
+	codeStore code.Store
 }
 
-func NewService(dao *service) user.Service {
+func NewService(store *store, codeStore code.Store) user.Service {
 	return &service{
-		UserDAO: dao.UserDAO,
-		CodeDAO: dao.CodeDAO,
+		store:     store,
+		codeStore: codeStore,
 	}
 }
 
 func (s *service) CreateUser(ctx context.Context, body user.CreateUserCommand) (email string, err error) {
 	payload := body.NewUserRaw()
 
-	countEmail := s.UserDAO.CountByCondition(ctx, bson.M{"email": payload.Email, "active": true})
+	countEmail := s.store.CountByCondition(ctx, bson.M{"email": payload.Email, "active": true})
 	if countEmail > 0 {
-		return "", errors.New(locale.CommonyKeyEmailIsExisted)
+		return "", user.ErrEmailExisted
 	}
 
-	err = s.UserDAO.InsertOne(ctx, payload)
+	err = s.store.InsertOne(ctx, payload)
 	if err != nil {
 		return "", err
 	}
@@ -55,7 +53,7 @@ func (s *service) SendEmail(ctx context.Context, mail user.SendUserEmailCommand)
 		Email: mail.Email,
 		Code:  otp,
 	}
-	err := s.CodeDAO.InsertOne(ctx, argsCode)
+	err := s.codeStore.InsertOne(ctx, argsCode)
 
 	if err != nil {
 		return err
@@ -104,7 +102,7 @@ func (s *service) VerifyEmail(ctx context.Context, args user.VerifyEmailCommand)
 	// 	return fmt.Errorf("Email Khong hop le")
 	// }
 
-	result, err := s.CodeDAO.FindOneByCondition(ctx, bson.M{"email": args.Email})
+	result, err := s.codeStore.FindOneByCondition(ctx, bson.M{"email": args.Email})
 	if err != nil {
 		return err
 	}
@@ -113,13 +111,13 @@ func (s *service) VerifyEmail(ctx context.Context, args user.VerifyEmailCommand)
 		return fmt.Errorf(" Khong hop le")
 	}
 
-	err = s.UserDAO.UpdateByCondition(ctx, bson.M{"email": args.Email}, bson.M{"$set": bson.M{"active": true}})
+	err = s.store.UpdateByCondition(ctx, bson.M{"email": args.Email}, bson.M{"$set": bson.M{"active": true}})
 	if err != nil {
 		return err
 	}
 
 	// err = redisapp.DelKey(args.Code)
-	err = s.CodeDAO.DeleteOne(ctx, args.Email)
+	err = s.codeStore.DeleteOne(ctx, args.Email)
 	if err != nil {
 		return err
 	}
@@ -134,9 +132,9 @@ func (s *service) LoginUser(ctx context.Context, body user.CreateLoginUserComman
 		"active":   true,
 	}
 
-	user, err := s.UserDAO.FindOneByCondition(ctx, cond)
+	user, err := s.store.FindOneByCondition(ctx, cond)
 	if err != nil {
-		return doc, errors.New(locale.UserNameOrPasswordIsIncorrect)
+		return doc, err
 	}
 
 	token := user.GenerateToken()
@@ -150,7 +148,7 @@ func (s *service) UpdateUser(ctx context.Context, entity user.UserRaw, body user
 		"address": body.Address,
 	}
 
-	err := s.UserDAO.UpdateByCondition(ctx, bson.M{"_id": entity.ID}, bson.M{"$set": payload})
+	err := s.store.UpdateByCondition(ctx, bson.M{"_id": entity.ID}, bson.M{"$set": payload})
 	if err != nil {
 		return err
 	}
@@ -159,23 +157,23 @@ func (s *service) UpdateUser(ctx context.Context, entity user.UserRaw, body user
 }
 
 func (s *service) GetDetailUser(ctx context.Context, entity user.UserRaw) user.CreateLoginUserResult {
-	doc, _ := s.UserDAO.FindOneByCondition(ctx, bson.M{"_id": entity.ID})
+	doc, _ := s.store.FindOneByCondition(ctx, bson.M{"_id": entity.ID})
 	token := entity.GenerateToken()
 	res := doc.GetLoginUserResponse(token)
 	return res
 }
 
 func (s *service) ChangePassword(ctx context.Context, entity user.UserRaw, body user.ChangePasswordUserCommand) (err error) {
-	res, _ := s.UserDAO.FindOneByCondition(ctx, bson.M{"_id": entity.ID})
+	res, _ := s.store.FindOneByCondition(ctx, bson.M{"_id": entity.ID})
 	if res.ID.IsZero() {
-		return errors.New(locale.UserIsNotExisted)
+		return user.ErrUserNotFound
 	}
 
 	if body.Password != res.Password || body.NewPassword != body.NewPasswordAgain || body.NewPassword == body.Password {
-		return errors.New(locale.PasswordIsIncorrect)
+		return user.ErrPasswordIsIncorrect
 	}
 
-	err = s.UserDAO.UpdateByID(ctx, entity.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
+	err = s.store.UpdateByID(ctx, entity.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
 	if err != nil {
 		return
 	}
@@ -192,8 +190,8 @@ func (s *service) Search(ctx context.Context, q query.CommonQuery) ([]user.UserR
 
 	q.AssignActive(&cond)
 	q.AssignKeyword(&cond)
-	total = s.UserDAO.CountByCondition(ctx, cond)
-	docs, _ := s.UserDAO.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
+	total = s.store.CountByCondition(ctx, cond)
+	docs, _ := s.store.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
 	// if len(docs) > 0 {
 	// 	wg.Add(len(docs))
 	// 	result = make([]user.UserRaw, len(docs))
@@ -209,6 +207,6 @@ func (s *service) Search(ctx context.Context, q query.CommonQuery) ([]user.UserR
 	return docs, total
 }
 
-func (s *service) FindByID(ctx context.Context, id user.AppID) (user.UserRaw, error) {
-	return s.UserDAO.FindOneByCondition(ctx, bson.M{"_id": id})
+func (s *service) FindByID(ctx context.Context, id primitive.ObjectID) (user.UserRaw, error) {
+	return s.store.FindOneByCondition(ctx, bson.M{"_id": id})
 }

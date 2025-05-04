@@ -1,4 +1,4 @@
- package model
+package model
 
 // import (
 // 	"time"
@@ -16,7 +16,7 @@
 // }
 
 // type PackageAdminResponse struct {
-// 	ID         AppID        `json:"_id"`
+// 	ID         primitive.ObjectID        `json:"_id"`
 // 	Title      string       `json:"title"`
 // 	Level      string       `json:"level"` // easy , medium, hard
 // 	Reward     float64      `json:"reward"`

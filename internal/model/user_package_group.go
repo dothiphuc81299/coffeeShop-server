@@ -17,7 +17,7 @@ package model
 // 	InsertOne(ctx context.Context, u UserPackageGroupRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]UserPackageGroupRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 // }
 
 // type UserPackageGroupRaw struct {

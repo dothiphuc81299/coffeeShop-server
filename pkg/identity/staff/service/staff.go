@@ -22,7 +22,7 @@ package service
 // }
 
 // // GetToken ...
-// func (sfs *StaffAdminService) GetToken(ctx context.Context, staffID model.AppID) (string, error) {
+// func (sfs *StaffAdminService) GetToken(ctx context.Context, staffID model.primitive.ObjectID) (string, error) {
 // 	staff, _ := sfs.StaffDAO.FindByID(ctx, staffID)
 // 	token := staff.GenerateToken()
 // 	// Save session
@@ -74,7 +74,7 @@ package service
 // }
 
 // // FindByID ...
-// func (sfs *StaffAdminService) FindByID(ctx context.Context, ID model.AppID) (model.Staff, error) {
+// func (sfs *StaffAdminService) FindByID(ctx context.Context, ID model.primitive.ObjectID) (model.Staff, error) {
 // 	return sfs.StaffDAO.FindByID(ctx, ID)
 // }
 
@@ -167,7 +167,7 @@ package service
 // 	return doc, nil
 // }
 
-// func (sfs *StaffAdminService) GetStaffByID(ctx context.Context, id model.AppID) model.StaffGetResponseAdmin {
+// func (sfs *StaffAdminService) GetStaffByID(ctx context.Context, id model.primitive.ObjectID) model.StaffGetResponseAdmin {
 // 	staff, err := sfs.FindByID(ctx, id)
 // 	if err != nil {
 // 		return model.StaffGetResponseAdmin{}

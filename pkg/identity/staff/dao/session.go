@@ -38,7 +38,7 @@ package dao
 // }
 
 // // FindByID ...
-// func (ud *SessionDAO) FindByID(ctx context.Context, id model.AppID) (model.SessionRaw, error) {
+// func (ud *SessionDAO) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.SessionRaw, error) {
 // 	cond := bson.M{"_id": id}
 // 	return ud.FindOneByCondition(ctx, cond)
 // }
@@ -63,7 +63,7 @@ package dao
 // }
 
 // // UpdateByID ...
-// func (ud *SessionDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+// func (ud *SessionDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 // 	_, err := ud.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 // 	return err
 // }

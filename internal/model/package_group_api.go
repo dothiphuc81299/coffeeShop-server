@@ -14,7 +14,7 @@ package model
 // 	GroupID   string `json:"groupId"`
 // }
 // type PackageGroupAdminResponse struct {
-// 	ID        AppID           `json:"_id"`
+// 	ID        primitive.ObjectID           `json:"_id"`
 // 	PackageID string          `json:"packageId"`
 // 	Group     QuizGroupCommon `json:"group"`
 // 	CreatedAt TimeResponse    `json:"createdAt"`

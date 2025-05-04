@@ -55,10 +55,10 @@ type StatisticResponse struct {
 }
 
 type StatisticByDrink struct {
-	ID            AppID   `bson:"_id" json:"_id"`
-	Name          string  `bson:"name" json:"name"`
-	TotalSale     float64 `bson:"totalSale" json:"totalSale"`
-	TotalQuantity float64 `bson:"totalQuantity" json:"totalQuantity"`
+	ID            primitive.ObjectID `bson:"_id" json:"_id"`
+	Name          string             `bson:"name" json:"name"`
+	TotalSale     float64            `bson:"totalSale" json:"totalSale"`
+	TotalQuantity float64            `bson:"totalQuantity" json:"totalQuantity"`
 }
 
 func (o OrderBody) Validate() error {

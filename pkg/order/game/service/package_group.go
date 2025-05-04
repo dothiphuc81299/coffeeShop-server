@@ -36,7 +36,7 @@ func (p *PackageGroupAdminService) Create(ctx context.Context, body model.Packag
 	return nil
 }
 
-func (p *PackageGroupAdminService) checkPackageGroupExisted(ctx context.Context, packageID model.AppID, groupID model.AppID) bool {
+func (p *PackageGroupAdminService) checkPackageGroupExisted(ctx context.Context, packageID model.primitive.ObjectID, groupID model.primitive.ObjectID) bool {
 	cond := bson.M{
 		"packageId": packageID,
 		"groupId":   groupID,
@@ -62,11 +62,11 @@ func (p *PackageGroupAdminService) Update(ctx context.Context, raw model.Package
 	return nil
 }
 
-func (p *PackageGroupAdminService) FindByID(ctx context.Context, id model.AppID) (PackageGroup model.PackageGroupRaw, err error) {
+func (p *PackageGroupAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (PackageGroup model.PackageGroupRaw, err error) {
 	return p.PackageGroupDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 
-func (p *PackageGroupAdminService) GetPackageGroupByPackageID(ctx context.Context, packageID model.AppID) []model.PackageGroupAdminResponse {
+func (p *PackageGroupAdminService) GetPackageGroupByPackageID(ctx context.Context, packageID model.primitive.ObjectID) []model.PackageGroupAdminResponse {
 	var (
 		res  = make([]model.PackageGroupAdminResponse, 0)
 		cond = bson.M{

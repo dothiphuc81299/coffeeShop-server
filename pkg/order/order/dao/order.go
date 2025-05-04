@@ -56,7 +56,7 @@ func (w *OrderDAO) CountByCondition(ctx context.Context, cond interface{}) int64
 }
 
 // UpdateByID ...
-func (w *OrderDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *OrderDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }

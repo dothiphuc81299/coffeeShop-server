@@ -91,7 +91,7 @@ func (d *EventAdminService) Update(ctx context.Context, Event model.EventRaw, bo
 }
 
 // FindByID ...
-func (d *EventAdminService) FindByID(ctx context.Context, id model.AppID) (event model.EventRaw, err error) {
+func (d *EventAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (event model.EventRaw, err error) {
 	return d.EventDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 

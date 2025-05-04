@@ -108,7 +108,7 @@ func (q *QuestionAdminService) Update(ctx context.Context, quiz model.QuestionRa
 	return nil
 }
 
-func (q *QuestionAdminService) FindByID(ctx context.Context, id model.AppID) (Question model.QuestionRaw, err error) {
+func (q *QuestionAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (Question model.QuestionRaw, err error) {
 	return q.QuestionDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 

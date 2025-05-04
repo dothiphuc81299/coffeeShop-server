@@ -13,6 +13,7 @@ import (
 
 var (
 	ErrDrinkNameExisted = errors.New("Drink name existed")
+	ErrDrinkNotFound    = errors.New("Drink not found")
 )
 
 type DrinkRaw struct {

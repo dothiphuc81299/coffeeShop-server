@@ -11,7 +11,7 @@ package model
 
 // // StaffMeResponse ...
 // type StaffMeResponse struct {
-// 	ID       AppID  `json:"_id"`
+// 	ID       primitive.ObjectID  `json:"_id"`
 // 	Username string `json:"username"`
 // 	Token    string `json:"token"`
 // 	Address  string `json:"address"`
@@ -22,7 +22,7 @@ package model
 // }
 
 // type StaffInfo struct {
-// 	ID       AppID  `json:"_id"`
+// 	ID       primitive.ObjectID  `json:"_id"`
 // 	Username string `json:"username"`
 // 	Address  string `json:"address"`
 // 	Phone    string `json:"phone"`
@@ -30,7 +30,7 @@ package model
 
 // // StaffGetResponseAdmin ...
 // type StaffGetResponseAdmin struct {
-// 	ID       AppID  `json:"_id"`
+// 	ID       primitive.ObjectID  `json:"_id"`
 // 	Username string `json:"username"`
 // 	Address  string `json:"address"`
 // 	Phone    string `json:"phone"`
@@ -39,13 +39,13 @@ package model
 // 	Permissions []string     `json:"permissions"`
 // 	CreatedAt   TimeResponse `json:"createdAt"`
 // 	Active      bool         `json:"active"`
-// 	Role        AppID        `json:"role"`
+// 	Role        primitive.ObjectID        `json:"role"`
 // 	IsRoot      bool         `json:"isRoot"`
 // }
 
 // // StaffResponse ...
 // type StaffResponse struct {
-// 	ID       AppID  `json:"_id"`
+// 	ID       primitive.ObjectID  `json:"_id"`
 // 	Username string `json:"username"`
 // 	Address  string `json:"address"`
 // 	Phone    string `json:"phone"`

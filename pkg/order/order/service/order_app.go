@@ -95,7 +95,7 @@ func (o *OrderAppService) Create(ctx context.Context, user model.UserRaw, order 
 
 }
 
-func (o *OrderAppService) FindByID(ctx context.Context, id model.AppID) (model.OrderRaw, error) {
+func (o *OrderAppService) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.OrderRaw, error) {
 	return o.OrderDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 

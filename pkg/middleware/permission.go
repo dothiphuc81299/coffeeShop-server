@@ -1,9 +1,8 @@
 package middleware
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,8 +16,8 @@ func CheckPermissionRoot(accountType token.AccountType) echo.MiddlewareFunc {
 				return cc.Response401(nil, "Account not found")
 			}
 
-			if account.AccountType != token.Route {
-				return cc.Response401(nil, locale.CommonNoPermission)
+			if account.AccountType != token.Root {
+				return cc.Response401(nil, "Account invalid")
 			}
 
 			return next(c)
@@ -37,7 +36,7 @@ func CheckPermission(model string, fieldPermission string, accountType token.Acc
 			}
 
 			if !checkUserPermission(account, model, fieldPermission) {
-				return cc.Response401(nil, locale.CommonNoPermission)
+				return cc.Response401(nil, "Account invalid")
 			}
 
 			return next(c)
@@ -46,7 +45,7 @@ func CheckPermission(model string, fieldPermission string, accountType token.Acc
 }
 
 func checkUserPermission(account *token.AccountData, model string, fieldPermission string) bool {
-	if account.AccountType == token.Route {
+	if account.AccountType == token.Root {
 		return true
 	}
 
@@ -68,7 +67,7 @@ func CheckStaff(accountType token.AccountType) echo.MiddlewareFunc {
 			}
 
 			if account.AccountType != token.Staff {
-				return cc.Response401(nil, locale.CommonNoPermission)
+				return cc.Response401(nil, "Account invalid")
 			}
 
 			return next(c)
@@ -87,7 +86,7 @@ func CheckUser(accountType token.AccountType) echo.MiddlewareFunc {
 			}
 
 			if account.AccountType != token.User {
-				return cc.Response401(nil, "Tai khoan khong hop le")
+				return cc.Response401(nil, "Account invalid ")
 			}
 
 			// // Kiểm tra xem tài khoản có đang hoạt động hay không

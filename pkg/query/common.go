@@ -5,15 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/format"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/format"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type AppID = primitive.ObjectID
-
-func NewAppID() AppID {
+func NewAppObjectID() primitive.ObjectID {
 	return primitive.NewObjectID()
 }
 
@@ -70,17 +68,7 @@ func (q *CommonQuery) AssignStatus(cond *bson.M) {
 	}
 }
 
-// AssignActive ...
 func (q *CommonQuery) AssignActive(cond *bson.M) {
-	// if q.Active != "" {
-	// 	if q.Active == "true" {
-	// 		(*cond)["active"] = true
-	// 	}
-	// 	if q.Active == "false" {
-	// 		(*cond)["active"] = false
-	// 	}
-	// }
-
 	if q.Active != "" && q.Active != "all" {
 		b, _ := strconv.ParseBool(q.Active)
 		(*cond)["active"] = b
@@ -102,11 +90,8 @@ func (q *CommonQuery) AssignIsCheck(cond *bson.M) {
 	}
 }
 
-// AssignStartAtAndEndAt ...
 func (q *CommonQuery) AssignStartAtAndEndAt(cond *bson.M) {
 	if !q.StartAt.IsZero() && !q.EndAt.IsZero() {
-		q.StartAt = util.TimeStartOfDayInHCM(q.StartAt.AddDate(0, 0, 1))
-		q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
 		(*cond)["date"] = bson.M{
 			"$gte": q.StartAt,
 			"$lte": q.EndAt,
@@ -117,8 +102,6 @@ func (q *CommonQuery) AssignStartAtAndEndAt(cond *bson.M) {
 
 func (q *CommonQuery) AssignStartAtAndEndAtForDrink(cond *bson.M) {
 	if !q.StartAt.IsZero() && !q.EndAt.IsZero() {
-		q.StartAt = util.TimeStartOfDayInHCM(q.StartAt.AddDate(0, 0, 1))
-		q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
 		(*cond)["createdAt"] = bson.M{
 			"$gte": q.StartAt,
 			"$lte": q.EndAt,
@@ -139,8 +122,6 @@ func (q *CommonQuery) AssignStartAtAndEndAtByStatistic(cond *bson.M) {
 		q.StartAt, q.EndAt = q.GetThisMonthNow()
 	}
 
-	// q.StartAt = util.TimeStartOfDayInHCM(q.StartAt)
-	// q.EndAt = util.TimeStartOfDayInHCM(q.EndAt)
 	(*cond)["createdAt"] = bson.M{
 		"$gte": q.StartAt,
 		"$lte": q.EndAt,
@@ -148,7 +129,7 @@ func (q *CommonQuery) AssignStartAtAndEndAtByStatistic(cond *bson.M) {
 }
 
 func (q *CommonQuery) GetThisMonthNow() (time.Time, time.Time) {
-	now := time.Now()
+	now := time.Now().UTC()
 	currentYear, currentMonth, _ := now.Date()
 	currentLocation := now.Location()
 
@@ -159,14 +140,14 @@ func (q *CommonQuery) GetThisMonthNow() (time.Time, time.Time) {
 }
 
 func (q *CommonQuery) BeginningOfMonth(date time.Time) time.Time {
-	now := time.Now()
+	now := time.Now().UTC()
 	dDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, now.UTC().Location())
 	firstDay := dDate.AddDate(0, 0, -date.Day()+1)
 	return firstDay
 }
 
 func (q *CommonQuery) EndOfMonth(date time.Time) time.Time {
-	now := time.Now()
+	now := time.Now().UTC()
 	dDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, now.UTC().Location())
 	lastDay := dDate.AddDate(0, 1, -dDate.Day()+1).Add(time.Nanosecond * -1)
 	return lastDay

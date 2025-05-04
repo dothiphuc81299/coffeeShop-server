@@ -1,4 +1,4 @@
- package model
+package model
 
 // import (
 // 	"time"
@@ -20,7 +20,7 @@
 
 // // DrinkAdminResponse ...
 // type DrinkAdminResponse struct {
-// 	ID       AppID        `json:"_id"`
+// 	ID       primitive.ObjectID        `json:"_id"`
 // 	Name     string       `json:"name"`
 // 	Category CategoryInfo `json:"category"`
 // 	Price    float64      `json:"price"`
@@ -48,7 +48,7 @@
 // 	categoryID, _ := primitive.ObjectIDFromHex(d.Category)
 // 	now := time.Now()
 // 	return DrinkRaw{
-// 		ID:           NewAppID(),
+// 		ID:           Newprimitive.ObjectID(),
 // 		Name:         d.Name,
 // 		SearchString: format.NonAccentVietnamese(d.Name),
 // 		Price:        d.Price,

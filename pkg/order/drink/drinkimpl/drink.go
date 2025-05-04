@@ -102,19 +102,27 @@ func (s *service) FindByID(ctx context.Context, id primitive.ObjectID) (drink.Dr
 	return s.store.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 
-func (s *service) ChangeStatus(ctx context.Context, drink drink.DrinkRaw) (status bool, err error) {
-	active := !drink.Active
+func (s *service) ChangeStatus(ctx context.Context, drinkID primitive.ObjectID) (status bool, err error) {
+	result, err := s.store.FindOneByCondition(ctx, bson.M{"_id": drinkID})
+	if err != nil {
+		return false, err
+	}
+
+	if result.ID.IsZero() {
+		return false, drink.ErrDrinkNotFound
+	}
+
+	active := !result.Active
 	payload := bson.M{
 		"$set": bson.M{
 			"active": active,
 		},
 	}
-	err = s.store.UpdateByID(ctx, drink.ID, payload)
+	err = s.store.UpdateByID(ctx, result.ID, payload)
 	if err != nil {
 		return
 	}
 	return active, nil
-
 }
 
 func (s *service) GetDetail(ctx context.Context, data drink.DrinkRaw) drink.DrinkAdminResponse {
@@ -124,6 +132,6 @@ func (s *service) GetDetail(ctx context.Context, data drink.DrinkRaw) drink.Drin
 	return temp
 }
 
-func (s *service) DeleteDrink(ctx context.Context, drink drink.DrinkRaw) error {
-	return s.store.DeleteByID(ctx, drink.ID)
+func (s *service) DeleteDrink(ctx context.Context, drinkID primitive.ObjectID) error {
+	return s.store.DeleteByID(ctx, drinkID)
 }

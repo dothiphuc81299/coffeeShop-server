@@ -4,35 +4,34 @@ import (
 	"context"
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/code"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/infra/storage/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const codecol = "code-register"
 
-type CodedRegisterDAO struct {
-	DB  *mongo.Database
+type store struct {
 	Col *mongo.Collection
 }
 
-func NewCodedRegisterDAO(db *mongo.Database) code.CodedRegisterDAO {
-	return &CodedRegisterDAO{
-		DB:  db,
-		Col: db.Collection(codecol),
+func NewStore(db mongodb.DBConnector) *store {
+	return &store{
+		Col: db.GetCollection(codecol),
 	}
 }
 
-func (d *CodedRegisterDAO) InsertOne(ctx context.Context, u code.CodedRegisterRaw) error {
-	_, err := d.Col.InsertOne(ctx, u)
+func (s *store) InsertOne(ctx context.Context, u code.CodedRegisterRaw) error {
+	_, err := s.Col.InsertOne(ctx, u)
 	return err
 }
 
-func (d *CodedRegisterDAO) DeleteOne(ctx context.Context, u string) error {
-	_, err := d.Col.DeleteOne(ctx, bson.M{"email": u})
+func (s *store) DeleteOne(ctx context.Context, u string) error {
+	_, err := s.Col.DeleteOne(ctx, bson.M{"email": u})
 	return err
 }
 
-func (w *CodedRegisterDAO) FindOneByCondition(ctx context.Context, cond interface{}) (doc code.CodedRegisterRaw, err error) {
-	err = w.Col.FindOne(ctx, cond).Decode(&doc)
+func (s *store) FindOneByCondition(ctx context.Context, cond interface{}) (doc code.CodedRegisterRaw, err error) {
+	err = s.Col.FindOne(ctx, cond).Decode(&doc)
 	return
 }

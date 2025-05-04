@@ -48,7 +48,7 @@ func (p *PackageAdminService) Update(ctx context.Context, raw model.PackageRaw, 
 	return nil
 }
 
-func (p *PackageAdminService) FindByID(ctx context.Context, id model.AppID) (Group model.PackageRaw, err error) {
+func (p *PackageAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (Group model.PackageRaw, err error) {
 	return p.PackageDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 

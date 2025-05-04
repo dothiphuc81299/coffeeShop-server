@@ -137,7 +137,7 @@ func (d *EventAdminHandler) EventGetByID(next echo.HandlerFunc) echo.HandlerFunc
 		if id == "" {
 			return next(c)
 		}
-		EventID := util.GetAppIDFromHex(id)
+		EventID := util.Getprimitive.ObjectIDFromHex(id)
 		if EventID.IsZero() {
 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 		}

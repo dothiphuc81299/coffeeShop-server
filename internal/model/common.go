@@ -12,11 +12,11 @@ package model
 // 	"go.mongodb.org/mongo-driver/mongo/options"
 // )
 
-// // AppID custom ObjectID
-// type AppID = primitive.ObjectID
+// // primitive.ObjectID custom ObjectID
+// type primitive.ObjectID = primitive.ObjectID
 
-// // NewAppID ...
-// func NewAppID() AppID {
+// // Newprimitive.ObjectID ...
+// func Newprimitive.ObjectID() primitive.ObjectID {
 // 	return primitive.NewObjectID()
 // }
 

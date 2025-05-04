@@ -91,7 +91,7 @@ func (d *PackageAdminHandler) PackageGetByID(next echo.HandlerFunc) echo.Handler
 		if id == "" {
 			return next(c)
 		}
-		packageID := util.GetAppIDFromHex(id)
+		packageID := util.Getprimitive.ObjectIDFromHex(id)
 		if packageID.IsZero() {
 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 		}

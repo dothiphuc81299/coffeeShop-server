@@ -1,4 +1,4 @@
- package handler
+package handler
 
 // import (
 // 	"context"
@@ -106,7 +106,7 @@
 // 		if id == "" {
 // 			return next(c)
 // 		}
-// 		categoryID := util.GetAppIDFromHex(id)
+// 		categoryID := util.Getprimitive.ObjectIDFromHex(id)
 // 		if categoryID.IsZero() {
 // 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 // 		}

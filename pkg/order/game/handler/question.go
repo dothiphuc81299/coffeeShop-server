@@ -97,7 +97,7 @@ func (d *QuestionAdminHandler) QuestionGetByID(next echo.HandlerFunc) echo.Handl
 		if id == "" {
 			return next(c)
 		}
-		questionID := util.GetAppIDFromHex(id)
+		questionID := util.Getprimitive.ObjectIDFromHex(id)
 		if questionID.IsZero() {
 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 		}
@@ -114,7 +114,7 @@ func (d *QuestionAdminHandler) QuestionGetByID(next echo.HandlerFunc) echo.Handl
 func (d *QuestionAdminHandler) GetDetail(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		question = c.Get("question").(model.QuestionRaw)
+		question  = c.Get("question").(model.QuestionRaw)
 	)
 
 	data := d.QuestionAdminService.GetDetail(customCtx.GetRequestCtx(), question)

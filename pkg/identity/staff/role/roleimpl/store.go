@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/infra/storage/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,14 +14,12 @@ import (
 const staffRoleCol = "staff-roles"
 
 type store struct {
-	DB  *mongo.Database
 	Col *mongo.Collection
 }
 
-func Newstore(db *mongo.Database) *store {
+func Newstore(db mongodb.DBConnector) *store {
 	return &store{
-		DB:  db,
-		Col: db.Collection(staffRoleCol),
+		Col: db.GetCollection(staffRoleCol),
 	}
 }
 

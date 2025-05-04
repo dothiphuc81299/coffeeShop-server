@@ -15,7 +15,7 @@ package model
 // 	InsertOne(ctx context.Context, u UserRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]UserRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 // 	UpdateByCondition(ctx context.Context, cond, payload interface{}) error
 // }
 
@@ -33,13 +33,13 @@ package model
 // type UserAdminService interface {
 // 	Search(ctx context.Context, query CommonQuery) ([]UserAdminResponse, int64)
 // 	ConfirmAccountActive(ctx context.Context, user UserRaw) (bool, error)
-// 	FindByID(ctx context.Context, id AppID) (UserRaw, error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (UserRaw, error)
 // 	GetDetailUser(ctx context.Context, user UserRaw) UserAdminResponse
 // }
 
 // // UserRaw ...
 // type UserRaw struct {
-// 	ID           AppID     `bson:"_id"`
+// 	ID           primitive.ObjectID     `bson:"_id"`
 // 	Username     string    `bson:"username"`
 // 	Password     string    `bson:"password"`
 // 	Phone        string    `bson:"phone"`

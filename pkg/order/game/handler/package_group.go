@@ -55,7 +55,7 @@ func (p *PackageGroupAdminHandler) PackageGroupGetByID(next echo.HandlerFunc) ec
 			return next(c)
 		}
 
-		packageID := util.GetAppIDFromHex(id)
+		packageID := util.Getprimitive.ObjectIDFromHex(id)
 		if packageID.IsZero() {
 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 		}
@@ -76,7 +76,7 @@ func (p *PackageGroupAdminHandler) PackageGroupGetByID(next echo.HandlerFunc) ec
 // 		if id == "" {
 // 			return next(c)
 // 		}
-// 		packageID := util.GetAppIDFromHex(id)
+// 		packageID := util.Getprimitive.ObjectIDFromHex(id)
 // 		if packageID.IsZero() {
 // 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 // 		}

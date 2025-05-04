@@ -2,8 +2,7 @@ package handler
 
 import (
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,8 +15,8 @@ type OrderAdminHandler struct {
 
 func (h *OrderAdminHandler) SearchByStatus(c echo.Context) error {
 	var (
-		cc    = util.EchoGetCustomCtx(c)
-		query = model.CommonQuery{
+		cc = util.EchoGetCustomCtx(c)
+		q  = query.CommonQuery{
 			Status:   c.QueryParam("status"),
 			Limit:    cc.GetLimitQuery(),
 			Page:     cc.GetPageQuery(),

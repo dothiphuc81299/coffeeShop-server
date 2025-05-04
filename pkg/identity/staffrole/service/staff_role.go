@@ -1,4 +1,4 @@
-// package service
+ package service
 
 // import (
 // 	"context"
@@ -18,7 +18,7 @@
 // }
 
 // // FindByID ...
-// func (ss *StaffRoleAdminService) FindByID(ctx context.Context, id model.AppID) (model.StaffRoleRaw, error) {
+// func (ss *StaffRoleAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.StaffRoleRaw, error) {
 // 	return ss.StaffRoleDAO.FindByID(ctx, id)
 // }
 

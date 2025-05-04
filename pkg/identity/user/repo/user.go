@@ -9,7 +9,6 @@ package dao
 // 	"go.mongodb.org/mongo-driver/mongo/options"
 // )
 
-
 // // UserDAO ....
 // type UserDAO struct {
 // 	DB  *mongo.Database
@@ -50,7 +49,7 @@ package dao
 // }
 
 // // UpdateByID ...
-// func (w *UserDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+// func (w *UserDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 // 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 // 	return err
 // }

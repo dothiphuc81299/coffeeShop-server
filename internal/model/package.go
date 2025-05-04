@@ -1,4 +1,4 @@
- package model
+package model
 
 // import (
 // 	"context"
@@ -13,7 +13,7 @@
 // 	InsertOne(ctx context.Context, u PackageRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]PackageRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 // }
 
 // // PackageAdminService ....
@@ -21,7 +21,7 @@
 // 	Create(ctx context.Context, body PackageBody) error
 // 	ListAll(ctx context.Context, q CommonQuery) ([]PackageAdminResponse, int64)
 // 	Update(ctx context.Context, c PackageRaw, body PackageBody) error
-// 	FindByID(ctx context.Context, id AppID) (Package PackageRaw, err error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Package PackageRaw, err error)
 // 	GetDetail(ctx context.Context, cate PackageRaw) PackageAdminResponse
 // }
 

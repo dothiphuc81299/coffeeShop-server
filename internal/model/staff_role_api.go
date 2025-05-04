@@ -2,7 +2,7 @@ package model
 
 // StaffRoleAdminResponse ...
 // type StaffRoleAdminResponse struct {
-// 	ID          AppID        `json:"_id"`
+// 	ID          primitive.ObjectID        `json:"_id"`
 // 	Name        string       `json:"name"`
 // 	CreatedAt   TimeResponse `json:"createdAt"`
 // 	Permissions []string     `json:"permissions"`

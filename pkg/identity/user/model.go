@@ -1,30 +1,34 @@
 package user
 
 import (
+	"errors"
 	"time"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/format"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/format"
 	"github.com/go-ozzo/ozzo-validation/is"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type AppID = primitive.ObjectID
+var (
+	ErrEmailExisted        = errors.New("Email existed")
+	ErrUserNotFound        = errors.New("User not found")
+	ErrPasswordIsIncorrect = errors.New("Password is incorrect")
+)
 
 type UserRaw struct {
-	ID           AppID     `bson:"_id"`
-	Username     string    `bson:"username"`
-	Password     string    `bson:"password"`
-	Phone        string    `bson:"phone"`
-	Active       bool      `bson:"active"`
-	Avatar       string    `bson:"avatar"`
-	CreatedAt    time.Time `bson:"createdAt"`
-	UpdatedAt    time.Time `bson:"updatedAt"`
-	Address      string    `bson:"address"`
-	SearchString string    `bson:"searchString"`
-	CurrentPoint float64   `bson:"currentPoint"`
-	Email        string    `bson:"email"`
+	ID           primitive.ObjectID `bson:"_id"`
+	Username     string             `bson:"username"`
+	Password     string             `bson:"password"`
+	Phone        string             `bson:"phone"`
+	Active       bool               `bson:"active"`
+	Avatar       string             `bson:"avatar"`
+	CreatedAt    time.Time          `bson:"createdAt"`
+	UpdatedAt    time.Time          `bson:"updatedAt"`
+	Address      string             `bson:"address"`
+	SearchString string             `bson:"searchString"`
+	CurrentPoint float64            `bson:"currentPoint"`
+	Email        string             `bson:"email"`
 }
 type CreateLoginUserCommand struct {
 	Username string `json:"username"`
@@ -55,30 +59,30 @@ type UpdateUserCommand struct {
 }
 
 type UserAdminResponse struct {
-	ID           AppID     `json:"_id"`
-	UserName     string    `json:"username"`
-	Phone        string    `json:"phone"`
-	Active       bool      `json:"active"`
-	Avatar       string    `json:"avatar"`
-	CreatedAt    time.Time `json:"createdAt"`
-	Address      string    `json:"address"`
-	CurrentPoint float64   `json:"currentPoint"`
-	Email        string    `json:"email"`
+	ID           primitive.ObjectID `json:"_id"`
+	UserName     string             `json:"username"`
+	Phone        string             `json:"phone"`
+	Active       bool               `json:"active"`
+	Avatar       string             `json:"avatar"`
+	CreatedAt    time.Time          `json:"createdAt"`
+	Address      string             `json:"address"`
+	CurrentPoint float64            `json:"currentPoint"`
+	Email        string             `json:"email"`
 }
 
 type CreateLoginUserResult struct {
-	ID           AppID     `json:"_id"`
-	Username     string    `json:"username"`
-	Phone        string    `json:"phone"`
-	Email        string    `json:"email"`
-	Active       bool      `json:"active"`
-	Avatar       string    `json:"avatar"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
-	Address      string    `json:"address"`
-	Token        string    `json:"token"`
-	Password     string    `json:"password"`
-	CurrentPoint float64   `json:"currentPoint"`
+	ID           primitive.ObjectID `json:"_id"`
+	Username     string             `json:"username"`
+	Phone        string             `json:"phone"`
+	Email        string             `json:"email"`
+	Active       bool               `json:"active"`
+	Avatar       string             `json:"avatar"`
+	CreatedAt    time.Time          `json:"createdAt"`
+	UpdatedAt    time.Time          `json:"updatedAt"`
+	Address      string             `json:"address"`
+	Token        string             `json:"token"`
+	Password     string             `json:"password"`
+	CurrentPoint float64            `json:"currentPoint"`
 }
 
 type ChangePasswordUserCommand struct {
@@ -104,18 +108,18 @@ type Message struct {
 
 func (alg CreateLoginUserCommand) Validate() error {
 	return validation.ValidateStruct(&alg,
-		validation.Field(&alg.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
-		validation.Field(&alg.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
+		validation.Field(&alg.Username, validation.Required),
+		validation.Field(&alg.Password, validation.Required),
 	)
 }
 
 func (u CreateUserCommand) Validate() error {
 	err := validation.ValidateStruct(&u,
-		validation.Field(&u.Username, validation.Required.Error(locale.CommonKeyUsernameIsRequired)),
-		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
-		validation.Field(&u.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
-		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
-		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)))
+		validation.Field(&u.Username, validation.Required),
+		validation.Field(&u.Phone, validation.Required),
+		validation.Field(&u.Password, validation.Required),
+		validation.Field(&u.Address, validation.Required),
+		validation.Field(&u.Email, validation.Required, is.Email))
 
 	if err != nil {
 		return err
@@ -126,22 +130,22 @@ func (u CreateUserCommand) Validate() error {
 
 func (u UpdateUserCommand) Validate() error {
 	return validation.ValidateStruct(&u,
-		validation.Field(&u.Phone, validation.Required.Error(locale.CommonKeyPhoneIsRequired)),
-		validation.Field(&u.Address, validation.Required.Error(locale.CommonKeyContactAddressIsRequired)),
+		validation.Field(&u.Phone, validation.Required),
+		validation.Field(&u.Address, validation.Required),
 	)
 }
 
 func (a ChangePasswordUserCommand) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.Password, validation.Required.Error(locale.CommonKeyPasswordRequired)),
-		validation.Field(&a.NewPassword, validation.Required.Error(locale.CommonKeyPasswordRequired)),
-		validation.Field(&a.NewPasswordAgain, validation.Required.Error(locale.CommonKeyPasswordRequired)),
+		validation.Field(&a.Password, validation.Required),
+		validation.Field(&a.NewPassword, validation.Required),
+		validation.Field(&a.NewPasswordAgain, validation.Required),
 	)
 }
 
 func (u SendUserEmailCommand) Validate() error {
 	err := validation.ValidateStruct(&u,
-		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)))
+		validation.Field(&u.Email, validation.Required, is.Email))
 
 	if err != nil {
 		return err
@@ -151,8 +155,8 @@ func (u SendUserEmailCommand) Validate() error {
 
 func (u VerifyEmailCommand) Validate() error {
 	err := validation.ValidateStruct(&u,
-		validation.Field(&u.Email, validation.Required.Error(locale.CommonKeyEmailIsRequired), is.Email.Error(locale.CommonKeyEmailInvalid)),
-		validation.Field(&u.Code, validation.Required.Error(locale.CodeIsRequired)))
+		validation.Field(&u.Email, validation.Required, is.Email),
+		validation.Field(&u.Code, validation.Required))
 	if err != nil {
 		return err
 	}
@@ -160,7 +164,7 @@ func (u VerifyEmailCommand) Validate() error {
 }
 
 func (u *CreateUserCommand) NewUserRaw() UserRaw {
-	now := time.Now()
+	now := time.Now().UTC()
 	return UserRaw{
 		ID:           primitive.NewObjectID(),
 		Username:     u.Username,

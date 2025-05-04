@@ -6,6 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -14,7 +15,7 @@ type UserDAO interface {
 	InsertOne(ctx context.Context, u UserRaw) error
 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]UserRaw, error)
 	CountByCondition(ctx context.Context, cond interface{}) int64
-	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 	UpdateByCondition(ctx context.Context, cond, payload interface{}) error
 }
 
@@ -27,7 +28,7 @@ type Service interface {
 	SendEmail(ctx context.Context, mail SendUserEmailCommand) error
 	VerifyEmail(ctx context.Context, mail VerifyEmailCommand) error
 	Search(ctx context.Context, query query.CommonQuery) ([]UserRaw, int64)
-	FindByID(ctx context.Context, id AppID) (UserRaw, error)
+	FindByID(ctx context.Context, id primitive.ObjectID) (UserRaw, error)
 }
 
 func (u *UserRaw) GenerateToken() string {

@@ -22,8 +22,7 @@ type Service interface {
 	Create(ctx context.Context, body DrinkBody) error
 	ListAll(ctx context.Context, q query.CommonQuery) ([]DrinkAdminResponse, int64)
 	Update(ctx context.Context, id primitive.ObjectID, body DrinkBody) error
-	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool, error)
+	ChangeStatus(ctx context.Context, drinkID primitive.ObjectID) (bool, error)
 	FindByID(ctx context.Context, id primitive.ObjectID) (Drink DrinkRaw, err error)
-	GetDetail(ctx context.Context, drink DrinkRaw) DrinkAdminResponse
-	DeleteDrink(ctx context.Context, drink DrinkRaw) error
+	DeleteDrink(ctx context.Context, drinkID primitive.ObjectID) error
 }

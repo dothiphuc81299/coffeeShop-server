@@ -101,7 +101,7 @@ func (g *GroupAdminService) Update(ctx context.Context, group model.QuizGroupRaw
 	return nil
 }
 
-func (g *GroupAdminService) FindByID(ctx context.Context, id model.AppID) (Group model.QuizGroupRaw, err error) {
+func (g *GroupAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (Group model.QuizGroupRaw, err error) {
 	return g.GroupDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 }
 

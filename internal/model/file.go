@@ -16,9 +16,9 @@ const (
 
 // FilePhoto ...
 type FilePhoto struct {
-	ID         AppID           `bson:"_id" json:"_id"`
-	Name       string          `bson:"name" json:"name,omitempty"`
-	Dimensions *FileDimensions `bson:"dimensions" json:"dimensions"`
+	ID         primitive.ObjectID `bson:"_id" json:"_id"`
+	Name       string             `bson:"name" json:"name,omitempty"`
+	Dimensions *FileDimensions    `bson:"dimensions" json:"dimensions"`
 }
 
 // FileSize ...
@@ -34,7 +34,7 @@ func (f *FilePhotoRequest) ConvertToFilePhoto() *FilePhoto {
 		return nil
 	}
 	return &FilePhoto{
-		ID:         util.GetAppIDFromHex(f.ID),
+		ID:         util.Getprimitive.ObjectIDFromHex(f.ID),
 		Name:       f.Name,
 		Dimensions: f.Dimensions,
 	}

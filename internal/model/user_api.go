@@ -43,7 +43,7 @@ package model
 
 // // UserAdminResponse ...
 // type UserAdminResponse struct {
-// 	ID           AppID     `json:"_id"`
+// 	ID           primitive.ObjectID     `json:"_id"`
 // 	UserName     string    `json:"username"`
 // 	Phone        string    `json:"phone"`
 // 	Active       bool      `json:"active"`
@@ -55,7 +55,7 @@ package model
 // }
 
 // type CreateLoginUserResult struct {
-// 	ID           AppID     `json:"_id"`
+// 	ID           primitive.ObjectID     `json:"_id"`
 // 	Username     string    `json:"username"`
 // 	Phone        string    `json:"phone"`
 // 	Email        string    `json:"email"`
@@ -154,7 +154,7 @@ package model
 // func (u *CreateUserCommand) NewUserRaw() UserRaw {
 // 	now := time.Now()
 // 	return UserRaw{
-// 		ID:           NewAppID(),
+// 		ID:           Newprimitive.ObjectID(),
 // 		Username:     u.Username,
 // 		Password:     u.Password,
 // 		Email:        u.Email,

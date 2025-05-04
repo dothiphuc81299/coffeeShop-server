@@ -5,6 +5,7 @@ import (
 
 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // EventBody ...
@@ -15,11 +16,11 @@ type EventBody struct {
 
 // EventAdminResponse ...
 type EventAdminResponse struct {
-	ID        AppID     `json:"_id"`
-	Name      string    `json:"name"`
-	Desc      string    `json:"desc"`
-	CreatedAt time.Time `json:"createdAt"`
-	Active    bool      `json:"active"`
+	ID        primitive.ObjectID `json:"_id"`
+	Name      string             `json:"name"`
+	Desc      string             `json:"desc"`
+	CreatedAt time.Time          `json:"createdAt"`
+	Active    bool               `json:"active"`
 }
 
 // Validate ...
@@ -34,7 +35,7 @@ func (c EventBody) Validate() error {
 func (c EventBody) NewEventRaw() EventRaw {
 	now := time.Now()
 	return EventRaw{
-		ID:        NewAppID(),
+		ID:        Newprimitive.ObjectID(),
 		Name:      c.Name,
 		Desc:      c.Desc,
 		CreatedAt: now,

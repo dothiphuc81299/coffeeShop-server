@@ -93,7 +93,7 @@ func (d *GroupAdminHandler) GroupGetByID(next echo.HandlerFunc) echo.HandlerFunc
 		if id == "" {
 			return next(c)
 		}
-		quizGroupID := util.GetAppIDFromHex(id)
+		quizGroupID := util.Getprimitive.ObjectIDFromHex(id)
 		if quizGroupID.IsZero() {
 			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
 		}

@@ -55,7 +55,7 @@ package service
 // }
 
 // // FindByID ...
-// func (sfs *StaffAppService) FindByID(ctx context.Context, ID model.AppID) (model.Staff, error) {
+// func (sfs *StaffAppService) FindByID(ctx context.Context, ID model.primitive.ObjectID) (model.Staff, error) {
 // 	return sfs.StaffDAO.FindByID(ctx, ID)
 // }
 

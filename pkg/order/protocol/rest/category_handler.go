@@ -14,14 +14,14 @@ import (
 )
 
 func (s *Server) NewCategoryHandler(e *echo.Echo) {
-	g := e.Group("/category")
-	g.POST("", s.createCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, token.Staff))
-	g.PUT("/:categoryID", s.updateCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionEdit, d), h.CategoryGetByID, validation.CategoryBodyValidation)
+	g := e.Group("/api/category")
+	g.POST("/", s.createCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, token.Staff))
+	g.PUT("/detail/:categoryID", s.updateCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionEdit, token.Staff))
 
-	g.GET("", h.ListAll)
-	g.GET("/:categoryID", h.GetDetail, h.CategoryGetByID)
+	g.GET("/", s.searchCategories)
+	g.GET("/detail/:categoryID", s.getCategoryByID)
 
-	g.DELETE("/:categoryID", h.DeleteCategory, h.CategoryGetByID, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionDelete, d))
+	g.DELETE("/detail/:categoryID", s.DeleteCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionDelete, token.Staff))
 }
 
 func (s *Server) createCategory(c echo.Context) error {
@@ -60,7 +60,7 @@ func (s *Server) updateCategory(c echo.Context) error {
 	if id == "" {
 		return customCtx.Response400(nil, "categoryID is required")
 	}
-	categoryID := util.GetAppIDFromHex(id)
+	categoryID := util.GetObjectIDFromHex(id)
 
 	err := s.Dependences.CategorySrv.Update(customCtx.GetRequestCtx(), categoryID, cmd)
 	if err != nil {
@@ -70,8 +70,7 @@ func (s *Server) updateCategory(c echo.Context) error {
 	return customCtx.Response200("", "")
 }
 
-// ListAll ...
-func (s *Server) ListAll(c echo.Context) error {
+func (s *Server) searchCategories(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
 		cmd       = query.CommonQuery{
@@ -82,7 +81,6 @@ func (s *Server) ListAll(c echo.Context) error {
 	)
 
 	data, total := s.Dependences.CategorySrv.ListAll(context.Background(), cmd)
-
 	result := model.ResponseAdminListData{
 		Data:  data,
 		Total: total,
@@ -90,13 +88,22 @@ func (s *Server) ListAll(c echo.Context) error {
 	return customCtx.Response200(result, "")
 }
 
-func (s *Server) GetDetail(c echo.Context) error {
+func (s *Server) getCategoryByID(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		category  = c.Get("category").(model.CategoryRaw)
 	)
 
-	data := s.Dependences.CategorySrvGetDetail(customCtx.GetRequestCtx(), category)
+	id := c.Param("categoryID")
+	if id == "" {
+		return customCtx.Response400(nil, "categoryID is required")
+	}
+	categoryID := util.GetObjectIDFromHex(id)
+
+	data, err := s.Dependences.CategorySrv.GetDetail(customCtx.GetRequestCtx(), categoryID)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
 	return customCtx.Response200(echo.Map{
 		"category": data,
 	}, "")
@@ -106,34 +113,16 @@ func (s *Server) GetDetail(c echo.Context) error {
 func (s *Server) DeleteCategory(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		category  = c.Get("category").(model.CategoryRaw)
 	)
 
-	err := s.Dependences.CategorySrvDeleteCategory(customCtx.GetRequestCtx(), category)
+	id := c.Param("categoryID")
+	if id == "" {
+		return customCtx.Response400(nil, "categoryID is required")
+	}
+	categoryID := util.GetObjectIDFromHex(id)
+	err := s.Dependences.CategorySrv.DeleteCategory(customCtx.GetRequestCtx(), categoryID)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 	return customCtx.Response200(nil, "")
-}
-
-// CategoryGetByID ...
-func (s *Server) CategoryGetByID(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		customCtx := util.EchoGetCustomCtx(c)
-		id := c.Param("categoryID")
-		if id == "" {
-			return next(c)
-		}
-		categoryID := util.GetAppIDFromHex(id)
-		if categoryID.IsZero() {
-			return customCtx.Response400(nil, locale.CommonKeyBadRequest)
-		}
-		category, err := s.Dependences.CategorySrvFindByID(customCtx.GetRequestCtx(), categoryID)
-		if err != nil {
-			return customCtx.Response404(nil, locale.CommonKeyNotFound)
-		}
-
-		c.Set("category", category)
-		return next(c)
-	}
 }

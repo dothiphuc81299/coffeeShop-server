@@ -105,6 +105,6 @@ package service
 // }
 
 // // FindByID ...
-// func (d *CategoryAdminService) FindByID(ctx context.Context, id model.AppID) (Category model.CategoryRaw, err error) {
+// func (d *CategoryAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (Category model.CategoryRaw, err error) {
 // 	return d.CategoryDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 // }

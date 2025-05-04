@@ -1,4 +1,4 @@
- package service
+package service
 
 // import (
 // 	"context"
@@ -107,7 +107,7 @@
 // }
 
 // // FindByID ...
-// func (d *DrinkAdminService) FindByID(ctx context.Context, id model.AppID) (model.DrinkRaw, error) {
+// func (d *DrinkAdminService) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.DrinkRaw, error) {
 // 	return d.DrinkDAO.FindOneByCondition(ctx, bson.M{"_id": id})
 // }
 

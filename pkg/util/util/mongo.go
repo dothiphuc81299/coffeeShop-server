@@ -5,8 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// GetAppIDFromHex ...
-func GetAppIDFromHex(s string) primitive.ObjectID {
+func GetObjectIDFromHex(s string) primitive.ObjectID {
 	id, _ := primitive.ObjectIDFromHex(s)
 	return id
 }
@@ -21,6 +20,6 @@ func ConvertObjectIDsToStrings(ids []primitive.ObjectID) []string {
 // ConvertStringsToObjectIDs ...
 func ConvertStringsToObjectIDs(strValues []string) []primitive.ObjectID {
 	return funk.Map(strValues, func(item string) primitive.ObjectID {
-		return GetAppIDFromHex(item)
+		return GetObjectIDFromHex(item)
 	}).([]primitive.ObjectID)
 }

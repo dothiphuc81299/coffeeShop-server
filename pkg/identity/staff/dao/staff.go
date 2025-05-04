@@ -38,7 +38,7 @@ package dao
 // }
 
 // // FindByID ...
-// func (ud *StaffDAO) FindByID(ctx context.Context, id model.AppID) (model.Staff, error) {
+// func (ud *StaffDAO) FindByID(ctx context.Context, id model.primitive.ObjectID) (model.Staff, error) {
 // 	cond := bson.M{"_id": id}
 // 	return ud.FindOneByCondition(ctx, cond)
 // }
@@ -63,7 +63,7 @@ package dao
 // }
 
 // // UpdateByID ...
-// func (ud *StaffDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+// func (ud *StaffDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 // 	_, err := ud.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 // 	return err
 // }
@@ -73,7 +73,7 @@ package dao
 // 	return err
 // }
 
-// func (w *StaffDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+// func (w *StaffDAO) DeleteByID(ctx context.Context, id model.primitive.ObjectID) error {
 // 	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
 // 	return err
 // }

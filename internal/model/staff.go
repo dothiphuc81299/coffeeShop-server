@@ -1,4 +1,4 @@
- package model
+package model
 
 // import (
 // 	"context"
@@ -13,43 +13,43 @@
 // type StaffDAO interface {
 // 	FindOneByCondition(ctx context.Context, cond interface{}) (Staff, error)
 // 	InsertOne(ctx context.Context, u Staff) error
-// 	FindByID(ctx context.Context, id AppID) (Staff, error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Staff, error)
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]Staff, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 // 	UpdateBycondition(ctx context.Context, cond interface{}, payload interface{}) error
-// 	DeleteByID(ctx context.Context, id AppID) error
+// 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 // }
 
 // // StaffAdminService ...
 // type StaffAdminService interface {
 // 	Create(ctx context.Context, body CreateStaffCommand) (StaffGetResponseAdmin, error)
 // 	ListStaff(ctx context.Context, q CommonQuery) ([]StaffGetResponseAdmin, int64)
-// 	FindByID(ctx context.Context, id AppID) (Staff, error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Staff, error)
 // 	UpdateRole(ctx context.Context, body UpdateStaffRoleCommand, raw Staff) error
 // 	DeleteStaff(ctx context.Context, raw Staff) error
-// 	GetToken(ctx context.Context, staffID AppID) (string, error)
+// 	GetToken(ctx context.Context, staffID primitive.ObjectID) (string, error)
 // 	GetDetailStaff(ctx context.Context, staff Staff) StaffMeResponse
 // 	LoginStaff(ctx context.Context, LoginStaff LoginStaffCommand) (StaffResponse, error)
-// 	GetStaffByID(ctx context.Context, id AppID) StaffGetResponseAdmin
+// 	GetStaffByID(ctx context.Context, id primitive.ObjectID) StaffGetResponseAdmin
 // }
 
 // type StaffAppService interface {
 // 	Update(ctx context.Context, body UpdateStaffCommand, raw Staff) (StaffGetResponseAdmin, error)
 // 	ChangePassword(ctx context.Context, staff Staff, body PasswordBody) error
-// 	FindByID(ctx context.Context, id AppID) (Staff, error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Staff, error)
 // 	GetDetailStaff(ctx context.Context, staff Staff) StaffMeResponse
 // }
 
 // // Staff ...
 // type Staff struct {
-// 	ID       AppID  `bson:"_id"`
+// 	ID       primitive.ObjectID  `bson:"_id"`
 // 	Username string `bson:"username"`
 // 	Password string `bson:"password"`
 // 	Address  string `bson:"address"`
 // 	Phone    string `bson:"phone"`
 // 	Active   bool   `bson:"active"`
-// 	Role     AppID  `bson:"role,omitempty"`
+// 	Role     primitive.ObjectID  `bson:"role,omitempty"`
 // 	//Avatar      *FilePhoto `bson:"avatar,omitempty"`
 // 	Avatar      string    `bson:"avatar,omitempty"`
 // 	CreatedAt   time.Time `bson:"createdAt"`

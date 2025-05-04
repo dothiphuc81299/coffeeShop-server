@@ -20,7 +20,7 @@ package model
 // 	)
 // }
 
-// func (u *UserPackageBody) UserPackageGroupNewBSON(userID AppID, group QuizGroupRaw) UserPackageGroupRaw {
+// func (u *UserPackageBody) UserPackageGroupNewBSON(userID primitive.ObjectID, group QuizGroupRaw) UserPackageGroupRaw {
 // 	packageID, _ := primitive.ObjectIDFromHex(u.PackageID)
 // 	return UserPackageGroupRaw{
 // 		ID:             primitive.NewObjectID(),

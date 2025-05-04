@@ -1,4 +1,4 @@
- package model
+package model
 
 // import (
 // 	"context"
@@ -13,8 +13,8 @@
 // 	InsertOne(ctx context.Context, u CategoryRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]CategoryRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
-// 	DeleteByID(ctx context.Context, id AppID) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
+// 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 // }
 
 // // CategoryAdminService ....
@@ -22,7 +22,7 @@
 // 	Create(ctx context.Context, body CategoryBody) (CategoryAdminResponse, error)
 // 	ListAll(ctx context.Context, q CommonQuery) ([]CategoryAdminResponse, int64)
 // 	Update(ctx context.Context, c CategoryRaw, body CategoryBody) (CategoryAdminResponse, error)
-// 	FindByID(ctx context.Context, id AppID) (Category CategoryRaw, err error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Category CategoryRaw, err error)
 // 	GetDetail(ctx context.Context, cate CategoryRaw) CategoryAdminResponse
 
 // 	DeleteCategory(ctx context.Context, cate CategoryRaw) error
@@ -30,7 +30,7 @@
 
 // // CategoryRaw ....
 // type CategoryRaw struct {
-// 	ID           AppID     `bson:"_id"`
+// 	ID           primitive.ObjectID     `bson:"_id"`
 // 	Name         string    `bson:"name"`
 // 	SearchString string    `bson:"searchString"`
 // 	CreatedAt    time.Time `bson:"createdAt"`

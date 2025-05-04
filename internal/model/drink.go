@@ -1,4 +1,4 @@
- package model
+package model
 
 // import (
 // 	"context"
@@ -13,9 +13,9 @@
 // 	InsertOne(ctx context.Context, u DrinkRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]DrinkRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
-// 	DeleteByID(ctx context.Context, id AppID) error
-// 	DeleteByCategoryID(ctx context.Context, categoryID AppID) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
+// 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
+// 	DeleteByCategoryID(ctx context.Context, categoryID primitive.ObjectID) error
 // }
 
 // // DrinkAdminService ...
@@ -24,16 +24,16 @@
 // 	ListAll(ctx context.Context, q CommonQuery) ([]DrinkAdminResponse, int64)
 // 	Update(ctx context.Context, Drink DrinkRaw, body DrinkBody) (DrinkAdminResponse, error)
 // 	ChangeStatus(ctx context.Context, Drink DrinkRaw) (bool, error)
-// 	FindByID(ctx context.Context, id AppID) (Drink DrinkRaw, err error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Drink DrinkRaw, err error)
 // 	GetDetail(ctx context.Context, drink DrinkRaw) DrinkAdminResponse
 // 	DeleteDrink(ctx context.Context, drink DrinkRaw) error
 // }
 
 // // DrinkRaw ...
 // type DrinkRaw struct {
-// 	ID           AppID   `bson:"_id"`
+// 	ID           primitive.ObjectID   `bson:"_id"`
 // 	Name         string  `bson:"name"`
-// 	Category     AppID   `bson:"category"`
+// 	Category     primitive.ObjectID   `bson:"category"`
 // 	Price        float64 `bson:"price"`
 // 	SearchString string  `bson:"searchString"`
 // 	//	Photo        *FilePhoto `bson:"photo,omitempty"`

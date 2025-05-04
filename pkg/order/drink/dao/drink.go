@@ -1,4 +1,4 @@
- package dao
+package dao
 
 // import (
 // 	"context"
@@ -51,7 +51,7 @@
 // }
 
 // // UpdateByID ...
-// func (w *DrinkDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+// func (w *DrinkDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 // 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 // 	return err
 // }
@@ -62,13 +62,12 @@
 // 	return
 // }
 
-// func (w *DrinkDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+// func (w *DrinkDAO) DeleteByID(ctx context.Context, id model.primitive.ObjectID) error {
 // 	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
 // 	return err
 // }
 
-
-// func (w *DrinkDAO) DeleteByCategoryID(ctx context.Context,categoryID model.AppID) error {
+// func (w *DrinkDAO) DeleteByCategoryID(ctx context.Context,categoryID model.primitive.ObjectID) error {
 // 	_, err := w.Col.DeleteOne(ctx, bson.M{"category": categoryID})
 // 	return err
 // }

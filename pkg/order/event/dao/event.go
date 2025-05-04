@@ -51,7 +51,7 @@ func (w *EventDAO) CountByCondition(ctx context.Context, cond interface{}) int64
 }
 
 // UpdateByID ...
-func (w *EventDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *EventDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }
@@ -62,7 +62,7 @@ func (w *EventDAO) FindOneByCondition(ctx context.Context, cond interface{}) (do
 	return
 }
 
-func (w *EventDAO) DeleteByID(ctx context.Context, id model.AppID) error {
+func (w *EventDAO) DeleteByID(ctx context.Context, id model.primitive.ObjectID) error {
 	_, err := w.Col.DeleteOne(ctx, bson.M{"_id": id})
 	return err
 }

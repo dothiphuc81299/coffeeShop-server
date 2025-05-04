@@ -13,7 +13,7 @@ package model
 // 	InsertOne(ctx context.Context, u QuestionRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]QuestionRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 // }
 
 // // QuestionAdminService ....
@@ -21,7 +21,7 @@ package model
 // 	Create(ctx context.Context, body QuestionBody) error
 // 	ListAll(ctx context.Context, q CommonQuery) ([]QuestionCommon, int64)
 // 	Update(ctx context.Context, c QuestionRaw, body QuestionBodyUpdate) error
-// 	FindByID(ctx context.Context, id AppID) (Question QuestionRaw, err error)
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (Question QuestionRaw, err error)
 // 	GetDetail(ctx context.Context, q QuestionRaw) QuestionCommon
 // 	ChangeStatus(ctx context.Context, q QuestionRaw) (bool, error)
 // }

@@ -51,7 +51,7 @@ func (w *QuestionDAO) CountByCondition(ctx context.Context, cond interface{}) in
 }
 
 // UpdateByID ...
-func (w *QuestionDAO) UpdateByID(ctx context.Context, id model.AppID, payload interface{}) error {
+func (w *QuestionDAO) UpdateByID(ctx context.Context, id model.primitive.ObjectID, payload interface{}) error {
 	_, err := w.Col.UpdateOne(ctx, bson.M{"_id": id}, payload)
 	return err
 }

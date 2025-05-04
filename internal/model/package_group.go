@@ -13,7 +13,7 @@ package model
 // 	InsertOne(ctx context.Context, u PackageGroupRaw) error
 // 	FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) ([]PackageGroupRaw, error)
 // 	CountByCondition(ctx context.Context, cond interface{}) int64
-// 	UpdateByID(ctx context.Context, id AppID, payload interface{}) error
+// 	UpdateByID(ctx context.Context, id primitive.ObjectID, payload interface{}) error
 // }
 
 // // PackageGroupAdminService ....
@@ -21,8 +21,8 @@ package model
 // 	Create(ctx context.Context, body PackageGroupBody) error
 // 	//	ListAll(ctx context.Context, q CommonQuery) ([]PackageGroupAdminResponse, int64)
 // 	Update(ctx context.Context, c PackageGroupRaw, body PackageGroupBody) error
-// 	FindByID(ctx context.Context, id AppID) (PackageGroup PackageGroupRaw, err error)
-// 	GetPackageGroupByPackageID(ctx context.Context, packageID AppID) []PackageGroupAdminResponse
+// 	FindByID(ctx context.Context, id primitive.ObjectID) (PackageGroup PackageGroupRaw, err error)
+// 	GetPackageGroupByPackageID(ctx context.Context, packageID primitive.ObjectID) []PackageGroupAdminResponse
 // }
 
 // type PackageGroupRaw struct {

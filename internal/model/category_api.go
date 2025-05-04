@@ -15,7 +15,7 @@ package model
 
 // // CategoryAdminResponse ...
 // type CategoryAdminResponse struct {
-// 	ID        AppID     `json:"_id"`
+// 	ID        primitive.ObjectID     `json:"_id"`
 // 	Name      string    `json:"name"`
 // 	CreatedAt time.Time `json:"createdAt"`
 // }
@@ -31,7 +31,7 @@ package model
 // func (c CategoryBody) NewCategoryRaw() CategoryRaw {
 // 	now := time.Now()
 // 	return CategoryRaw{
-// 		ID:           NewAppID(),
+// 		ID:           Newprimitive.ObjectID(),
 // 		Name:         c.Name,
 // 		SearchString: format.NonAccentVietnamese(c.Name),
 // 		CreatedAt:    now,
