@@ -1,10 +1,9 @@
 package rest
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
-
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/user"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
@@ -13,19 +12,23 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+var (
+	reqUserView = role.ResourceUser + "_" + role.PermissionView
+)
+
 func (s *Server) NewUserHandler(e *echo.Echo) {
 	admin := e.Group("/api/admin/users")
 	user := e.Group("/api/users")
 
 	user.POST("/sign-up", s.createUser)
 	user.POST("/log-in", s.loginUser)
-	user.GET("/me", s.getDetailUser, middleware.CheckUser(token.User))
-	user.PUT("/me/update", s.UpdateUser, middleware.CheckUser(token.User))
-	user.PUT("/me/password", s.ChangePassword, middleware.CheckUser(token.User))
+	user.GET("/me", s.getDetailUser, middleware.AuthMiddleware(token.User, ""))
+	user.PUT("/me/update", s.UpdateUser, middleware.AuthMiddleware(token.User, ""))
+	user.PUT("/me/password", s.ChangePassword, middleware.AuthMiddleware(token.User, ""))
 	user.POST("/send-email", s.SendEmail)
 	user.POST("/verify-email", s.VerifyEmail)
 
-	admin.GET("/list", s.search, middleware.CheckPermission(config.ModelFieldUser, config.PermissionView, token.Staff))
+	admin.GET("/list", s.search, middleware.AuthMiddleware(token.Staff, reqUserView))
 }
 
 func (s *Server) createUser(c echo.Context) error {

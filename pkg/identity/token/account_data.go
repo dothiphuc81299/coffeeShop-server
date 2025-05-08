@@ -1,7 +1,7 @@
 package token
 
 import (
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -22,6 +22,7 @@ type Claims struct {
 	UserID      primitive.ObjectID `json:"user_id"`
 	LoginName   string             `json:"login_name"`
 	AccountType AccountType        `json:"account_type"`
+	Permissions []string           `json:"permissions"`
 	jwt.RegisteredClaims
 }
 
@@ -50,16 +51,16 @@ func GenerateJWT(userID primitive.ObjectID, loginName string, accountType Accoun
 
 func ValidateJWT(tokenStr string, expectedType AccountType) (*Claims, error) {
 	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+	jwtRes, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
 
-	if err != nil || !token.Valid {
+	if err != nil || !jwtRes.Valid {
 		return nil, err
 	}
 
-	if claims.AccountType != expectedType {
-		return nil, fmt.Errorf("unauthorized: account type mismatch")
+	if claims.AccountType != expectedType && claims.AccountType != Root {
+		return nil, errors.New("unauthorized: account type mismatch")
 	}
 
 	return claims, nil

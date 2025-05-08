@@ -20,7 +20,7 @@ type Store interface {
 type Service interface {
 	FindByID(ctx context.Context, id primitive.ObjectID) (StaffRoleRaw, error)
 	Delete(ctx context.Context, id primitive.ObjectID) error
-	Update(ctx context.Context, id primitive.ObjectID, body CreateStaffRoleCommand) error
-	ListStaffRole(ctx context.Context, q query.CommonQuery) ([]StaffRoleRaw, int64)
+	Update(ctx context.Context, cmd UpdateStaffRoleCommand) error
+	ListStaffRole(ctx context.Context, q *query.CommonQuery) ([]StaffRoleRaw, int64)
 	Create(ctx context.Context, body CreateStaffRoleCommand) error
 }

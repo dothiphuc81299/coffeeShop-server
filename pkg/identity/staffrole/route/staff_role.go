@@ -1,4 +1,4 @@
- package route
+package route
 
 // import (
 // 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
@@ -17,9 +17,9 @@
 // 	}
 
 // 	g := e.Group("/staffRole")
-// 	g.POST("", h.Create, middleware.CheckPermissionRoot(token.Root), validation.CreateStaffRoleCommandValidation)
+// 	g.POST("", h.Create, middleware.AuthMiddleware(token.Root,""), validation.CreateStaffRoleCommandValidation)
 
-// 	g.PUT("/:roleID", h.Update, middleware.CheckPermissionRoot(token.Root), h.StaffRoleGetByID, validation.CreateStaffRoleCommandValidation)
+// 	g.PUT("/:roleID", h.Update, middleware.AuthMiddleware(token.Root,""), h.StaffRoleGetByID, validation.CreateStaffRoleCommandValidation)
 
 // 	// Get list roles
 // 	g.GET("", h.ListRoleStaff, middleware.CheckPermission(config.ModelFieldRole, config.PermissionView, d))
@@ -28,5 +28,5 @@
 // 	g.GET("/permissions", h.SearchPermission)
 
 // 	// delete role
-// 	g.DELETE("/:roleID", h.Delete, middleware.CheckPermissionRoot(token.Root), h.StaffRoleGetByID)
+// 	g.DELETE("/:roleID", h.Delete, middleware.AuthMiddleware(token.Root,""), h.StaffRoleGetByID)
 // }

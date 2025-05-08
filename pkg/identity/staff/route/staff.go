@@ -1,4 +1,4 @@
- package route
+package route
 
 // import (
 // 	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
@@ -18,13 +18,13 @@
 
 // 	// only root
 // 	r := e.Group("/staff")
-// 	r.POST("", h.Create, middleware.CheckPermissionRoot(token.Root), validation.CreateStaffCommandValidation)
+// 	r.POST("", h.Create, middleware.AuthMiddleware(token.Root,""), validation.CreateStaffCommandValidation)
 // 	r.GET("", h.ListStaff, middleware.CheckPermission(config.ModelFieldStaff, config.PermissionView, d))
-// 	r.GET("/:staffID", h.GetStaffByID, middleware.CheckPermissionRoot(token.Root))
+// 	r.GET("/:staffID", h.GetStaffByID, middleware.AuthMiddleware(token.Root,""))
 // 	r.GET("/token", h.GetToken)
-// 	// r.PATCH("/:staffID/status", h.ChangeStatus, middleware.CheckPermissionRoot(token.Root), h.StaffGetByID)
-// 	r.PUT("/:staffID", h.UpdateRole, middleware.CheckPermissionRoot(token.Root), h.StaffGetByID, validation.UpdateStaffRoleCommandValidation)
-// 	r.DELETE("/:staffID", h.DeleteStaff, middleware.CheckPermissionRoot(token.Root), h.StaffGetByID)
+// 	// r.PATCH("/:staffID/status", h.ChangeStatus, middleware.AuthMiddleware(token.Root,""), h.StaffGetByID)
+// 	r.PUT("/:staffID", h.UpdateRole, middleware.AuthMiddleware(token.Root,""), h.StaffGetByID, validation.UpdateStaffRoleCommandValidation)
+// 	r.DELETE("/:staffID", h.DeleteStaff, middleware.AuthMiddleware(token.Root,""), h.StaffGetByID)
 // 	r.POST("/log-in", h.LoginStaff, validation.LoginStaffCommandValidation)
 
 // }

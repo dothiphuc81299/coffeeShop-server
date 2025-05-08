@@ -61,22 +61,32 @@ func (s *service) Create(ctx context.Context, cmd staff.CreateStaffCommand) erro
 	return err
 }
 
-func (s *service) Update(ctx context.Context, cmd staff.UpdateStaffCommand, data staff.Staff) error {
+func (s *service) Update(ctx context.Context, cmd *staff.UpdateStaffCommand) error {
+	account, ok := ctx.Value("current_account").(*token.AccountData)
+	if !ok || account.AccountType != token.Staff {
+		return errors.New("account is invalid")
+	}
+
 	payload := bson.M{
 		"address":   cmd.Address,
 		"phone":     cmd.Phone,
 		"updatedAt": time.Now().UTC(),
 	}
 
-	err := s.store.UpdateByID(ctx, data.ID, bson.M{"$set": payload})
+	err := s.store.UpdateByID(ctx, account.ID, bson.M{"$set": payload})
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *service) ChangePassword(ctx context.Context, entity staff.Staff, body staff.PasswordBody) error {
-	res, _ := s.store.FindOneByCondition(ctx, bson.M{"_id": entity.ID})
+func (s *service) ChangePassword(ctx context.Context, body *staff.PasswordBody) error {
+	account, ok := ctx.Value("current_account").(*token.AccountData)
+	if !ok || account.AccountType != token.Staff {
+		return errors.New("account is invalid")
+	}
+
+	res, _ := s.store.FindOneByCondition(ctx, bson.M{"_id": account.ID})
 	if res.ID.IsZero() {
 		return staff.ErrStaffNotFound
 	}
@@ -89,15 +99,30 @@ func (s *service) ChangePassword(ctx context.Context, entity staff.Staff, body s
 		return staff.ErrPasswordInvalid
 	}
 
-	err := s.store.UpdateByID(ctx, entity.ID, bson.M{"$set": bson.M{"password": body.NewPassword}})
+	hashPassword, err := password.HashPassword(body.NewPassword)
 	if err != nil {
 		return err
 	}
+
+	err = s.store.UpdateByID(ctx, account.ID, bson.M{"$set": bson.M{"password": hashPassword}})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (s *service) UpdateRole(ctx context.Context, body staff.UpdateStaffRoleCommand, data staff.Staff) error {
-	roleID, _ := primitive.ObjectIDFromHex(body.Role)
+func (s *service) UpdateRole(ctx context.Context, cmd *staff.UpdateStaffRoleCommand) error {
+	staffResult, err := s.store.FindByID(ctx, cmd.ID)
+	if err != nil {
+		return err
+	}
+
+	if staffResult.ID.IsZero() {
+		return staff.ErrStaffNotFound
+	}
+
+	roleID, _ := primitive.ObjectIDFromHex(cmd.Role)
 	roleStore, err := s.roleStore.FindByID(ctx, roleID)
 	if err != nil {
 		return err
@@ -107,8 +132,7 @@ func (s *service) UpdateRole(ctx context.Context, body staff.UpdateStaffRoleComm
 		return errors.New("roleStore Is Invalid")
 	}
 
-	data.Role = roleID
-	err = s.store.UpdateByID(ctx, data.ID, bson.M{"$set": data})
+	err = s.store.UpdateByID(ctx, cmd.ID, bson.M{"$set": bson.M{"role": roleID, "permissions": roleStore.Permissions, "updatedAt": time.Now().UTC()}})
 	if err != nil {
 		return staff.ErrCanNotUpdateRole
 	}
@@ -120,17 +144,16 @@ func (s *service) checkUserExisted(ctx context.Context, username string) bool {
 	return total > 0
 }
 
-func (s *service) ListStaff(ctx context.Context, q query.CommonQuery) (*staff.SearchStaffResult, int64) {
+func (s *service) ListStaff(ctx context.Context, q *query.CommonQuery) ([]staff.Staff, int64) {
 	var (
-		wg  sync.WaitGroup
-		res = &staff.SearchStaffResult{
-			Staffs: make([]staff.Staff, 0),
-		}
+		wg   sync.WaitGroup
+		res  = make([]staff.Staff, 0)
 		cond = bson.M{
 			"isRoot": false,
 		}
 		total int64
 	)
+
 	q.AssignActive(&cond)
 	q.AssignUsername(&cond)
 
@@ -138,7 +161,7 @@ func (s *service) ListStaff(ctx context.Context, q query.CommonQuery) (*staff.Se
 	go func() {
 		defer wg.Done()
 		docs, _ := s.store.FindByCondition(ctx, cond, q.GetFindOptsUsingPage())
-		res.Staffs = docs
+		res = docs
 	}()
 	go func() {
 		defer wg.Done()
@@ -154,6 +177,7 @@ func (s *service) LoginStaff(ctx context.Context, body staff.LoginStaffCommand) 
 	}
 
 	entity, err := s.store.FindOneByCondition(ctx, cond)
+
 	if err != nil {
 		return nil, staff.ErrUserNameOrPasswordIsIncorrect
 	}
@@ -165,7 +189,14 @@ func (s *service) LoginStaff(ctx context.Context, body staff.LoginStaffCommand) 
 		return nil, staff.ErrUserNameOrPasswordIsIncorrect
 	}
 
-	tokenStr, err := token.GenerateJWT(entity.ID, entity.Username, token.Staff)
+	var role token.AccountType
+	if entity.IsRoot {
+		role = token.Root
+	} else {
+		role = token.Staff
+	}
+
+	tokenStr, err := token.GenerateJWT(entity.ID, entity.Username, role)
 	if err != nil {
 		return nil, err
 	}
@@ -180,10 +211,12 @@ func (s *service) LoginStaff(ctx context.Context, body staff.LoginStaffCommand) 
 	}, nil
 }
 
-func (s *service) GetStaffByID(ctx context.Context, id primitive.ObjectID) (staff.Staff,error) {
+func (s *service) GetStaffByID(ctx context.Context, id primitive.ObjectID) (staff.Staff, error) {
 	result, err := s.store.FindByID(ctx, id)
 	if err != nil {
-		return staff.Staff{},err
+		return staff.Staff{}, err
 	}
-	return result,nil
+
+	result.Password = ""
+	return result, nil
 }

@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
@@ -12,39 +11,51 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+var (
+	reqRoleView = role.ResourceRole + "_" + role.PermissionView
+)
+
 func (s *Server) NewStaffRoleHandler(e *echo.Echo) {
 	admin := e.Group("/api/admin/staff-role")
 
-	admin.POST("", s.createStaffRole, middleware.CheckPermissionRoot(token.Root))
-	admin.PUT("/:roleID", s.Update, middleware.CheckPermissionRoot(token.Root))
-	admin.GET("", s.ListRoleStaff, middleware.CheckPermission(config.ModelFieldRole, config.PermissionView, token.Staff))
-	admin.GET("/permissions", s.SearchPermission)
-	admin.GET("/:roleID", s.GetRoleByID, middleware.CheckPermission(config.ModelFieldRole, config.PermissionView, token.Staff))
-	admin.DELETE("/:roleID", s.deleteRole, middleware.CheckPermissionRoot(token.Root))
+	admin.POST("/", s.createStaffRole, middleware.AuthMiddleware(token.Root, ""))
+	admin.PUT("/detail/:roleID", s.updateRole, middleware.AuthMiddleware(token.Root, ""))
+	admin.GET("/", s.ListRoleStaff, middleware.AuthMiddleware(token.Staff, ""))
+	admin.GET("/permissions", s.SearchPermission, middleware.AuthMiddleware(token.Staff, reqRoleView))
+	admin.GET("/detail/:roleID", s.GetRoleByID, middleware.AuthMiddleware(token.Staff, reqRoleView))
+	admin.DELETE("/detail/:roleID", s.deleteRole, middleware.AuthMiddleware(token.Root, ""))
 }
 
 func (s *Server) createStaffRole(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(role.CreateStaffRoleCommand)
+		cmd role.CreateStaffRoleCommand
 	)
 
-	if err := body.Validate(); err != nil {
+	if err := c.Bind(&cmd); err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 
-	err := s.Dependences.StaffRoleSrv.Create(cc.GetRequestCtx(), body)
+	if err := cmd.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	err := s.Dependences.StaffRoleSrv.Create(cc.GetRequestCtx(), cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 	return cc.Response200(echo.Map{}, "")
 }
 
-func (s *Server) Update(c echo.Context) error {
+func (s *Server) updateRole(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(role.CreateStaffRoleCommand)
+		cmd role.UpdateStaffRoleCommand
 	)
+
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	staffRoleIDString := c.Param("roleID")
 	staffRoleID, err := primitive.ObjectIDFromHex(staffRoleIDString)
@@ -52,7 +63,12 @@ func (s *Server) Update(c echo.Context) error {
 		return cc.Response400(nil, "")
 	}
 
-	err = s.Dependences.StaffRoleSrv.Update(cc.GetRequestCtx(), staffRoleID, body)
+	cmd.ID = staffRoleID
+	if err := cmd.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	err = s.Dependences.StaffRoleSrv.Update(cc.GetRequestCtx(), cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -70,7 +86,11 @@ func (s *Server) ListRoleStaff(c echo.Context) error {
 		}
 	)
 
-	roles, total := s.Dependences.StaffRoleSrv.ListStaffRole(ctx, q)
+	if err := c.Bind(&q); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	roles, total := s.Dependences.StaffRoleSrv.ListStaffRole(ctx, &q)
 	return cc.Response200(echo.Map{
 		"staffRoles": roles,
 		"total":      total,
@@ -80,7 +100,7 @@ func (s *Server) ListRoleStaff(c echo.Context) error {
 
 func (s *Server) SearchPermission(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
-	permissions := config.Permissions
+	permissions := role.Permissions
 	return cc.Response200(echo.Map{
 		"permissions": permissions,
 	}, "")

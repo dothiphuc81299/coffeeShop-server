@@ -9,6 +9,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type service struct {
@@ -36,16 +37,16 @@ func (s *service) Delete(ctx context.Context, id primitive.ObjectID) error {
 	return s.store.DeleteByID(ctx, data.ID)
 }
 
-func (s *service) Update(ctx context.Context, id primitive.ObjectID, body role.CreateStaffRoleCommand) error {
+func (s *service) Update(ctx context.Context, cmd role.UpdateStaffRoleCommand) error {
 	payload := bson.M{
 		"$set": bson.M{
-			"name":        body.Name,
-			"permissions": body.Permissions,
+			"name":        cmd.Name,
+			"permissions": cmd.Permissions,
 			"updatedAt":   time.Now().UTC(),
 		},
 	}
 
-	data, err := s.store.FindByID(ctx, id)
+	data, err := s.store.FindByID(ctx, cmd.ID)
 	if err != nil {
 		return err
 	}
@@ -55,8 +56,8 @@ func (s *service) Update(ctx context.Context, id primitive.ObjectID, body role.C
 		return role.ErrCanNotUpdate
 	}
 
-	data.Name = body.Name
-	data.Permissions = body.Permissions
+	data.Name = cmd.Name
+	data.Permissions = cmd.Permissions
 
 	cond := bson.M{
 		"role": data.ID,
@@ -64,7 +65,7 @@ func (s *service) Update(ctx context.Context, id primitive.ObjectID, body role.C
 
 	payloadStaff := bson.M{
 		"$set": bson.M{
-			"permissions": body.Permissions,
+			"permissions": cmd.Permissions,
 			"updatedAt":   time.Now().UTC(),
 		},
 	}
@@ -75,9 +76,19 @@ func (s *service) Update(ctx context.Context, id primitive.ObjectID, body role.C
 	return nil
 }
 
-func (s *service) ListStaffRole(ctx context.Context, q query.CommonQuery) ([]role.StaffRoleRaw, int64) {
+func (s *service) ListStaffRole(ctx context.Context, q *query.CommonQuery) ([]role.StaffRoleRaw, int64) {
+	if q.Limit == 0 {
+		q.Limit = 10
+	}
+
+	if q.Page == 0 {
+		q.Page = 1
+	}
+
+	skip := (q.Page - 1) * q.Limit
 	cond := bson.M{}
-	docs, err := s.store.FindByCondition(ctx, cond)
+
+	docs, err := s.store.FindByCondition(ctx, cond, options.Find().SetLimit(q.Limit).SetSkip(skip))
 	if err != nil {
 		return nil, 0
 	}

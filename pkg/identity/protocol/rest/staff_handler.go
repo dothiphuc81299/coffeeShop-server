@@ -1,8 +1,8 @@
 package rest
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
@@ -12,34 +12,40 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (s *Server) NewStaffHandler(e *echo.Echo) {
+var (
+	reqStaffView = role.ResourceStaff + "_" + role.PermissionView
+)
 
+func (s *Server) NewStaffHandler(e *echo.Echo) {
 	staffRoute := e.Group("/api/staff")
 	staffAdmin := e.Group("/api/admin/staff")
 
-	staffRoute.PUT("/update", s.updateStaff, middleware.CheckStaff(token.Staff))
-	staffRoute.PUT("/me/password", s.updateStaffPassword, middleware.CheckStaff(token.Staff))
-	staffRoute.GET("/me", s.getDetailStaff, middleware.CheckStaff(token.Staff))
+	staffRoute.PUT("/update", s.updateStaff, middleware.AuthMiddleware(token.Staff, ""))
+	staffRoute.PUT("/me/password", s.updateStaffPassword, middleware.AuthMiddleware(token.Staff, ""))
+	staffRoute.GET("/me", s.getDetailStaff, middleware.AuthMiddleware(token.Staff, ""))
 	staffRoute.POST("/log-in", s.LoginStaff)
 
-	staffAdmin.POST("", s.createStaff, middleware.CheckPermissionRoot(token.Root))
-	staffAdmin.GET("", s.ListStaff, middleware.CheckPermission(config.ModelFieldStaff, config.PermissionView, token.Staff))
-	staffAdmin.GET("/:staffID", s.GetStaffByID, middleware.CheckPermissionRoot(token.Root))
-	staffAdmin.PUT("/:staffID", s.UpdateRole, middleware.CheckPermissionRoot(token.Root))
+	staffAdmin.POST("/", s.createStaff, middleware.AuthMiddleware(token.Root, ""))
+	staffAdmin.GET("/", s.ListStaff, middleware.AuthMiddleware(token.Staff, reqStaffView))
+	staffAdmin.GET("/detail/:staffID", s.GetStaffByID, middleware.AuthMiddleware(token.Root, ""))
+	staffAdmin.PUT("/detail/:staffID", s.UpdateRole, middleware.AuthMiddleware(token.Root, ""))
 }
 
 func (s *Server) updateStaff(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body   = c.Get("bodyUpdate").(staff.UpdateStaffCommand)
-		enitty = c.Get("staff").(staff.Staff)
+		cmd staff.UpdateStaffCommand
 	)
 
-	if err := body.Validate(); err != nil {
+	if err := c.Bind(&cmd); err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 
-	err := s.Dependences.StaffSrv.Update(cc.GetRequestCtx(), body, enitty)
+	if err := cmd.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	err := s.Dependences.StaffSrv.Update(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -50,16 +56,18 @@ func (s *Server) updateStaff(c echo.Context) error {
 func (s *Server) updateStaffPassword(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body   = c.Get("body").(staff.PasswordBody)
-		entity = c.Get("staff").(staff.Staff)
+		cmd staff.PasswordBody
 	)
 
-	if err := body.Validate(); err != nil {
+	if err := c.Bind(&cmd); err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 
-	err := s.Dependences.StaffSrv.ChangePassword(cc.GetRequestCtx(), entity, body)
+	if err := cmd.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
+	err := s.Dependences.StaffSrv.ChangePassword(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -68,11 +76,12 @@ func (s *Server) updateStaffPassword(c echo.Context) error {
 
 func (s *Server) getDetailStaff(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
-	var (
-		staff = c.Get("staff").(staff.Staff)
-	)
+	account, ok := cc.GetRequestCtx().Value("current_account").(*token.AccountData)
+	if !ok || account.AccountType != token.Staff {
+		return cc.Response400(nil, "account is invalid")
+	}
 
-	data, err := s.Dependences.StaffSrv.GetStaffByID(cc.GetRequestCtx(), staff.ID)
+	data, err := s.Dependences.StaffSrv.GetStaffByID(cc.GetRequestCtx(), account.ID)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -98,7 +107,11 @@ func (s *Server) ListStaff(c echo.Context) error {
 		Username: c.QueryParam("username"),
 	}
 
-	staffs, total := s.Dependences.StaffSrv.ListStaff(ctx, q)
+	if err := c.Bind(&q); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	staffs, total := s.Dependences.StaffSrv.ListStaff(ctx, &q)
 
 	return cc.Response200(echo.Map{
 		"staffs": staffs,
@@ -110,8 +123,12 @@ func (s *Server) ListStaff(c echo.Context) error {
 func (s *Server) createStaff(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(staff.CreateStaffCommand)
+		body staff.CreateStaffCommand
 	)
+
+	if err := c.Bind(&body); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	if err := body.Validate(); err != nil {
 		return cc.Response400(nil, err.Error())
@@ -128,11 +145,25 @@ func (s *Server) createStaff(c echo.Context) error {
 func (s *Server) UpdateRole(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body   = c.Get("body").(staff.UpdateStaffRoleCommand)
-		enitty = c.Get("staff").(staff.Staff)
+		staffIDString = cc.Param("staffID")
 	)
+	staffID, err := primitive.ObjectIDFromHex(staffIDString)
+	if staffID.IsZero() || err != nil {
+		return cc.Response404(nil, "staff not found")
+	}
 
-	err := s.Dependences.StaffSrv.UpdateRole(cc.GetRequestCtx(), body, enitty)
+	var cmd staff.UpdateStaffRoleCommand
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	cmd.ID = staffID
+
+	if err := cmd.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	err = s.Dependences.StaffSrv.UpdateRole(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -151,6 +182,9 @@ func (s *Server) GetStaffByID(c echo.Context) error {
 	}
 
 	data, err := s.Dependences.StaffSrv.GetStaffByID(cc.GetRequestCtx(), staffID)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	return cc.Response200(echo.Map{
 		"data": data,
@@ -160,14 +194,18 @@ func (s *Server) GetStaffByID(c echo.Context) error {
 func (s *Server) LoginStaff(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(staff.LoginStaffCommand)
+		cmd staff.LoginStaffCommand
 	)
 
-	if err := body.Validate(); err != nil {
+	if err := c.Bind(&cmd); err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 
-	data, err := s.Dependences.StaffSrv.LoginStaff(cc.GetRequestCtx(), body)
+	if err := cmd.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	data, err := s.Dependences.StaffSrv.LoginStaff(cc.GetRequestCtx(), cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}

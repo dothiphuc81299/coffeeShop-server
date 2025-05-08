@@ -25,9 +25,23 @@ type CreateStaffRoleCommand struct {
 	Permissions []string `json:"permissions"`
 }
 
-func (sr *CreateStaffRoleCommand) Validate() error {
-	return validation.ValidateStruct(sr,
-		validation.Field(&sr.Name, validation.Required),
-		validation.Field(&sr.Permissions, validation.Required),
+type UpdateStaffRoleCommand struct {
+	ID          primitive.ObjectID
+	Name        string   `json:"name"`
+	Permissions []string `json:"permissions"`
+}
+
+func (cmd CreateStaffRoleCommand) Validate() error {
+	return validation.ValidateStruct(&cmd,
+		validation.Field(&cmd.Name, validation.Required),
+		validation.Field(&cmd.Permissions, validation.Required),
+	)
+}
+
+func (cmd UpdateStaffRoleCommand) Validate() error {
+	return validation.ValidateStruct(&cmd,
+		validation.Field(&cmd.ID, validation.Required),
+		validation.Field(&cmd.Name, validation.Required),
+		validation.Field(&cmd.Permissions, validation.Required),
 	)
 }

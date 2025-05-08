@@ -28,14 +28,15 @@ func (ud *store) CountByCondition(ctx context.Context, cond interface{}) int64 {
 	return total
 }
 
-func (ud *store) FindOneByCondition(ctx context.Context, cond interface{}) (u staff.Staff, err error) {
-	err = ud.Col.FindOne(ctx, cond).Decode(&u)
-	return u, err
+func (ud *store) FindByID(ctx context.Context, id primitive.ObjectID, opts ...*options.FindOneOptions) (staff.Staff, error) {
+	cond := bson.M{"_id": id}
+	return ud.FindOneByCondition(ctx, cond, opts...)
 }
 
-func (ud *store) FindByID(ctx context.Context, id primitive.ObjectID) (staff.Staff, error) {
-	cond := bson.M{"_id": id}
-	return ud.FindOneByCondition(ctx, cond)
+func (ud *store) FindOneByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOneOptions) (staff.Staff, error) {
+	var result staff.Staff
+	err := ud.Col.FindOne(ctx, cond, opts...).Decode(&result)
+	return result, err
 }
 
 func (ud *store) FindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []staff.Staff, err error) {

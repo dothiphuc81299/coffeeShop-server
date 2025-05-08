@@ -3,7 +3,7 @@ package config
 import "github.com/dothiphuc81299/coffeeShop-server/pkg/util/env"
 
 const (
-	defaultHTTPPort = "3089"
+	defaultHTTPPort = "3088"
 	defaultGRPCPort = "50003"
 )
 

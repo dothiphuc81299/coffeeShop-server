@@ -56,13 +56,6 @@ type PasswordBody struct {
 	NewPasswordAgain string `json:"newPasswordAgain"`
 }
 
-type SearchStaffResult struct {
-	Staffs  []Staff `json:"staffs"`
-	Total   int64   `json:"total"`
-	Page    int64   `json:"page"`
-	PerPage int64   `json:"perPage"`
-}
-
 type LoginStaffResult struct {
 }
 
@@ -76,11 +69,13 @@ type StaffResponse struct {
 }
 
 type UpdateStaffRoleCommand struct {
+	ID   primitive.ObjectID
 	Role string `json:"role"`
 }
 
 func (s UpdateStaffRoleCommand) Validate() error {
 	return validation.ValidateStruct(&s,
+		validation.Field(&s.ID, validation.Required),
 		validation.Field(&s.Role, validation.Required))
 }
 func (stf UpdateStaffCommand) Validate() error {
