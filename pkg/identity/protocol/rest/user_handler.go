@@ -2,6 +2,7 @@ package rest
 
 import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
@@ -9,7 +10,6 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
 	"github.com/labstack/echo/v4"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 var (
@@ -34,8 +34,12 @@ func (s *Server) NewUserHandler(e *echo.Echo) {
 func (s *Server) createUser(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(user.CreateUserCommand)
+		body user.CreateUserCommand
 	)
+
+	if err := c.Bind(&body); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	err := body.Validate()
 	if err != nil {
@@ -53,9 +57,14 @@ func (s *Server) createUser(c echo.Context) error {
 
 func (s *Server) loginUser(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
+
 	var (
-		body = c.Get("body").(user.CreateLoginUserCommand)
+		body user.CreateLoginUserCommand
 	)
+
+	if err := c.Bind(&body); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	err := body.Validate()
 	if err != nil {
@@ -73,17 +82,24 @@ func (s *Server) loginUser(c echo.Context) error {
 
 func (s *Server) search(c echo.Context) error {
 	var (
-		cc  = util.EchoGetCustomCtx(c)
-		cmd = query.CommonQuery{
-			Limit:   cc.GetLimitQuery(),
-			Page:    cc.GetPageQuery(),
-			Active:  c.QueryParam("active"),
-			Keyword: c.QueryParam("keyword"),
-			Sort:    bson.D{{"createdAt", -1}},
-		}
+		cc = util.EchoGetCustomCtx(c)
 	)
 
-	data, total := s.Dependences.UserSrv.Search(cc.GetRequestCtx(), cmd)
+	cmd := query.CommonQuery{
+		Page:  cc.GetPageQuery(),
+		Limit: cc.GetLimitQuery(),
+		Sort: bson.D{
+			bson.E{Key: "createdAt", Value: -1},
+		},
+		Active:   c.QueryParam("active"),
+		Username: c.QueryParam("username"),
+	}
+
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	data, total := s.Dependences.UserSrv.Search(cc.GetRequestCtx(), &cmd)
 	result := query.ResponseAppListData{
 		Data:         data,
 		Total:        total,
@@ -92,44 +108,15 @@ func (s *Server) search(c echo.Context) error {
 	return cc.Response200(result, "")
 }
 
-func (s *Server) GetDetailUser(c echo.Context) error {
-	var (
-		cc   = util.EchoGetCustomCtx(c)
-		user = c.Get("user").(user.UserRaw)
-	)
-
-	result := s.Dependences.UserSrv.GetDetailUser(cc.GetRequestCtx(), user)
-	return cc.Response200(echo.Map{
-		"data": result,
-	}, "")
-}
-
-func (s *Server) UserGetByID(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		customCtx := util.EchoGetCustomCtx(c)
-		id := c.Param("userID")
-		if id == "" {
-			return next(c)
-		}
-		userID := util.GetObjectIDFromHex(id)
-		if userID.IsZero() {
-			return customCtx.Response400(nil, "bad request")
-		}
-		user, err := s.Dependences.UserSrv.FindByID(customCtx.GetRequestCtx(), userID)
-		if err != nil {
-			return customCtx.Response404(nil, "not found")
-		}
-
-		c.Set("user", user)
-		return next(c)
-	}
-}
-
 func (s *Server) SendEmail(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(user.SendUserEmailCommand)
+		body user.SendUserEmailCommand
 	)
+
+	if err := c.Bind(&body); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	if err := body.Validate(); err != nil {
 		return cc.Response400(nil, err.Error())
@@ -144,9 +131,11 @@ func (s *Server) SendEmail(c echo.Context) error {
 
 func (s *Server) VerifyEmail(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
-	var (
-		cmd = c.Get("body").(user.VerifyEmailCommand)
-	)
+	var cmd user.VerifyEmailCommand
+
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
 	if err := cmd.Validate(); err != nil {
 		return cc.Response400(nil, err.Error())
@@ -162,11 +151,14 @@ func (s *Server) VerifyEmail(c echo.Context) error {
 func (s *Server) UpdateUser(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		body = c.Get("body").(user.UpdateUserCommand)
-		user = c.Get("user").(user.UserRaw)
+		cmd user.UpdateUserCommand
 	)
 
-	err := s.Dependences.UserSrv.UpdateUser(cc.GetRequestCtx(), user, body)
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	err := s.Dependences.UserSrv.UpdateUser(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -175,11 +167,12 @@ func (s *Server) UpdateUser(c echo.Context) error {
 
 func (s *Server) getDetailUser(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
-	var (
-		user = c.Get("user").(user.UserRaw)
-	)
+	account, ok := cc.GetRequestCtx().Value("current_account").(*token.AccountData)
+	if !ok || account.AccountType != token.User {
+		return cc.Response400(nil, "account is invalid")
+	}
 
-	data := s.Dependences.UserSrv.GetDetailUser(cc.GetRequestCtx(), user)
+	data := s.Dependences.UserSrv.GetDetailUser(cc.GetRequestCtx(), account.ID)
 	return cc.Response200(echo.Map{
 		"data": data,
 	}, "")
@@ -188,11 +181,14 @@ func (s *Server) getDetailUser(c echo.Context) error {
 func (s *Server) ChangePassword(c echo.Context) error {
 	cc := util.EchoGetCustomCtx(c)
 	var (
-		entity = c.Get("user").(user.UserRaw)
-		body   = c.Get("body").(user.ChangePasswordUserCommand)
+		cmd user.ChangePasswordUserCommand
 	)
 
-	err := s.Dependences.UserSrv.ChangePassword(cc.GetRequestCtx(), entity, body)
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	err := s.Dependences.UserSrv.ChangePassword(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}

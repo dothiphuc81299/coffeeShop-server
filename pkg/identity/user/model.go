@@ -5,31 +5,34 @@ import (
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/format"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/password"
 	"github.com/go-ozzo/ozzo-validation/is"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var (
-	ErrEmailExisted        = errors.New("Email existed")
-	ErrUserNotFound        = errors.New("User not found")
-	ErrPasswordIsIncorrect = errors.New("Password is incorrect")
+	ErrEmailExisted     = errors.New("Email existed")
+	ErrUserNotFound     = errors.New("User not found")
+	ErrPasswordInvalid  = errors.New("Password is incorrect")
+	ErrAccountIsInvalid = errors.New("Account is invalid")
 )
 
 type UserRaw struct {
-	ID           primitive.ObjectID `bson:"_id"`
-	Username     string             `bson:"username"`
-	Password     string             `bson:"password"`
-	Phone        string             `bson:"phone"`
-	Active       bool               `bson:"active"`
-	Avatar       string             `bson:"avatar"`
-	CreatedAt    time.Time          `bson:"createdAt"`
-	UpdatedAt    time.Time          `bson:"updatedAt"`
-	Address      string             `bson:"address"`
-	SearchString string             `bson:"searchString"`
-	CurrentPoint float64            `bson:"currentPoint"`
-	Email        string             `bson:"email"`
+	ID           primitive.ObjectID `bson:"_id" json:"id"`
+	Username     string             `bson:"username" json:"username"`
+	Password     string             `bson:"password" json:"password"`
+	Phone        string             `bson:"phone" json:"phone"`
+	Active       bool               `bson:"active" json:"active"`
+	Avatar       string             `bson:"avatar" json:"avatar"`
+	CreatedAt    time.Time          `bson:"createdAt" json:"createdAt"`
+	UpdatedAt    time.Time          `bson:"updatedAt" json:"updatedAt"`
+	Address      string             `bson:"address" json:"address"`
+	SearchString string             `bson:"searchString" json:"searchString"`
+	CurrentPoint float64            `bson:"currentPoint" json:"currentPoint"`
+	Email        string             `bson:"email" json:"email"`
 }
+
 type CreateLoginUserCommand struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -165,12 +168,13 @@ func (u VerifyEmailCommand) Validate() error {
 
 func (u *CreateUserCommand) NewUserRaw() UserRaw {
 	now := time.Now().UTC()
+	hashPassword, _ := password.HashPassword(u.Password)
 	return UserRaw{
 		ID:           primitive.NewObjectID(),
 		Username:     u.Username,
-		Password:     u.Password,
+		Password:     hashPassword,
 		Email:        u.Email,
-		Active:       false,
+		Active:       true,
 		Phone:        u.Phone,
 		CreatedAt:    now,
 		UpdatedAt:    now,
