@@ -3,25 +3,36 @@ package rest
 import (
 	"context"
 
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 )
 
+var (
+	reqCategoryCreate = role.ResourceCategory + "_" + role.PermissionCreate
+	reqCategoryUpdate = role.ResourceCategory + "_" + role.PermissionUpdate
+	reqCategoryDelete = role.ResourceCategory + "_" + role.PermissionDelete
+	reqCategoryView   = role.ResourceCategory + "_" + role.PermissionView
+)
+
 func (s *Server) NewCategoryHandler(e *echo.Echo) {
-	g := e.Group("/api/category")
-	g.POST("/", s.createCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionView, token.Staff))
-	g.PUT("/detail/:categoryID", s.updateCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionEdit, token.Staff))
+	admin := e.Group("/api/admin/category")
+	user := e.Group("/api/category")
 
-	g.GET("/", s.searchCategories)
-	g.GET("/detail/:categoryID", s.getCategoryByID)
+	user.GET("/", s.searchCategories)
+	user.GET("/detail/:categoryID", s.getCategoryByID)
 
-	g.DELETE("/detail/:categoryID", s.DeleteCategory, middleware.CheckPermission(config.ModelFieldCategory, config.PermissionDelete, token.Staff))
+	admin.POST("/", s.createCategory, middleware.AuthMiddleware(token.Staff, reqCategoryCreate))
+	admin.PUT("/detail/:categoryID", s.updateCategory, middleware.AuthMiddleware(token.Staff, reqCategoryUpdate))
+	admin.DELETE("/detail/:categoryID", s.DeleteCategory, middleware.AuthMiddleware(token.Staff, reqCategoryDelete))
+	admin.GET("/", s.searchCategories, middleware.AuthMiddleware(token.Staff, reqCategoryView))
+	admin.GET("/detail/:categoryID", s.getCategoryByID, middleware.AuthMiddleware(token.Staff, reqCategoryView))
+
 }
 
 func (s *Server) createCategory(c echo.Context) error {
@@ -38,7 +49,7 @@ func (s *Server) createCategory(c echo.Context) error {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	err := s.Dependences.CategorySrv.Create(customCtx.GetRequestCtx(), cmd)
+	err := s.Dependences.CategorySrv.Create(customCtx.GetRequestCtx(), &cmd)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
@@ -80,11 +91,17 @@ func (s *Server) searchCategories(c echo.Context) error {
 		}
 	)
 
-	data, total := s.Dependences.CategorySrv.ListAll(context.Background(), cmd)
+	err := c.Bind(&cmd)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
+
+	data, total := s.Dependences.CategorySrv.ListAll(context.Background(), &cmd)
 	result := model.ResponseAdminListData{
 		Data:  data,
 		Total: total,
 	}
+
 	return customCtx.Response200(result, "")
 }
 

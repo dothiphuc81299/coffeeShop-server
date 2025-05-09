@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/dothiphuc81299/coffeeShop-server/pkg/apis/order";
+
+message CreateUserAccountCommand {
+    string user_id = 1;
+    string login_name =2;
+    bool active =3;
+}
+
+message CreateUserAccountResponse {
+}
+
+service Order {
+    rpc CreateUserAccount(CreateUserAccountCommand) returns (CreateUserAccountResponse){}
+}

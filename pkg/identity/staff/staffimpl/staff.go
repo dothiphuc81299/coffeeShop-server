@@ -9,8 +9,8 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/password"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

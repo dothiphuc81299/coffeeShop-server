@@ -4,24 +4,27 @@ import (
 	"context"
 	"sync"
 
+	orderapi "github.com/dothiphuc81299/coffeeShop-server/pkg/apis/order"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/code"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/user"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/password"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type service struct {
-	store     *store
-	codeStore code.Store
+	store       *store
+	codeStore   code.Store
+	orderClient orderapi.OrderClient
 }
 
-func NewService(store *store, codeStore code.Store) user.Service {
+func NewService(store *store, codeStore code.Store, orderClient orderapi.OrderClient) user.Service {
 	return &service{
-		store:     store,
-		codeStore: codeStore,
+		store:       store,
+		codeStore:   codeStore,
+		orderClient: orderClient,
 	}
 }
 
@@ -34,6 +37,15 @@ func (s *service) CreateUser(ctx context.Context, body user.CreateUserCommand) (
 	}
 
 	err = s.store.InsertOne(ctx, payload)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = s.orderClient.CreateUserAccount(ctx, &orderapi.CreateUserAccountCommand{
+		UserId:    payload.ID.Hex(),
+		LoginName: payload.Username,
+		Active:    true,
+	})
 	if err != nil {
 		return "", err
 	}

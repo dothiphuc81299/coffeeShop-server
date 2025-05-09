@@ -1,148 +1,148 @@
 package handler
 
-import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
-	"github.com/labstack/echo/v4"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
+// import (
+// 	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
+// 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
+// 	"github.com/labstack/echo/v4"
+// 	"go.mongodb.org/mongo-driver/bson"
+// 	"go.mongodb.org/mongo-driver/bson/primitive"
+// )
 
-// OrderAdminHandler ...
-type OrderAdminHandler struct {
-	OrderAdminService model.OrderAdminService
-}
+// // OrderAdminHandler ...
+// type OrderAdminHandler struct {
+// 	OrderAdminService model.OrderAdminService
+// }
 
-func (h *OrderAdminHandler) SearchByStatus(c echo.Context) error {
-	var (
-		cc = util.EchoGetCustomCtx(c)
-		q  = query.CommonQuery{
-			Status:   c.QueryParam("status"),
-			Limit:    cc.GetLimitQuery(),
-			Page:     cc.GetPageQuery(),
-			Username: cc.QueryParam("username"),
-			Sort: bson.D{
-				{"createdAt", -1},
-			},
-		}
-	)
+// func (h *OrderAdminHandler) SearchByStatus(c echo.Context) error {
+// 	var (
+// 		cc = util.EchoGetCustomCtx(c)
+// 		q  = query.CommonQuery{
+// 			Status:   c.QueryParam("status"),
+// 			Limit:    cc.GetLimitQuery(),
+// 			Page:     cc.GetPageQuery(),
+// 			Username: cc.QueryParam("username"),
+// 			Sort: bson.D{
+// 				{"createdAt", -1},
+// 			},
+// 		}
+// 	)
 
-	data, total := h.OrderAdminService.SearchByStatus(cc.GetRequestCtx(), query)
+// 	data, total := h.OrderAdminService.SearchByStatus(cc.GetRequestCtx(), query)
 
-	return cc.Response200(echo.Map{
-		"order": data,
-		"total": total,
-	}, "")
-}
+// 	return cc.Response200(echo.Map{
+// 		"order": data,
+// 		"total": total,
+// 	}, "")
+// }
 
-func (h *OrderAdminHandler) ChangeStatus(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-		staff = c.Get("staff").(model.Staff)
-	)
+// func (h *OrderAdminHandler) ChangeStatus(c echo.Context) error {
+// 	var (
+// 		cc    = util.EchoGetCustomCtx(c)
+// 		order = c.Get("order").(model.OrderRaw)
+// 		staff = c.Get("staff").(model.Staff)
+// 	)
 
-	status := c.Get("statusBody").(model.StatusBody)
+// 	status := c.Get("statusBody").(model.StatusBody)
 
-	data, err := h.OrderAdminService.ChangeStatus(cc.GetRequestCtx(), order, status, staff)
+// 	data, err := h.OrderAdminService.ChangeStatus(cc.GetRequestCtx(), order, status, staff)
 
-	if err != nil {
-		return cc.Response400(nil, err.Error())
-	}
-	return cc.Response200(echo.Map{
-		"status": data,
-	}, "")
-}
+// 	if err != nil {
+// 		return cc.Response400(nil, err.Error())
+// 	}
+// 	return cc.Response200(echo.Map{
+// 		"status": data,
+// 	}, "")
+// }
 
-func (h *OrderAdminHandler) UpdateOrderSuccess(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-		staff = c.Get("staff").(model.Staff)
-	)
+// func (h *OrderAdminHandler) UpdateOrderSuccess(c echo.Context) error {
+// 	var (
+// 		cc    = util.EchoGetCustomCtx(c)
+// 		order = c.Get("order").(model.OrderRaw)
+// 		staff = c.Get("staff").(model.Staff)
+// 	)
 
-	err := h.OrderAdminService.UpdateOrderSuccess(cc.GetRequestCtx(), order, staff)
+// 	err := h.OrderAdminService.UpdateOrderSuccess(cc.GetRequestCtx(), order, staff)
 
-	if err != nil {
-		return cc.Response400(nil, err.Error())
-	}
-	return cc.Response200(nil, "")
-}
+// 	if err != nil {
+// 		return cc.Response400(nil, err.Error())
+// 	}
+// 	return cc.Response200(nil, "")
+// }
 
-func (h *OrderAdminHandler) CancelOrder(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-		staff = c.Get("staff").(model.Staff)
-	)
+// func (h *OrderAdminHandler) CancelOrder(c echo.Context) error {
+// 	var (
+// 		cc    = util.EchoGetCustomCtx(c)
+// 		order = c.Get("order").(model.OrderRaw)
+// 		staff = c.Get("staff").(model.Staff)
+// 	)
 
-	err := h.OrderAdminService.CancelOrder(cc.GetRequestCtx(), order, staff)
+// 	err := h.OrderAdminService.CancelOrder(cc.GetRequestCtx(), order, staff)
 
-	if err != nil {
-		return cc.Response400(nil, err.Error())
-	}
-	return cc.Response200(nil, "")
-}
+// 	if err != nil {
+// 		return cc.Response400(nil, err.Error())
+// 	}
+// 	return cc.Response200(nil, "")
+// }
 
-func (h *OrderAdminHandler) GetDetail(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-	)
+// func (h *OrderAdminHandler) GetDetail(c echo.Context) error {
+// 	var (
+// 		cc    = util.EchoGetCustomCtx(c)
+// 		order = c.Get("order").(model.OrderRaw)
+// 	)
 
-	data := h.OrderAdminService.GetDetail(cc.GetRequestCtx(), order)
+// 	data := h.OrderAdminService.GetDetail(cc.GetRequestCtx(), order)
 
-	return cc.Response200(echo.Map{
-		"order": data,
-	}, "")
-}
+// 	return cc.Response200(echo.Map{
+// 		"order": data,
+// 	}, "")
+// }
 
-func (h *OrderAdminHandler) GetStatistic(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		query = model.CommonQuery{
-			Sort: bson.D{
-				bson.E{
-					"order", 1},
-			},
-			StartAt: util.TimeParseISODate(cc.QueryParam("startAt")),
-			EndAt:   util.TimeParseISODate(cc.QueryParam("endAt")),
-		}
-	)
+// func (h *OrderAdminHandler) GetStatistic(c echo.Context) error {
+// 	var (
+// 		cc    = util.EchoGetCustomCtx(c)
+// 		query = model.CommonQuery{
+// 			Sort: bson.D{
+// 				bson.E{
+// 					"order", 1},
+// 			},
+// 			StartAt: util.TimeParseISODate(cc.QueryParam("startAt")),
+// 			EndAt:   util.TimeParseISODate(cc.QueryParam("endAt")),
+// 		}
+// 	)
 
-	result, err := h.OrderAdminService.GetStatistic(cc.GetRequestCtx(), query)
-	if err != nil {
-		return cc.Response400(nil, err.Error())
-	}
+// 	result, err := h.OrderAdminService.GetStatistic(cc.GetRequestCtx(), query)
+// 	if err != nil {
+// 		return cc.Response400(nil, err.Error())
+// 	}
 
-	return cc.Response200(echo.Map{
-		"result": result,
-	}, "")
+// 	return cc.Response200(echo.Map{
+// 		"result": result,
+// 	}, "")
 
-}
+// }
 
-// GetByID ...
-func (h *OrderAdminHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var (
-			cc = util.EchoGetCustomCtx(c)
-		)
-		orderIDString := c.Param("orderID")
-		orderID, err := primitive.ObjectIDFromHex(orderIDString)
+// // GetByID ...
+// func (h *OrderAdminHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		var (
+// 			cc = util.EchoGetCustomCtx(c)
+// 		)
+// 		orderIDString := c.Param("orderID")
+// 		orderID, err := primitive.ObjectIDFromHex(orderIDString)
 
-		if orderID.IsZero() || err != nil {
+// 		if orderID.IsZero() || err != nil {
 
-			return cc.Response404(nil, locale.CommonKeyNotFound)
-		}
+// 			return cc.Response404(nil, locale.CommonKeyNotFound)
+// 		}
 
-		order, err := h.OrderAdminService.FindByID(cc.GetRequestCtx(), orderID)
+// 		order, err := h.OrderAdminService.FindByID(cc.GetRequestCtx(), orderID)
 
-		if order.ID.IsZero() || err != nil {
+// 		if order.ID.IsZero() || err != nil {
 
-			return cc.Response400(nil, locale.CommonKeyNotFound)
-		}
+// 			return cc.Response400(nil, locale.CommonKeyNotFound)
+// 		}
 
-		c.Set("order", order)
-		return next(c)
-	}
-}
+// 		c.Set("order", order)
+// 		return next(c)
+// 	}
+// }

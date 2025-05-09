@@ -8,7 +8,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/user"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"github.com/labstack/echo/v4"
 )
 

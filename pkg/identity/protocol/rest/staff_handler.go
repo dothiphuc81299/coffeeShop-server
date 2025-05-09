@@ -5,7 +5,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"

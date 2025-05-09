@@ -7,8 +7,8 @@ import (
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/format"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -20,20 +20,20 @@ type service struct {
 
 func NewService(store *store, drinkStore drink.Store) category.Service {
 	return &service{
-		store:    store,
+		store:      store,
 		drinkStore: drinkStore,
 	}
 }
 
-func (s *service) Create(ctx context.Context, body category.CategoryBody) (err error) {
-	if s.checkNameExisted(ctx, body.Name) {
+func (s *service) Create(ctx context.Context, cmd *category.CategoryBody) (err error) {
+	if s.checkNameExisted(ctx, cmd.Name) {
 		return category.ErrCategoryExisted
 	}
 
 	entity := category.CategoryRaw{
 		ID:           primitive.NewObjectID(),
-		Name:         body.Name,
-		SearchString: format.NonAccentVietnamese(body.Name),
+		Name:         cmd.Name,
+		SearchString: format.NonAccentVietnamese(cmd.Name),
 		CreatedAt:    time.Now().UTC(),
 		UpdatedAt:    time.Now().UTC(),
 	}
@@ -50,7 +50,7 @@ func (s *service) checkNameExisted(ctx context.Context, name string) bool {
 	return total > 0
 }
 
-func (s *service) ListAll(ctx context.Context, q query.CommonQuery) ([]category.CategoryRaw, int64) {
+func (s *service) ListAll(ctx context.Context, q *query.CommonQuery) ([]category.CategoryRaw, int64) {
 	var (
 		wg    sync.WaitGroup
 		cond  = bson.M{}

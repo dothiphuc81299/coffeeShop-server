@@ -3,6 +3,7 @@ package categoryimpl
 import (
 	"context"
 
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/infra/storage/mongodb"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,14 +14,12 @@ import (
 const categorycol = "categories"
 
 type store struct {
-	DB  *mongo.Database
 	Col *mongo.Collection
 }
 
-func NewStore(db *mongo.Database) *store {
+func NewStore(db *mongodb.Database) *store {
 	return &store{
-		DB:  db,
-		Col: db.Collection(categorycol),
+		Col: db.GetCollection(categorycol),
 	}
 }
 

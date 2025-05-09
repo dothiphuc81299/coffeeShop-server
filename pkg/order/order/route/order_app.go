@@ -1,27 +1,27 @@
 package route
 
-import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	"github.com/dothiphuc81299/coffeeShop-server/order/handler"
-	"github.com/dothiphuc81299/coffeeShop-server/order/validation"
-	"github.com/labstack/echo/v4"
-)
+// import (
+// 	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
+// 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
+// 	"github.com/dothiphuc81299/coffeeShop-server/order/handler"
+// 	"github.com/dothiphuc81299/coffeeShop-server/order/validation"
+// 	"github.com/labstack/echo/v4"
+// )
 
-// InitOrderApp ...
-func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
-	h := &handler.OrderAppHandler{
-		OrderAppService: cs.Order,
-	}
+// // InitOrderApp ...
+// func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
+// 	h := &handler.OrderAppHandler{
+// 		OrderAppService: cs.Order,
+// 	}
 
-	r := e.Group("/orders")
+// 	r := e.Group("/orders")
 
-	r.POST("", h.Create, middleware.CheckUser(d), validation.OrderBodyValidation)
+// 	r.POST("", h.Create, middleware.CheckUser(d), validation.OrderBodyValidation)
 
-	// xem chi tieet don hang
-	r.GET("/:orderID/me", h.GetDetail, middleware.CheckUser(d), h.GetByID)
+// 	// xem chi tieet don hang
+// 	r.GET("/:orderID/me", h.GetDetail, middleware.CheckUser(d), h.GetByID)
 
-	r.GET("/me", h.Search, middleware.CheckUser(d))
+// 	r.GET("/me", h.Search, middleware.CheckUser(d))
 
-	r.PUT("/:orderID/reject", h.RejectOrder, middleware.CheckUser(d), h.GetByID)
-}
+// 	r.PUT("/:orderID/reject", h.RejectOrder, middleware.CheckUser(d), h.GetByID)
+// }

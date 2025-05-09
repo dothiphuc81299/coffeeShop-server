@@ -1,26 +1,37 @@
 package rest
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
 	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (s *Server) NewDrinkHandler(e *echo.Echo) {
-	g := e.Group("/api/drink")
+var (
+	reqDrinkCreate = role.ResourceDrink + "_" + role.PermissionCreate
+	reqDrinkUpdate = role.ResourceDrink + "_" + role.PermissionUpdate
+	reqDrinkDelete = role.ResourceDrink + "_" + role.PermissionDelete
+	reqDrinkView   = role.ResourceDrink + "_" + role.PermissionView
+)
 
-	g.POST("/", s.createDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionDelete, token.Staff))
-	g.GET("/", s.searchDrinks)
-	g.PUT("/:drinkID", s.updateDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionEdit, token.Staff))
-	g.PATCH("/:drinkID/status", s.ChangeDrinkStatus, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionEdit, token.Staff))
-	g.GET("/:drinkID", s.getDrinkByID)
-	g.DELETE("/:drinkID", s.DeleteDrink, middleware.CheckPermission(config.ModelFieldDrink, config.PermissionDelete, token.Staff))
+func (s *Server) NewDrinkHandler(e *echo.Echo) {
+	user := e.Group("/api/drink")
+	admin := e.Group("/api/admin/drink")
+
+	admin.POST("/", s.createDrink, middleware.AuthMiddleware(token.Staff, reqDrinkCreate))
+	admin.GET("/", s.searchDrinks, middleware.AuthMiddleware(token.Staff, reqDrinkView))
+	admin.PUT("/detail/:drinkID", s.updateDrink, middleware.AuthMiddleware(token.Staff, reqDrinkUpdate))
+	admin.PATCH("/detail/:drinkID/status", s.ChangeDrinkStatus, middleware.AuthMiddleware(token.Staff, reqDrinkUpdate))
+	admin.GET("/detail/:drinkID", s.getDrinkByID, middleware.AuthMiddleware(token.Staff, reqDrinkView))
+	admin.DELETE("/detail/:drinkID", s.DeleteDrink, middleware.AuthMiddleware(token.Staff, reqDrinkDelete))
+
+	user.GET("/", s.searchDrinks)
+	user.GET("/detail/:drinkID", s.getDrinkByID)
 }
 
 func (s *Server) createDrink(c echo.Context) error {
@@ -62,7 +73,6 @@ func (s *Server) searchDrinks(c echo.Context) error {
 	)
 
 	data, total := s.Dependences.DrinkSrv.ListAll(customCtx.GetRequestCtx(), q)
-
 	result := model.ResponseAdminListData{
 		Data:         data,
 		Total:        total,
@@ -88,7 +98,6 @@ func (s *Server) updateDrink(c echo.Context) error {
 	}
 
 	drinkID := util.GetObjectIDFromHex(params)
-
 	if err := cmd.Validate(); err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}

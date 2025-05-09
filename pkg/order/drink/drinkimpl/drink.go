@@ -6,7 +6,7 @@ import (
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
