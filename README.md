@@ -1,3 +1,6 @@
+system architecture 
+![system_architecture](https://github.com/user-attachments/assets/84a800c3-ffdf-4923-814f-3c67e0aaa633)
+
 ## 🚀 Deploying to Heroku with Docker
 
 ### 🔧 Prerequisites
