@@ -20,7 +20,7 @@ type Store interface {
 type Service interface {
 	Create(ctx context.Context, body OrderBody) (OrderResponse, error)
 	Search(ctx context.Context, query *SearchOrdersQuery) ([]OrderResponse, int64)
-	GetDetail(ctx context.Context, id primitive.ObjectID) OrderResponse
+	GetDetail(ctx context.Context, id primitive.ObjectID) (OrderResponse,error)
 	RejectOrder(ctx context.Context, cmd *UpdateOrderStatusCommand) error
 	UpdateOrderSuccess(ctx context.Context, cmd *UpdateOrderStatusCommand) error
 	GetStatistic(ctx context.Context, query query.CommonQuery) (StatisticResponse, error)

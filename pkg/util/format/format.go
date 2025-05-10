@@ -9,7 +9,6 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// NonAccentVietnamese ...
 func NonAccentVietnamese(str string) string {
 	if str != "" {
 		str = strings.ToLower(str)
@@ -23,12 +22,10 @@ func NonAccentVietnamese(str string) string {
 	return ""
 }
 
-// isMn ...
 func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r)
 }
 
-// replaceStringWithRegex ...
 func replaceStringWithRegex(src string, regex string, replaceText string) string {
 	reg := regexp.MustCompile(regex)
 	return reg.ReplaceAllString(src, replaceText)

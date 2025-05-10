@@ -1,21 +1,48 @@
-# How to run it 
-1. Create file .env 
-2. Copy file .env.example into .env file
-3. Command : make run 
-#
-web: cmd/admin/main.go 
+## 🚀 Deploying to Heroku with Docker
 
-# how to push heroku
-heroku container:push web
-#release image
-heroku container:release web
+### 🔧 Prerequisites
 
-#how to build heroku 
-b1 : Create one dockerfile 
-b2: Command : docker build .
-b3. From image name, user : docker run -p 5000:5000 -e PORT=5000 <image-name> to run local
-b4 :heroku container:login
-b5: heroku create
-b6 heroku container:push web
-b7 : heroku container:release web
+* Docker installed
+* Heroku CLI installed and logged in
 
+---
+
+### 📆 Steps to Deploy
+
+1. **Create a `Dockerfile`** in your project root.
+
+2. **Build the Docker image locally (optional for testing)**:
+
+   ```bash
+   docker build -t your-image-name .
+   ```
+
+3. **Run the image locally for testing**:
+
+   ```bash
+   docker run -p 5000:5000 -e PORT=5000 your-image-name
+   ```
+
+4. **Login to Heroku Container Registry**:
+
+   ```bash
+   heroku container:login
+   ```
+
+5. **Create a new Heroku app**:
+
+   ```bash
+   heroku create
+   ```
+
+6. **Push the Docker container to Heroku**:
+
+   ```bash
+   heroku container:push web
+   ```
+
+7. **Release the container on Heroku**:
+
+   ```bash
+   heroku container:release web
+   ```

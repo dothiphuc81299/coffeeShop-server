@@ -11,10 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func NewAppObjectID() primitive.ObjectID {
-	return primitive.NewObjectID()
-}
-
 type CommonQuery struct {
 	Page     int64
 	Limit    int64

@@ -9,6 +9,7 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/config"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/order"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -22,6 +23,7 @@ type Server struct {
 type Dependences struct {
 	CategorySrv category.Service
 	DrinkSrv    drink.Service
+	OrderSrv    order.Service
 }
 
 func NewServer(dependences *Dependences, cfg *config.Config) *Server {
@@ -34,6 +36,7 @@ func NewServer(dependences *Dependences, cfg *config.Config) *Server {
 func (s *Server) registerRoute(e *echo.Echo) {
 	s.NewCategoryHandler(e)
 	s.NewDrinkHandler(e)
+	s.NewOrderHandler(e)
 }
 
 func (s *Server) Run(ctx context.Context) error {

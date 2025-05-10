@@ -147,7 +147,7 @@ func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.Or
 	return res, nil
 }
 
-func (s *service) GetDetail(ctx context.Context, id primitive.ObjectID) (doc order.OrderResponse) {
+func (s *service) GetDetail(ctx context.Context, id primitive.ObjectID) (doc order.OrderResponse, err error) {
 	orderRaw, err := s.store.FindOneByCondition(ctx, bson.M{"_id": id})
 	if err != nil || orderRaw.ID.IsZero() {
 		return

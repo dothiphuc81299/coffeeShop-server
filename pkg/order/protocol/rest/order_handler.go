@@ -1,191 +1,136 @@
 package rest
 
-import "github.com/labstack/echo/v4"
-
-func (s *Server) NewOrderHandler(e *echo.Echo) {
-	r := e.Group("/orders")
-
-	r.GET("", h.SearchByStatus)
-	r.PUT("/:orderID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID, validation.StatusBodyValidation)
-	r.GET("/:orderID", h.GetDetail, h.GetByID)
-	r.GET("/statistic", h.GetStatistic, middleware.CheckPermission(config.ModelFieldStatistic, config.PermissionAdmin, d))
-
-	r.PUT("/:orderID/success", h.UpdateOrderSuccess, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID)
-	r.PUT("/:orderID/cancel", h.CancelOrder, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID)
-}
-
-
-package handler
-
-
-package route
-
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/config"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	"github.com/dothiphuc81299/coffeeShop-server/order/handler"
-	"github.com/dothiphuc81299/coffeeShop-server/order/validation"
-	"github.com/labstack/echo/v4"
-)
-
-// InitOrderAdmin ...
-func InitOrderAdmin(e *echo.Echo, cs *model.AdminService, d *model.CommonDAO) {
-	h := &handler.OrderAdminHandler{
-		OrderAdminService: cs.Order,
-	}
-
-	r := e.Group("/orders")
-
-	r.GET("", h.SearchByStatus)
-	r.PUT("/:orderID/status", h.ChangeStatus, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID, validation.StatusBodyValidation)
-	r.GET("/:orderID", h.GetDetail, h.GetByID)
-	r.GET("/statistic", h.GetStatistic, middleware.CheckPermission(config.ModelFieldStatistic, config.PermissionAdmin, d))
-
-	r.PUT("/:orderID/success", h.UpdateOrderSuccess, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID)
-	r.PUT("/:orderID/cancel", h.CancelOrder, middleware.CheckPermission(config.ModelFieldOrder, config.PermissionEdit, d), h.GetByID)
-
-}
-
-package route
-
-import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/middleware"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-	"github.com/dothiphuc81299/coffeeShop-server/order/handler"
-	"github.com/dothiphuc81299/coffeeShop-server/order/validation"
-	"github.com/labstack/echo/v4"
-)
-
-// InitOrderApp ...
-func InitOrderApp(e *echo.Echo, cs *model.AppService, d *model.CommonDAO) {
-	h := &handler.OrderAppHandler{
-		OrderAppService: cs.Order,
-	}
-
-	r := e.Group("/orders")
-
-	r.POST("", h.Create, middleware.CheckUser(d), validation.OrderBodyValidation)
-
-	// xem chi tieet don hang
-	r.GET("/:orderID/me", h.GetDetail, middleware.CheckUser(d), h.GetByID)
-
-	r.GET("/me", h.Search, middleware.CheckUser(d))
-
-	r.PUT("/:orderID/reject", h.RejectOrder, middleware.CheckUser(d), h.GetByID)
-}
-
-import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/order"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// OrderAdminHandler ...
-type OrderAdminHandler struct {
-	OrderAdminService model.OrderAdminService
+var (
+	reqOrderView   = role.ResourceOrder + "_" + role.PermissionView
+	reqOrderUpdate = role.ResourceOrder + "_" + role.PermissionUpdate
+)
+
+func (s *Server) NewOrderHandler(e *echo.Echo) {
+	admin := e.Group("/api/admin/orders")
+	user := e.Group("/orders")
+
+	admin.GET("/", s.searchOrders, middleware.AuthMiddleware(token.Staff, reqOrderView))
+	admin.GET("/detail/:orderID", s.getOrderByID, middleware.AuthMiddleware(token.Staff, reqOrderView))
+	admin.GET("/statistic", s.GetStatistic, middleware.AuthMiddleware(token.Staff, reqOrderView))
+	admin.PUT("/detail/:orderID/success", s.UpdateOrderSuccess, middleware.AuthMiddleware(token.Staff, reqOrderUpdate))
+	admin.PUT("/detail/:orderID/cancel", s.CancelOrder, middleware.AuthMiddleware(token.Staff, reqOrderUpdate))
+
+	user.POST("/", s.CreateOrder, middleware.AuthMiddleware(token.User, ""))
+	user.GET("/detail/:orderID/me", s.getOrderByID, middleware.AuthMiddleware(token.User, ""))
+	user.GET("/", s.searchOrders, middleware.AuthMiddleware(token.User, ""))
+	user.PUT("/detail/:orderID/reject", s.RejectOrder, middleware.AuthMiddleware(token.User, ""))
 }
 
-func (h *OrderAdminHandler) SearchByStatus(c echo.Context) error {
+func (s *Server) searchOrders(c echo.Context) error {
 	var (
 		cc = util.EchoGetCustomCtx(c)
-		q  = query.CommonQuery{
-			Status:   c.QueryParam("status"),
-			Limit:    cc.GetLimitQuery(),
-			Page:     cc.GetPageQuery(),
-			Username: cc.QueryParam("username"),
-			Sort: bson.D{
-				{"createdAt", -1},
-			},
-		}
+
+		query order.SearchOrdersQuery
 	)
+	if err := c.Bind(&query); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
-	data, total := h.OrderAdminService.SearchByStatus(cc.GetRequestCtx(), query)
-
+	data, total := s.Dependences.OrderSrv.Search(cc.GetRequestCtx(), &query)
 	return cc.Response200(echo.Map{
 		"order": data,
 		"total": total,
 	}, "")
 }
 
-func (h *OrderAdminHandler) ChangeStatus(c echo.Context) error {
+func (s *Server) UpdateOrderSuccess(c echo.Context) error {
 	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-		staff = c.Get("staff").(model.Staff)
+		cc  = util.EchoGetCustomCtx(c)
+		cmd order.UpdateOrderStatusCommand
 	)
 
-	status := c.Get("statusBody").(model.StatusBody)
-
-	data, err := h.OrderAdminService.ChangeStatus(cc.GetRequestCtx(), order, status, staff)
-
-	if err != nil {
+	if err := c.Bind(&cmd); err != nil {
 		return cc.Response400(nil, err.Error())
 	}
-	return cc.Response200(echo.Map{
-		"status": data,
-	}, "")
-}
 
-func (h *OrderAdminHandler) UpdateOrderSuccess(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-		staff = c.Get("staff").(model.Staff)
-	)
+	// if err := cmd.Validate(); err != nil {
+	// 	return cc.Response400(nil, err.Error())
+	// }
 
-	err := h.OrderAdminService.UpdateOrderSuccess(cc.GetRequestCtx(), order, staff)
-
+	err := s.Dependences.OrderSrv.UpdateOrderSuccess(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 	return cc.Response200(nil, "")
 }
 
-func (h *OrderAdminHandler) CancelOrder(c echo.Context) error {
+func (s *Server) CancelOrder(c echo.Context) error {
 	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
-		staff = c.Get("staff").(model.Staff)
+		cc  = util.EchoGetCustomCtx(c)
+		cmd order.UpdateOrderStatusCommand
 	)
 
-	err := h.OrderAdminService.CancelOrder(cc.GetRequestCtx(), order, staff)
+	if err := c.Bind(&cmd); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
 
+	// if err := cmd.Validate(); err != nil {
+	// 	return cc.Response400(nil, err.Error())
+	// }
+
+	err := s.Dependences.OrderSrv.RejectOrder(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
 	return cc.Response200(nil, "")
 }
 
-func (h *OrderAdminHandler) GetDetail(c echo.Context) error {
+func (s *Server) getOrderByID(c echo.Context) error {
 	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = c.Get("order").(model.OrderRaw)
+		cc = util.EchoGetCustomCtx(c)
 	)
 
-	data := h.OrderAdminService.GetDetail(cc.GetRequestCtx(), order)
+	params := c.Param("orderID")
+	if params == "" {
+		return cc.Response400(nil, "orderID is required")
+	}
+
+	orderID := util.GetObjectIDFromHex(params)
+
+	data, err := s.Dependences.OrderSrv.GetDetail(cc.GetRequestCtx(), orderID)
+	if err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	if data.ID.IsZero() || err != nil {
+		return cc.Response400(nil, "order not found")
+	}
 
 	return cc.Response200(echo.Map{
 		"order": data,
 	}, "")
 }
 
-func (h *OrderAdminHandler) GetStatistic(c echo.Context) error {
+func (s *Server) GetStatistic(c echo.Context) error {
 	var (
-		cc    = util.EchoGetCustomCtx(c)
-		query = model.CommonQuery{
+		cc  = util.EchoGetCustomCtx(c)
+		cmd = query.CommonQuery{
 			Sort: bson.D{
 				bson.E{
 					"order", 1},
 			},
-			StartAt: util.TimeParseISODate(cc.QueryParam("startAt")),
-			EndAt:   util.TimeParseISODate(cc.QueryParam("endAt")),
+			// StartAt: util.TimeParseISODate(cc.QueryParam("startAt")),
+			// EndAt:   util.TimeParseISODate(cc.QueryParam("endAt")),
 		}
 	)
 
-	result, err := h.OrderAdminService.GetStatistic(cc.GetRequestCtx(), query)
+	result, err := s.Dependences.OrderSrv.GetStatistic(cc.GetRequestCtx(), cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -196,60 +141,21 @@ func (h *OrderAdminHandler) GetStatistic(c echo.Context) error {
 
 }
 
-// GetByID ...
-func (h *OrderAdminHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var (
-			cc = util.EchoGetCustomCtx(c)
-		)
-		orderIDString := c.Param("orderID")
-		orderID, err := primitive.ObjectIDFromHex(orderIDString)
-
-		if orderID.IsZero() || err != nil {
-
-			return cc.Response404(nil, locale.CommonKeyNotFound)
-		}
-
-		order, err := h.OrderAdminService.FindByID(cc.GetRequestCtx(), orderID)
-
-		if order.ID.IsZero() || err != nil {
-
-			return cc.Response400(nil, locale.CommonKeyNotFound)
-		}
-
-		c.Set("order", order)
-		return next(c)
-	}
-}
-
-
-package handler
-
-import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/locale"
-	"github.com/dothiphuc81299/coffeeShop-server/internal/util"
-	"github.com/labstack/echo/v4"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
-)
-
-// OrderAppHandler ...
-type OrderAppHandler struct {
-	OrderAppService model.OrderAppService
-}
-
-// Update ...
-func (h *OrderAppHandler) Create(c echo.Context) error {
+func (s *Server) CreateOrder(c echo.Context) error {
 
 	var (
-		cc   = util.EchoGetCustomCtx(c)
-		body = c.Get("orderBody").(model.OrderBody)
-		user = c.Get("user").(model.UserRaw)
+		cc = util.EchoGetCustomCtx(c)
 	)
 
-	data, err := h.OrderAppService.Create(cc.GetRequestCtx(), user, body)
+	var body order.OrderBody
+	if err := c.Bind(&body); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+	if err := body.Validate(); err != nil {
+		return cc.Response400(nil, err.Error())
+	}
+
+	data, err := s.Dependences.OrderSrv.Create(cc.GetRequestCtx(), body)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -258,71 +164,25 @@ func (h *OrderAppHandler) Create(c echo.Context) error {
 	}, "")
 }
 
-func (h *OrderAppHandler) GetDetail(c echo.Context) error {
+func (s *Server) RejectOrder(c echo.Context) error {
 	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = cc.Get("order").(model.OrderRaw)
+		cc = util.EchoGetCustomCtx(c)
 	)
 
-	data := h.OrderAppService.GetDetail(cc.GetRequestCtx(), order)
-
-	return cc.Response200(echo.Map{
-		"order": data,
-	}, "")
-}
-
-// GetByID ...
-func (h *OrderAppHandler) GetByID(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var (
-			cc = util.EchoGetCustomCtx(c)
-		)
-		orderIDString := c.Param("orderID")
-		orderID, err := primitive.ObjectIDFromHex(orderIDString)
-		if orderID.IsZero() || err != nil {
-			return cc.Response404(nil, locale.CommonKeyNotFound)
-		}
-
-		order, err := h.OrderAppService.FindByID(cc.GetRequestCtx(), orderID)
-		if order.ID.IsZero() || err != nil {
-			return cc.Response404(nil, locale.CommonKeyNotFound)
-		}
-		c.Set("order", order)
-		return next(c)
+	orderID := c.Param("orderID")
+	if orderID == "" {
+		return cc.Response400(nil, "orderID is required")
 	}
-}
 
-func (h *OrderAppHandler) Search(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		user  = c.Get("user").(model.UserRaw)
-		query = model.CommonQuery{
-			Status: c.QueryParam("status"),
-			Limit:  cc.GetLimitQuery(),
-			Page:   cc.GetPageQuery(),
-			Sort: bson.D{
-				{"createdAt", -1},
-			},
-		}
-	)
+	orderIDObj := util.GetObjectIDFromHex(orderID)
+	if orderIDObj.IsZero() {
+		return cc.Response400(nil, "orderID is invalid")
+	}
 
-	data, total := h.OrderAppService.Search(cc.GetRequestCtx(), query, user)
-
-	return cc.Response200(echo.Map{
-		"order": data,
-		"total": total,
-	}, "")
-}
-
-func (h *OrderAppHandler) RejectOrder(c echo.Context) error {
-	var (
-		cc    = util.EchoGetCustomCtx(c)
-		order = cc.Get("order").(model.OrderRaw)
-		user  = c.Get("user").(model.UserRaw)
-	)
-
-	err := h.OrderAppService.RejectOrder(cc.GetRequestCtx(), user, order)
-
+	var cmd order.UpdateOrderStatusCommand
+	cmd.Status = "cancel"
+	cmd.ID = orderIDObj
+	err := s.Dependences.OrderSrv.RejectOrder(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}

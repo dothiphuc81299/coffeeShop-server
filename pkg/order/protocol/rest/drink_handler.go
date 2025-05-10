@@ -1,10 +1,10 @@
 package rest
 
 import (
-	"github.com/dothiphuc81299/coffeeShop-server/internal/model"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/staff/role"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
+	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
@@ -73,7 +73,7 @@ func (s *Server) searchDrinks(c echo.Context) error {
 	)
 
 	data, total := s.Dependences.DrinkSrv.ListAll(customCtx.GetRequestCtx(), q)
-	result := model.ResponseAdminListData{
+	result := category.ResponseAdminListData{
 		Data:         data,
 		Total:        total,
 		LimitPerPage: q.Limit,

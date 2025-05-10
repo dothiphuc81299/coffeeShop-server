@@ -31,13 +31,8 @@ func (c CategoryBody) Validate() error {
 	)
 }
 
-// func (c CategoryBody) NewCategoryRaw() CategoryRaw {
-// 	now := time.Now()
-// 	return CategoryRaw{
-// 		ID:           primitive.NewObjectID(),
-// 		Name:         c.Name,
-// 		SearchString: format.NonAccentVietnamese(c.Name),
-// 		CreatedAt:    now,
-// 		UpdatedAt:    now,
-// 	}
-// }
+type ResponseAdminListData struct {
+	Data         interface{} `json:"data"`
+	Total        int64       `json:"total"`
+	LimitPerPage int64       `json:"limitPerPage"`
+}
