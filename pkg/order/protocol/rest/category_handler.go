@@ -7,7 +7,6 @@ import (
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/identity/token"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/middleware"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/util"
 	"github.com/labstack/echo/v4"
 )
@@ -83,24 +82,23 @@ func (s *Server) updateCategory(c echo.Context) error {
 func (s *Server) searchCategories(c echo.Context) error {
 	var (
 		customCtx = util.EchoGetCustomCtx(c)
-		cmd       = query.CommonQuery{
-			Keyword: c.QueryParam("keyword"),
-			Limit:   customCtx.GetLimitQuery(),
-			Page:    customCtx.GetPageQuery(),
-		}
+		query     category.SearchCategoryQuery
 	)
 
-	err := c.Bind(&cmd)
+	err := c.Bind(&query)
 	if err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}
 
-	data, total := s.Dependences.CategorySrv.ListAll(context.Background(), &cmd)
+	data, total, err := s.Dependences.CategorySrv.ListAll(context.Background(), &query)
+	if err != nil {
+		return customCtx.Response400(nil, err.Error())
+	}
 
 	result := category.ResponseAdminListData{
 		Data:         data,
 		Total:        total,
-		LimitPerPage: cmd.Limit,
+		LimitPerPage: query.Limit,
 	}
 	return customCtx.Response200(result, "")
 }
