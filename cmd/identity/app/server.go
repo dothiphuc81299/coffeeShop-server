@@ -46,12 +46,12 @@ func NewServer() (*Server, error) {
 
 	initAccountAdminRoot(staffStore)
 
-	paymentClient, err := getPaymentClient(cfg)
+	orderClient, err := getOrderClient(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	userSrv := userimpl.NewService(userStore, codeStore, paymentClient)
+	userSrv := userimpl.NewService(userStore, codeStore, orderClient)
 	staffSrv := staffimpl.NewService(staffStore, roleStore)
 	roleSrv := roleimpl.NewService(roleStore, staffStore)
 

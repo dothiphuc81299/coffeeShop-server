@@ -2,15 +2,16 @@ package categoryimpl
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/category"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/order/drink"
 	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/format"
-	"github.com/dothiphuc81299/coffeeShop-server/pkg/util/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type service struct {
@@ -50,33 +51,64 @@ func (s *service) checkNameExisted(ctx context.Context, name string) bool {
 	return total > 0
 }
 
-func (s *service) ListAll(ctx context.Context, q *query.CommonQuery) ([]category.CategoryRaw, int64) {
+func (s *service) ListAll(ctx context.Context, q *category.SearchCategoryQuery) ([]category.CategoryRaw, int64, error) {
 	var (
-		wg    sync.WaitGroup
-		cond  = bson.M{}
-		total int64
-		res   = make([]category.CategoryRaw, 0)
+		wg      sync.WaitGroup
+		mutex   sync.Mutex
+		cond    = bson.M{}
+		total   int64
+		res     = make([]category.CategoryRaw, 0)
+		errList []error
 	)
 
-	q.AssignKeyword(&cond)
+	if q.Name != "" {
+		cond["searchString"] = format.NonAccentVietnamese(q.Name)
+	}
+
+	if q.Limit == 0 {
+		q.Limit = 10
+	}
+	if q.Page == 0 {
+		q.Page = 1
+	}
+
+	skip := (q.Page - 1) * q.Limit
+
+	findOpts := options.Find().
+		SetSkip(int64(skip)).
+		SetLimit(int64(q.Limit))
+
 	wg.Add(2)
+
 	go func() {
 		defer wg.Done()
-		total = s.store.CountByCondition(ctx, cond)
+		count := s.store.CountByCondition(ctx, cond)
+		mutex.Lock()
+		total = count
+		mutex.Unlock()
 	}()
 
 	go func() {
 		defer wg.Done()
-		categories, err := s.store.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
+		categories, err := s.store.FindByCondition(ctx, cond, findOpts)
 		if err != nil {
+			mutex.Lock()
+			errList = append(errList, err)
+			mutex.Unlock()
 			return
 		}
+		mutex.Lock()
 		res = categories
-
+		mutex.Unlock()
 	}()
 
 	wg.Wait()
-	return res, total
+
+	if len(errList) > 0 {
+		return nil, 0, fmt.Errorf("error(s) occurred: %v", errList)
+	}
+
+	return res, total, nil
 }
 
 func (s *service) GetDetail(ctx context.Context, id primitive.ObjectID) (category.CategoryRaw, error) {

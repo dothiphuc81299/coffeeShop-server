@@ -55,7 +55,11 @@ func (s *service) ListAll(ctx context.Context, q query.CommonQuery) ([]drink.Dri
 	q.AssignCategory(&cond)
 
 	total = s.store.CountByCondition(ctx, cond)
-	drinks, _ := s.store.FindByCondition(ctx, cond, q.GetFindOptsUsingPageOne())
+	drinks, err := s.store.FindByCondition(ctx, cond)
+	if err != nil {
+		return nil, 0
+	}
+
 	if len(drinks) > 0 {
 		wg.Add(len(drinks))
 		res = make([]drink.DrinkAdminResponse, len(drinks))
@@ -77,7 +81,7 @@ func (s *service) ListAll(ctx context.Context, q query.CommonQuery) ([]drink.Dri
 }
 
 func (s *service) Update(ctx context.Context, id primitive.ObjectID, body drink.DrinkBody) (err error) {
-	data, err := s.store.FindOneByCondition(ctx, id)
+	data, err := s.store.FindOneByCondition(ctx, bson.M{"_id": id})
 	if err != nil {
 		return err
 	}

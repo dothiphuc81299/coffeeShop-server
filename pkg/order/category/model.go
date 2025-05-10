@@ -36,3 +36,15 @@ type ResponseAdminListData struct {
 	Total        int64       `json:"total"`
 	LimitPerPage int64       `json:"limitPerPage"`
 }
+
+type SearchCategoriesResult struct {
+	Data         interface{} `json:"data"`
+	Total        int64       `json:"total"`
+	LimitPerPage int64       `json:"limitPerPage"`
+}
+
+type SearchCategoryQuery struct {
+	Name  string `schema:"name"`
+	Page  int64  `schema:"page"`
+	Limit int64  `schema:"limit"`
+}

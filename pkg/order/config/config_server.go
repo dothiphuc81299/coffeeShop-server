@@ -4,7 +4,7 @@ import "github.com/dothiphuc81299/coffeeShop-server/pkg/util/env"
 
 const (
 	defaultHTTPPort = "3089"
-	defaultGRPCPort = "50004"
+	defaultGRPCPort = "50003"
 )
 
 type Server struct {

@@ -14,7 +14,7 @@ var (
 	GrpcRequestTimeout = 5 * time.Second
 )
 
-func getPaymentClient(cfg *config.Config) (orderapi.OrderClient, error) {
+func getOrderClient(cfg *config.Config) (orderapi.OrderClient, error) {
 	conn, err := grpc.NewClient(cfg.GrpcClient.Order, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err

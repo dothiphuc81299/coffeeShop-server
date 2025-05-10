@@ -98,6 +98,8 @@ func (s *Server) updateDrink(c echo.Context) error {
 	}
 
 	drinkID := util.GetObjectIDFromHex(params)
+
+	
 	if err := cmd.Validate(); err != nil {
 		return customCtx.Response400(nil, err.Error())
 	}

@@ -60,7 +60,7 @@ func (d DrinkBody) Validate() error {
 
 func (d DrinkBody) NewDrinkRaw() DrinkRaw {
 	categoryID, _ := primitive.ObjectIDFromHex(d.Category)
-	now := time.Now()
+	now := time.Now().UTC()
 	return DrinkRaw{
 		ID:           primitive.NewObjectID(),
 		Name:         d.Name,

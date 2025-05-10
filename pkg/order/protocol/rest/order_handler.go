@@ -18,7 +18,7 @@ var (
 
 func (s *Server) NewOrderHandler(e *echo.Echo) {
 	admin := e.Group("/api/admin/orders")
-	user := e.Group("/orders")
+	user := e.Group("/api/orders")
 
 	admin.GET("/", s.searchOrders, middleware.AuthMiddleware(token.Staff, reqOrderView))
 	admin.GET("/detail/:orderID", s.getOrderByID, middleware.AuthMiddleware(token.Staff, reqOrderView))
