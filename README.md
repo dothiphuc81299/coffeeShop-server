@@ -31,6 +31,12 @@ coffeeShop-server/
 
 ---
 
+## 📬 API Collection
+
+You can try out the APIs using the Postman collection below:
+
+👉 [Postman Collection](https://documenter.getpostman.com/view/12048946/2sB2j999uD)
+
 ## 🚀 Getting Started
 
 ### 🔧 Prerequisites
