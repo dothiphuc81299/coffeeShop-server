@@ -46,18 +46,21 @@ git clone https://github.com/dothiphuc81299/coffeeShop-server.git
 cd coffeeShop-server
 ```
 
-### 🐳 Run all services with Docker
+## 🐳 Run with Docker Compose
+
+First, start the infrastructure services (MongoDB,  etc.):
 
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 
-### ▶️ Or run manually
-
-Each microservice lives under `cmd/`:
+Then, in separate terminals, run each service manually:
 
 ```bash
 go run cmd/identity/main.go
+```
+
+```bash
 go run cmd/order/main.go
 ```
 
