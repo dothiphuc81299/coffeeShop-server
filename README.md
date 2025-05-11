@@ -26,7 +26,8 @@ coffeeShop-server/
 
 ### 🧠 System Architecture
 
-![System Architecture](https://github.com/dothiphuc81299/coffeeShop-server/assets/84a800c3-ffdf-4923-814f-3c67e0aaa633)
+![system_architecture](https://github.com/user-attachments/assets/580a7084-a26c-4009-bf4e-4453073767fd)
+
 
 ---
 
