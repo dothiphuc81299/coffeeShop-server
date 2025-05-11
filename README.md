@@ -1,6 +1,6 @@
 # ☕ coffeeShop-server
 
-A modular, microservices-based backend system for managing a coffee shop. Built in Go with a focus on maintainability, scalability, and clean architecture.
+A modular, microservices-based backend system for managing a coffee shop. Built in Go using the Echo framework and MongoDB, with a focus on maintainability, scalability, and clean architecture.
 
 ---
 
