@@ -31,6 +31,19 @@ coffeeShop-server/
 
 ---
 
+🗃 **Why MongoDB?**
+
+Although relational databases like PostgreSQL are commonly preferred for transactional systems, **MongoDB was originally used in this project to**:
+
+- ⚡️ Speed up prototyping and early development  
+- 🧩 Model embedded/nested data (e.g., order items, user shipping addresses) in a more natural way  
+- 🔄 Avoid strict schemas while iterating on business logic  
+- 🧱 Fit a microservices model with each service owning its own collections  
+
+While MongoDB has some limitations for complex transactions, the current architecture enforces structure at the application level and isolates domain logic to maintain long-term maintainability.  
+**This choice is retained today for compatibility with the legacy system and to continue leveraging its flexibility.**
+
+
 ## 📬 API Collection
 
 You can try out the APIs using the Postman collection below:
