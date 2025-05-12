@@ -1,6 +1,6 @@
 # ☕ coffeeShop-server
 
-A modular, microservices-based backend system for managing a coffee shop. Built in Go with a focus on maintainability, scalability, and clean architecture.
+A modular, microservices-based backend system for managing a coffee shop. Built in Go using the Echo framework and MongoDB, with a focus on maintainability, scalability, and clean architecture.
 
 ---
 
@@ -26,21 +26,16 @@ coffeeShop-server/
 
 ### 🧠 System Architecture
 
-![System Architecture](https://github.com/dothiphuc81299/coffeeShop-server/assets/84a800c3-ffdf-4923-814f-3c67e0aaa633)
+![system_architecture](https://github.com/user-attachments/assets/580a7084-a26c-4009-bf4e-4453073767fd)
+
 
 ---
 
-🗃 **Why MongoDB?**
+## 📬 API Collection
 
-Although relational databases like PostgreSQL are commonly preferred for transactional systems, **MongoDB was originally used in this project to**:
+You can try out the APIs using the Postman collection below:
 
-- ⚡️ Speed up prototyping and early development  
-- 🧩 Model embedded/nested data (e.g., order items, user shipping addresses) in a more natural way  
-- 🔄 Avoid strict schemas while iterating on business logic  
-- 🧱 Fit a microservices model with each service owning its own collections  
-
-While MongoDB has some limitations for complex transactions, the current architecture enforces structure at the application level and isolates domain logic to maintain long-term maintainability.  
-**This choice is retained today for compatibility with the legacy system and to continue leveraging its flexibility.**
+👉 [Postman Collection](https://documenter.getpostman.com/view/12048946/2sB2j999uD)
 
 ## 🚀 Getting Started
 
@@ -57,18 +52,21 @@ git clone https://github.com/dothiphuc81299/coffeeShop-server.git
 cd coffeeShop-server
 ```
 
-### 🐳 Run all services with Docker
+## 🐳 Run with Docker Compose
+
+First, start the infrastructure services (MongoDB,  etc.):
 
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 
-### ▶️ Or run manually
-
-Each microservice lives under `cmd/`:
+Then, in separate terminals, run each service manually:
 
 ```bash
 go run cmd/identity/main.go
+```
+
+```bash
 go run cmd/order/main.go
 ```
 
@@ -121,3 +119,4 @@ go run cmd/order/main.go
 ## 📝 License
 
 MIT License. See [LICENSE](./LICENSE) for details.
+
