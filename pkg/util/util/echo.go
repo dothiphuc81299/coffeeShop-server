@@ -23,12 +23,6 @@ func (c *EchoCustomCtx) GetHeaderKey(k string) string {
 	return c.Request().Header.Get(k)
 }
 
-func (c *EchoCustomCtx) GetString(key string) string {
-	v := c.Get(key)
-	res, _ := v.(string)
-	return res
-}
-
 func (c *EchoCustomCtx) GetPageQuery() int64 {
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	return int64(page)

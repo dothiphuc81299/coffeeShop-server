@@ -10,19 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// type OrderRaw struct {
-// 	ID         primitive.ObjectID `bson:"_id" json:"id"`
-// 	User       primitive.ObjectID `bson:"user" json:"user"`
-// 	Drink      []DrinkInfo        `bson:"drink" json:"drink"`
-// 	Status     string             `bson:"status" json:"status"`
-// 	TotalPrice float64            `bson:"totalPrice" json:"totalPrice"`
-// 	CreatedAt  time.Time          `bson:"createdAt" json:"createdAt"`
-// 	UpdatedAt  time.Time          `bson:"updatedAt" json:"updatedAt"`
-// 	UpdatedBy  primitive.ObjectID `bson:"updatedBy,omitempty" json:"updatedBy,omitempty"`
-// 	IsPoint    bool               `bson:"is_point" json:"isPoint"`
-// 	Point      float64            `bson:"point" json:"point"`
-// }
-
 var (
 	ErrCannotCreateOrder       = errors.New("cannot create order")
 	ErrUpdatePointFailed       = errors.New("update point failed")
@@ -133,43 +120,6 @@ func (o *OrderRaw) GetResponse(userInfo UserInfo, items []*OrderItemRaw, status 
 	}
 }
 
-// func (o OrderBody) Validate() error {
-// 	err := validation.Validate(o.Drink, validation.Required)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return validation.ValidateStruct(&o,
-// 		validation.Field(&o.Point, validation.Required.When(o.IsPoint)),
-// 	)
-// }
-
-// func (d DrinkUserBody) Validate() error {
-// 	return validation.ValidateStruct(&d,
-// 		validation.Field(&d.Name, validation.Required,
-// 			is.MongoID),
-// 		validation.Field(&d.Quantity, validation.Required),
-// 	)
-// }
-
-// func (s StatusBody) Validate() error {
-// 	return validation.ValidateStruct(&s,
-// 		validation.Field(&s.Status,
-// 			validation.In("cancel", "success"),
-// 			validation.Required))
-// }
-
-// func (o *OrderRaw) GetResponse(u UserInfo, d []OrderItemRaw, status string) OrderResponse {
-// 	return OrderResponse{
-// 		ID:         o.ID,
-// 		User:       u,
-// 		Drink:      d,
-// 		Status:     status,
-// 		TotalPrice: o.Total,
-// 		CreatedAt:  o.CreatedAt,
-// 	}
-// }
-
 func (o OrderBody) Validate() error {
 	return validation.ValidateStruct(&o,
 		validation.Field(&o.UserID, validation.Required),
@@ -186,29 +136,6 @@ func (o OrderBody) Validate() error {
 			}))),
 	)
 }
-
-// func (o OrderBody) NewOrderRaw(userID primitive.ObjectID, drink []DrinkInfo, totalPrice float64) OrderRaw {
-// 	return OrderRaw{
-// 		ID:         primitive.NewObjectID(),
-// 		User:       userID,
-// 		Status:     "pending",
-// 		Drink:      drink,
-// 		TotalPrice: totalPrice,
-// 		CreatedAt:  time.Now(),
-// 		UpdatedAt:  time.Now(),
-// 		IsPoint:    o.IsPoint,
-// 		Point:      o.Point,
-// 	}
-// }
-
-// func (d DrinkUserBody) NewDrinkRawInfo() DrinkInfo {
-// 	return DrinkInfo{
-// 		ID:       a.ID,
-// 		Name:     a.Name,
-// 		Quantity: d.Quantity,
-// 		Price:    a.Price,
-// 	}
-// }
 
 func (d *DrinkUserBody) NewDrinkInfo(e DrinkInfo) DrinkInfo {
 	id, _ := primitive.ObjectIDFromHex(d.Name)

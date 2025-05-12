@@ -36,6 +36,19 @@ func NewService(store *store, drinkStore drink.Store, userStore useraccount.Stor
 }
 
 func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.OrderResponse, err error) {
+	// session, err := s.store.Client.StartSession()
+	// if err != nil {
+	// 	return doc, err
+	// }
+	// defer session.EndSession(ctx)
+
+	var result order.OrderResponse
+
+	// err = mongo.WithSession(ctx, session, func(sessCtx mongo.SessionContext) error {
+	// 	if err := session.StartTransaction(); err != nil {
+	// 		return err
+	// 	}
+
 	account, ok := ctx.Value("current_account").(*token.AccountData)
 	if !ok || account.AccountType != token.User {
 		return doc, errors.New("account is invalid")
@@ -46,8 +59,9 @@ func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.Or
 		return doc, err
 	}
 
-	// 1.prepare list drink
 	orderItems := make([]*order.OrderItemRaw, 0)
+	var totalPrice float64
+
 	for _, value := range cmd.Items {
 		drinkRaw, err := s.drinkStore.FindOneByCondition(ctx, bson.M{"_id": value.DrinkID})
 		if err != nil {
@@ -61,26 +75,13 @@ func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.Or
 			Quantity: value.Quantity,
 			Total:    float64(value.Quantity) * drinkRaw.Price,
 		}
-		doc.TotalPrice += item.Total
+		totalPrice += item.Total
 		orderItems = append(orderItems, &item)
 	}
 
-	// 2. calculate currentPoint (if user use point)
-	var currentPointUpdate float64 = userAcc.CurrentPoint
-	if !cmd.UsePoint {
-		switch {
-		case doc.TotalPrice >= 30000 && doc.TotalPrice <= 50000:
-			currentPointUpdate += 1
-		case doc.TotalPrice > 50000 && doc.TotalPrice <= 100000:
-			currentPointUpdate += 2
-		case doc.TotalPrice > 100000:
-			currentPointUpdate += 3
-		}
-	}
-
-	// 3. hanle shipping
 	var address string
 	var shippingAddressID primitive.ObjectID
+
 	if cmd.ShippingAddressID != "" {
 		shippingAddressID, err = primitive.ObjectIDFromHex(cmd.ShippingAddressID)
 		if err != nil {
@@ -105,6 +106,7 @@ func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.Or
 			CreatedAt: time.Now().UTC(),
 			UpdatedAt: time.Now().UTC(),
 		}
+
 		err = s.shippingStore.InsertOne(ctx, newAddress)
 		if err != nil {
 			return doc, errors.New("unable to save shipping address")
@@ -120,7 +122,7 @@ func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.Or
 		ShippingAddressID: shippingAddressID,
 		Items:             orderItems,
 		Status:            "pending",
-		Total:             doc.TotalPrice,
+		Total:             totalPrice,
 		CreatedAt:         now,
 		UpdatedAt:         now,
 		UsePoint:          cmd.UsePoint,
@@ -132,19 +134,36 @@ func (s *service) Create(ctx context.Context, cmd order.OrderBody) (doc order.Or
 		return doc, order.ErrCannotCreateOrder
 	}
 
-	// 5.Update point
-	err = s.userStore.UpdateOne(ctx, userAcc.ID, bson.M{"$set": bson.M{"current_point": currentPointUpdate}})
-	if err != nil {
-		return doc, order.ErrUpdatePointFailed
+	if cmd.UsePoint {
+		currentPointUpdate := userAcc.CurrentPoint
+		switch {
+		case totalPrice >= 30000 && totalPrice <= 50000:
+			currentPointUpdate += 1
+		case totalPrice > 50000 && totalPrice <= 100000:
+			currentPointUpdate += 2
+		case totalPrice > 100000:
+			currentPointUpdate += 3
+		}
+
+		err = s.userStore.UpdateOne(ctx, userAcc.ID, bson.M{"$set": bson.M{"current_point": currentPointUpdate}})
+		if err != nil {
+			return doc, order.ErrUpdatePointFailed
+		}
 	}
 
-	res := orderRaw.GetResponse(order.UserInfo{
+	result = orderRaw.GetResponse(order.UserInfo{
 		ID:       userAcc.ID,
 		UserName: userAcc.LoginName,
 		Address:  address,
 	}, orderItems, orderRaw.Status, nil)
 
-	return res, nil
+	// 	return session.CommitTransaction(sessCtx)
+	// })
+
+	if err != nil {
+		return doc, err
+	}
+	return result, nil
 }
 
 func (s *service) GetDetail(ctx context.Context, id primitive.ObjectID) (doc order.OrderResponse, err error) {
@@ -222,8 +241,8 @@ func (s *service) Search(ctx context.Context, query *order.SearchOrdersQuery) ([
 }
 
 func (s *service) RejectOrder(ctx context.Context, cmd *order.UpdateOrderStatusCommand) error {
-	account, ok := ctx.Value("current_account").(*token.AccountData)
-	if !ok || account.AccountType != token.User {
+	_, ok := ctx.Value("current_account").(*token.AccountData)
+	if !ok {
 		return errors.New("account is invalid")
 	}
 
@@ -232,11 +251,15 @@ func (s *service) RejectOrder(ctx context.Context, cmd *order.UpdateOrderStatusC
 		return order.ErrOrderNotFound
 	}
 
+	if orderRaw.ID.IsZero() {
+		return order.ErrOrderNotFound
+	}
+
 	if orderRaw.Status != "pending" {
 		return order.ErrOrderCanNotCancel
 	}
 
-	if time.Since(orderRaw.CreatedAt) > 2*time.Minute {
+	if time.Since(orderRaw.CreatedAt) > 10*time.Minute {
 		return order.ErrOrderCanNotCancel
 	}
 
@@ -264,7 +287,7 @@ func (s *service) RejectOrder(ctx context.Context, cmd *order.UpdateOrderStatusC
 	return nil
 }
 
-func (s *service) UpdateOrderSuccess(ctx context.Context, cmd *order.UpdateOrderStatusCommand) error {
+func (s *service) ApproveOrder(ctx context.Context, cmd *order.UpdateOrderStatusCommand) error {
 	if cmd.Status != "success" {
 		return order.ErrOrderStatusCanNotUpdate
 	}
@@ -296,7 +319,7 @@ func (s *service) UpdateOrderSuccess(ctx context.Context, cmd *order.UpdateOrder
 		return err
 	}
 
-	if !result.UsePoint {
+	if result.UsePoint {
 		newPoint := user.CurrentPoint
 		switch {
 		case result.Total >= 30000 && result.Total <= 50000:
