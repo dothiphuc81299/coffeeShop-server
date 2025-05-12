@@ -15,12 +15,14 @@ import (
 const ordercol = "orders"
 
 type store struct {
-	Col *mongo.Collection
+	Col    *mongo.Collection
+	Client *mongo.Client
 }
 
 func NewStore(db *mongodb.Database) *store {
 	return &store{
-		Col: db.GetCollection(ordercol),
+		Col:    db.GetCollection(ordercol),
+		Client: db.Client,
 	}
 }
 
@@ -85,7 +87,6 @@ func (s *store) AggregateOrder(ctx context.Context, cond interface{}) ([]*order.
 	}
 
 	cursor, err := s.Col.Aggregate(ctx, []bson.M{match, project, group})
-	fmt.Println("cur", cursor)
 	if err != nil {
 		fmt.Println("Error : ", err)
 		return results, nil
@@ -93,6 +94,5 @@ func (s *store) AggregateOrder(ctx context.Context, cond interface{}) ([]*order.
 
 	defer cursor.Close(ctx)
 	err = cursor.All(ctx, &results)
-	fmt.Println("results", results)
 	return results, err
 }

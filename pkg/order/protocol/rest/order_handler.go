@@ -23,7 +23,7 @@ func (s *Server) NewOrderHandler(e *echo.Echo) {
 	admin.GET("/", s.searchOrders, middleware.AuthMiddleware(token.Staff, reqOrderView))
 	admin.GET("/detail/:orderID", s.getOrderByID, middleware.AuthMiddleware(token.Staff, reqOrderView))
 	admin.GET("/statistic", s.GetStatistic, middleware.AuthMiddleware(token.Staff, reqOrderView))
-	admin.PUT("/detail/:orderID/success", s.UpdateOrderSuccess, middleware.AuthMiddleware(token.Staff, reqOrderUpdate))
+	admin.PUT("/detail/:orderID/success", s.approveOrder, middleware.AuthMiddleware(token.Staff, reqOrderUpdate))
 	admin.PUT("/detail/:orderID/cancel", s.CancelOrder, middleware.AuthMiddleware(token.Staff, reqOrderUpdate))
 
 	user.POST("/", s.CreateOrder, middleware.AuthMiddleware(token.User, ""))
@@ -49,7 +49,7 @@ func (s *Server) searchOrders(c echo.Context) error {
 	}, "")
 }
 
-func (s *Server) UpdateOrderSuccess(c echo.Context) error {
+func (s *Server) approveOrder(c echo.Context) error {
 	var (
 		cc  = util.EchoGetCustomCtx(c)
 		cmd order.UpdateOrderStatusCommand
@@ -59,11 +59,15 @@ func (s *Server) UpdateOrderSuccess(c echo.Context) error {
 		return cc.Response400(nil, err.Error())
 	}
 
-	// if err := cmd.Validate(); err != nil {
-	// 	return cc.Response400(nil, err.Error())
-	// }
+	params := c.Param("orderID")
+	if params == "" {
+		return cc.Response400(nil, "orderID is required")
+	}
 
-	err := s.Dependences.OrderSrv.UpdateOrderSuccess(cc.GetRequestCtx(), &cmd)
+	orderID := util.GetObjectIDFromHex(params)
+	cmd.ID = orderID
+
+	err := s.Dependences.OrderSrv.ApproveOrder(cc.GetRequestCtx(), &cmd)
 	if err != nil {
 		return cc.Response400(nil, err.Error())
 	}
@@ -80,9 +84,13 @@ func (s *Server) CancelOrder(c echo.Context) error {
 		return cc.Response400(nil, err.Error())
 	}
 
-	// if err := cmd.Validate(); err != nil {
-	// 	return cc.Response400(nil, err.Error())
-	// }
+	params := c.Param("orderID")
+	if params == "" {
+		return cc.Response400(nil, "orderID is required")
+	}
+
+	orderID := util.GetObjectIDFromHex(params)
+	cmd.ID = orderID
 
 	err := s.Dependences.OrderSrv.RejectOrder(cc.GetRequestCtx(), &cmd)
 	if err != nil {
